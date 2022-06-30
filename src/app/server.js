@@ -3,6 +3,11 @@ import mongoose from 'mongoose'
 import http from 'http'
 import path from 'path'
 import morgan from 'morgan'
+import httpError from 'http-errors'
+import swaggerUi from 'swagger-ui-express'
+import swaggerDocs from 'swagger-jsdoc'
+import redis from './utils/initRedis.js'
+
 
 class Application {
     #app = express()
@@ -17,6 +22,7 @@ class Application {
         this.serverConfig()
         this.createServer()
         this.connectDatabase()
+        this.connectRedis()
         this.createRoutes()
         this.errorHandling()
     }
@@ -25,6 +31,21 @@ class Application {
         this.#app.use(express.json())
         this.#app.use(express.urlencoded({extended : true}))
         this.#app.use(express.static(path.join(process.argv[1] , '..' , '..' , 'public')))
+        this.#app.use('/api-doc' , swaggerUi.serve , swaggerUi.setup(swaggerDocs({
+            swaggerDefinition : {
+                info : {
+                    title : 'shop api',
+                    version : '1.0.0',
+                    description : 'none'
+                },
+                servers : [
+                    {
+                        url : 'http://localhost:4000'
+                    }
+                ]
+            },
+            apis : ['./src/app/routes/*/*.js']
+        })))
     }
     createServer() {
         const server = http.createServer(this.#app)
@@ -42,24 +63,27 @@ class Application {
             mongoose.connection.close(true)
         })
     }
+    connectRedis() {
+        redis.connect()
+        redis.on('connect' , () => console.log('connected to redis successfully'))
+    }
     createRoutes() {
         this.#app.use(this.#routes)
     }
     errorHandling() {
-        this.#app.use((req , res) => {
-            res.status(404).send({
-                status : 404,
-                success : false,
-                message : 'page not find'
-            })
+        this.#app.use((req , res , next) => {
+            next(httpError.NotFound('page not found'))
         })
         this.#app.use((error , req , res , next) => {
-            const status = error.status || 500
-            const message = error.message || 'internal server error!'
+            const internalServerError = httpError.InternalServerError()
+
+            const status = error.status || internalServerError.status
+            const message = error.message || internalServerError.message
             res.status(status).send({
-                status,
-                success : false,
-                message
+                errors : {
+                    status,
+                    message
+                }
             })
         })
     }

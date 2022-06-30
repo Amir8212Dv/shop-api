@@ -4,6 +4,6 @@ const schema = new mongoose.Schema({
 
 })
 
-const model = mongoose.model('payment' , schema)
+const paymentModel = mongoose.model('payment' , schema)
 
-export default model
+export default paymentModel

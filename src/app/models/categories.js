@@ -1,12 +1,10 @@
 import mongoose from "mongoose";
 
 const schema = new mongoose.Schema({
-    title : {
-        type : String,
-        required : true
-    }
+    title : { type : String, required : true , unique : true },
+    parent : {type : mongoose.Types.ObjectId , default : undefined}
 })
 
-const model = mongoose.model('category' , schema)
+const categoryModel = mongoose.model('category' , schema)
 
-export default model
+export default categoryModel

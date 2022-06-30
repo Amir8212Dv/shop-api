@@ -17,6 +17,6 @@ const schema = new mongoose.Schema({
     bookmark : { type : [mongoose.Types.ObjectId], default : [] }
 })
 
-const model = mongoose.model('blog' , schema)
+const blogModel = mongoose.model('blog' , schema)
 
-export default model
+export default blogModel

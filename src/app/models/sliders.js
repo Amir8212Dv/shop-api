@@ -6,6 +6,6 @@ const schema = new mongoose.Schema({
     image : { type : String , required : true},
 })
 
-const model = mongoose.model('slider' , schema)
+const sliderModel = mongoose.model('slider' , schema)
 
-export default model
+export default sliderModel

@@ -1,20 +1,20 @@
 import mongoose from "mongoose";
 
 const schema = new mongoose.Schema({
-    first_name : { type : String , required : true , trim : true },
-    last_name  : { type : String , required : true , trim : true },
-    username   : { type : String , required : true , trim : true , lowerCase : true },
-    mobile     : { type : String , required : true },
-    email      : { type : String , trim : true , lowerCase : true },
-    password   : { type : String , required : true , min : 8 },
+    // username   : { type : String , required : true , trim : true , lowerCase : true },
+    first_name : { type : String , trim : true },
+    last_name  : { type : String , trim : true },
+    mobile     : { type : String , required : true , unique : true },
+    email      : { type : String , trim : true , lowerCase : true , unique : true },
     otp        : { type : Object , default : {
-        code   : 0,
+        code   : '',
         expire : 0 
     }},
     bills      : { type : [], default : [] },
-    discount   : { type : Number , default : 0}
+    discount   : { type : Number , default : 0},
+    roles : {type : [String] , default : ['USER']}
 })
 
-const model = mongoose.model('user' , schema)
+const userModel = mongoose.model('user' , schema)
 
-export default model
+export default userModel
