@@ -77,8 +77,11 @@ class Application {
         this.#app.use((error , req , res , next) => {
             const internalServerError = httpError.InternalServerError()
 
-            const status = error.status || internalServerError.status
-            const message = error.message || internalServerError.message
+            const status = error.code === 11000 ? 400 : error.status || internalServerError.status
+            
+            const message = error.code === 11000 ? `entered ${Object.keys(error.keyValue)[0]} already exists` :
+            error.message || internalServerError.message
+
             res.status(status).send({
                 errors : {
                     status,

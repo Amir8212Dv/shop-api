@@ -9,7 +9,7 @@ router.get('/all' , categoryController.getAllCategory)
 
 router.get('/headCategories' , categoryController.getHeadCategories)
 
-router.get('/subCategories' , categoryController.getSubCategories)
+router.get('/subCategories/:parentId' , categoryController.getSubCategories)
 
 router.get('/:id' , categoryController.getCategoryById)
 
