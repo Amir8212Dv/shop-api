@@ -27,6 +27,8 @@ const schema = new mongoose.Schema({
         madein : ''
     }
     },
+} , {
+    versionKey : false
 })
 
 const productModel = mongoose.model('product' , schema)

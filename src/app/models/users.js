@@ -13,6 +13,9 @@ const schema = new mongoose.Schema({
     bills      : { type : [], default : [] },
     discount   : { type : Number , default : 0},
     roles : {type : [String] , default : ['USER']}
+} , {
+    timestamps : true,
+    versionKey : false
 })
 
 const userModel = mongoose.model('user' , schema)

@@ -18,9 +18,9 @@ const verifyAccessToken = async (req , res , next) => {
             return next()
         }
 
-        throw httpError.Unauthorized('please login again')
-    } catch (error) {
-        next(error)
+        throw ''
+    } catch {
+        next(httpError.Unauthorized('please login again'))
     }
 }
 
