@@ -1,6 +1,6 @@
 import joi from 'joi'
 
-export const createBlogSchema = joi.object({
+export const blogSchema = joi.object({
     title : joi.string().trim().required().min(3).max(30),
     text : joi.string().trim(),
     short_text : joi.string().trim(),

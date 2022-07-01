@@ -2,12 +2,12 @@ import express from 'express'
 import authRouter from './user/auth.js'
 import admingRouter from './admin/admin.routes.js'
 import verifyAccessToken from '../middlewares/verifyAccessToken.js'
-import { checkAdminRoler } from '../middlewares/checkUserRole.js'
+import checkRole from '../middlewares/checkRole.js'
 
 const router = express.Router()
 
 router.use('/user' , authRouter)
-router.use('/admin' , verifyAccessToken , checkAdminRoler , admingRouter)
+router.use('/admin' , verifyAccessToken , checkRole('ADMIN') , admingRouter)
 
 
 /**

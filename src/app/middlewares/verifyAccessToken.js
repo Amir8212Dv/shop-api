@@ -9,9 +9,7 @@ const verifyAccessToken = async (req , res , next) => {
         if(token && bearer.toLowerCase() === 'bearer') {
             const x = jwt.decode(token , 'jsonwebtoken') 
             const {mobile} = jwt.verify(token , process.env.SECRETE_KEY || 'jsonwebtoken')
-            console.log(mobile)
             const user = await userModel.findOne({mobile} , {otp : 0 , __v : 0})
-            console.log('user' , user)
             if(!user) throw httpError.Unauthorized('user not found')
 
             req.user = user
