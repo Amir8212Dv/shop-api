@@ -11,6 +11,8 @@ import createImageLink from "../../utils/createImageLink.js"
 
 // add a restriction that only author can change things
 
+// swagger image send has a problem
+
 
 
 class blogsController {
@@ -72,12 +74,15 @@ class blogsController {
     }
     async addImage(req , res , next) {
         try {
+            console.log(req.file)
+            console.log(req.body)
             const imagePath = (req.file.path.split('public')[1]).replaceAll('\\' , '/')
+            console.log(req.file.path)
 
-            const blog = await blogModel.updateOne({_id : req.params.id} , {image : imagePath})
+            const blog = await blogModel.findByIdAndUpdate(req.params.id , {image : imagePath} , {returnDocument : 'after'})
         
-            res.send({
-                status : 200,
+            res.status(201).send({
+                status : 201,
                 image : createImageLink(req , imagePath)
             })
         } catch (error) {

@@ -33,6 +33,7 @@ class Application {
         this.#app.use(express.static(path.join(process.argv[1] , '..' , '..' , 'public')))
         this.#app.use('/api-doc' , swaggerUi.serve , swaggerUi.setup(swaggerDocs({
             swaggerDefinition : {
+                openapi : '3.0.0',
                 info : {
                     title : 'shop api',
                     version : '1.0.0',
@@ -45,7 +46,8 @@ class Application {
                 ]
             },
             apis : ['./src/app/routes/*/*.js']
-        })))
+            }) , {explorer : true})
+        )
     }
     createServer() {
         const server = http.createServer(this.#app)

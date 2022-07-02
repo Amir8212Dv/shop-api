@@ -5,41 +5,20 @@ import { createCategorySchema , updateCategorySchema } from "../../validators/ad
 
 
 
-// add restriction in add category for sub depth
-
-// .aggregate([
-//                 {
-//                     $match : {parent : undefined}
-//                 },
-//                 {
-//                     $graphLookup : {
-//                         from : 'categories',
-//                         startWith : '$_id',
-//                         connectFromField : '_id',
-//                         connectToField : 'parent',
-//                         maxDepth : 3,
-//                         depthField : 'depth',
-//                         as : 'children'
-//                     }
-//                 },
-//                 {
-//                     $project : {
-//                         __v : 0,
-//                         'children.__v' : 0
-//                     }
-//                 }
-//             ])
-
 class categoryController {
     async addCategory(req , res , next) {
         try {
+            console.log('a')
             createCategorySchema.validate(req.body)
             const {title , parent} = req.body
+            console.log('a')
             
             if(parent){
                 const parentCategory = await categoryModel.findById(parent)
                 if(!parentCategory) throw createHttpError.BadRequest('parent category not find')
             }
+            console.log(req.body)
+            console.log('a')
 
             const category = await categoryModel.create({title , parent})
             if(!category) throw createHttpError.InternalServerError()
@@ -92,7 +71,7 @@ class categoryController {
             const category = await categoryModel.findByIdAndUpdate(categoryId , {title} , {returnDocument : 'after'})
             if(!category) throw {message : 'category not found'}
 
-            res.status(201).sedn({
+            res.status(201).send({
                 status : 201,
                 message : 'category updated successfully',
                 category

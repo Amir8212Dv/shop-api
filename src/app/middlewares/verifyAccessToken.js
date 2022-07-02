@@ -5,8 +5,7 @@ import userModel from '../models/users.js'
 const verifyAccessToken = async (req , res , next) => {
     try {
         const [bearer , token] = req.headers.authorization.split(' ')
-        
-        if(token && bearer.toLowerCase() === 'bearer') {
+        if(token && bearer.toLowerCase() === 'bearer') {    
             const x = jwt.decode(token , 'jsonwebtoken') 
             const {mobile} = jwt.verify(token , process.env.SECRETE_KEY || 'jsonwebtoken')
             const user = await userModel.findOne({mobile} , {otp : 0 , __v : 0})

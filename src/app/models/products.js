@@ -1,32 +1,35 @@
 import mongoose from "mongoose";
+import commentsSchema from "./comments.schema.js";
+
+const productFeaturesSchema = new mongoose.Schema({
+    length : {type : Number , required : true},
+    width  : {type : Number , required : true},
+    height : {type : Number , required : true},
+    weight : {type : Number , required : true},
+    color  : {type : String},
+    model  : {type : String},
+    madein : {type : String}
+} , {
+    versionKey : false,
+    _id : false,
+    id : false
+})
 
 const schema = new mongoose.Schema({
     title      : { type : String, required : true, trim : true },
-    short_desc : { type : String, required : true, trim : true },
-    total_desc : { type : String, required : true, trim : true },
+    text       : { type : String, required : true, trim : true },
+    short_text : { type : String, required : true, trim : true },
     images     : { type : [String], required : true },
     tags       : { type : [String], default : [] },
     category   : { type : mongoose.Types.ObjectId, required : true },
-    comments   : { type : [] },
-    like       : { type : [mongoose.Types.ObjectId], default : true },
-    bookemark  : { type : [mongoose.Types.ObjectId], default : [] },
+    comments   : { type : [commentsSchema] , default : [] },
+    likes      : { type : [mongoose.Types.ObjectId], default : true },
+    bookemarks : { type : [mongoose.Types.ObjectId], default : [] },
     price      : { type : Number, required : true },
     discount   : { type : Number , default : 0 },
     count      : { type : Number, required : true },
-    type       : { type : String, required : true },
-    time       : { type : String },
-    format     : { type : String },
-    teacher    : { type : String },
-    feature    : { type : Object , default : {
-        length : 0,
-        width  : 0,
-        height : 0,
-        weight : 0,
-        color  : '',
-        model  : '',
-        madein : ''
-    }
-    },
+    suplier    : { type : mongoose.Types.ObjectId , required : true },
+    features   : { type : productFeaturesSchema , required : true},
 } , {
     versionKey : false
 })
