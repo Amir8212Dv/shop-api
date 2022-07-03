@@ -53,7 +53,7 @@ class blogsController {
         }
     ]
 
-    async createBlog(req , res , next) {
+    async createBlog(req , res , next) { // this method used as a middle ware
         try {
             
             await blogSchema.validateAsync(req.boyd)
@@ -62,33 +62,43 @@ class blogsController {
             const blog = await blogModel.create({...req.body , author})
             if(!blog) throw createHttpError.BadRequest('create blog failed')
 
-            res.status(201).send({
-                status : 201,
-                blog
-            })
+
             req.blogId = blog._id.toString()
             next()
         } catch (error) {
             next(error)
         }
     }
-    async addImage(req , res , next) {
+    async addImageToBlogAndSend(req , res , next) {
         try {
-            console.log(req.file)
-            console.log(req.body)
             const imagePath = (req.file.path.split('public')[1]).replaceAll('\\' , '/')
-            console.log(req.file.path)
 
-            const blog = await blogModel.findByIdAndUpdate(req.params.id , {image : imagePath} , {returnDocument : 'after'})
-        
+            const blog = await blogModel.findByIdAndUpdate(req.blogId , {image : imagePath} , {reqturnDocument : 'after'})
+            blog.image = createImageLink(req , imagePath)
+
             res.status(201).send({
                 status : 201,
-                image : createImageLink(req , imagePath)
+                blog
             })
         } catch (error) {
             next(error)
         }
     }
+    // async addImage(req , res , next) {
+    //     try {
+
+    //         const imagePath = (req.file.path.split('public')[1]).replaceAll('\\' , '/')
+
+    //         const blog = await blogModel.findByIdAndUpdate(req.params.id , {image : imagePath} , {returnDocument : 'after'})
+        
+    //         res.status(201).send({
+    //             status : 201,
+    //             image : createImageLink(req , imagePath)
+    //         })
+    //     } catch (error) {
+    //         next(error)
+    //     }
+    // }
     async getBlogById(req , res , next) {
         try {
             const blogId = req.params.id

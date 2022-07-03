@@ -57,7 +57,7 @@ const router = express.Router()
  */
 
 
-router.post('/create' , blogsController.createBlog)
+router.post('/create' , blogsController.createBlog , multer.single('image'))
 /**
  * @swagger
  * /admin/blog/create:
@@ -82,33 +82,33 @@ router.post('/create' , blogsController.createBlog)
  *              
  */
 
-router.post('/image/:id' , multer.single('image') , blogsController.addImage)
+// router.post('/image/:id' , blogsController.addImage , multer.single('image'))
 
-/**
- * @swagger
- * /admin/blog/image/{id}:
- *      post:
- *          tags : [blog]
- *          summary : add image to blog
- *          description : add image to blog
- *          security:
- *              -   bearerAuth : []
- *          requestBody:
- *              required : true
- *              content:
- *                  application/x-www-form-urlencoded:
- *                      schema:
- *                          $ref : '#/components/schemas/addImage'
- *          parameters:
- *              -   in: path
- *                  type : string
- *                  name : id
- *                  required : true
- *          responses :
- *              201:
- *                  description : successfull
- *                  
- */
+// /**
+//  * @swagger
+//  * /admin/blog/image/{id}:
+//  *      post:
+//  *          tags : [blog]
+//  *          summary : add image to blog
+//  *          description : add image to blog
+//  *          security:
+//  *              -   bearerAuth : []
+//  *          requestBody:
+//  *              required : true
+//  *              content:
+//  *                  application/x-www-form-urlencoded:
+//  *                      schema:
+//  *                          $ref : '#/components/schemas/addImage'
+//  *          parameters:
+//  *              -   in: path
+//  *                  type : string
+//  *                  name : id
+//  *                  required : true
+//  *          responses :
+//  *              201:
+//  *                  description : successfull
+//  *                  
+//  */
 
 router.get('/all' , blogsController.getAllBlogs)
 

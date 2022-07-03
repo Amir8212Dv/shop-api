@@ -23,7 +23,7 @@ const schema = new mongoose.Schema({
     tags       : { type : [String], default : [] },
     category   : { type : mongoose.Types.ObjectId, required : true },
     comments   : { type : [commentsSchema] , default : [] },
-    likes      : { type : [mongoose.Types.ObjectId], default : true },
+    likes      : { type : [mongoose.Types.ObjectId], default : [] },
     bookemarks : { type : [mongoose.Types.ObjectId], default : [] },
     price      : { type : Number, required : true },
     discount   : { type : Number , default : 0 },
