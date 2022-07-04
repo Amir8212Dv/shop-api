@@ -8,17 +8,14 @@ import { createCategorySchema , updateCategorySchema } from "../../validators/ad
 class categoryController {
     async addCategory(req , res , next) {
         try {
-            console.log('a')
             createCategorySchema.validate(req.body)
             const {title , parent} = req.body
-            console.log('a')
             
             if(parent){
                 const parentCategory = await categoryModel.findById(parent)
                 if(!parentCategory) throw createHttpError.BadRequest('parent category not find')
             }
-            console.log(req.body)
-            console.log('a')
+
 
             const category = await categoryModel.create({title , parent})
             if(!category) throw createHttpError.InternalServerError()

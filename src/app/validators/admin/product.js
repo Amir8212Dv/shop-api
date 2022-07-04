@@ -8,16 +8,20 @@ const productSchema = joi.object({
     discount : joi.string(),
     count : joi.number(),
     features : joi.object({
-        length : joi.string(),
-        width  : joi.string(),
-        height : joi.string(),
-        weight : joi.string(),
+        length : joi.number(),
+        width  : joi.number(),
+        height : joi.number(),
+        weight : joi.number(),
         color  : joi.string(),
         model  : joi.string(),
         madein : joi.string()
     }),
     tags : joi.array().items(joi.string().trim(true)),
-    category : joi.string().pattern(/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i)
+    category : joi.string().pattern(/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i),
+    images : joi.object({
+        name : joi.any(),
+        type : joi.string()
+    })
 })
 
 export default productSchema

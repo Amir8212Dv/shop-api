@@ -15,7 +15,7 @@ const productFeaturesSchema = new mongoose.Schema({
     id : false
 })
 
-const schema = new mongoose.Schema({
+const productSchema = new mongoose.Schema({
     title      : { type : String, required : true, trim : true },
     text       : { type : String, required : true, trim : true },
     short_text : { type : String, required : true, trim : true },
@@ -34,6 +34,8 @@ const schema = new mongoose.Schema({
     versionKey : false
 })
 
-const productModel = mongoose.model('product' , schema)
+productSchema.index({title : 'text' , text : 'text' , short_text : 'text'})
+
+const productModel = mongoose.model('product' , productSchema)
 
 export default productModel
