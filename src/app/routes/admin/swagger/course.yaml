@@ -1,0 +1,201 @@
+
+ components:
+      schemas:
+          addCourse:
+              type : object
+              required :
+                  -   title
+                  -   text
+                  -   short_text
+                  -   price
+                  -   discount
+                  -   category
+              properties :
+                  title:
+                      type : string
+                      description : title of course
+                  text:
+                      type : string
+                      description : title of course
+                  short_text:
+                      type : string
+                      description : title of course
+                  price:
+                      type : string
+                      description : title of course
+                  discount:
+                      type : string
+                      description : title of course
+                  tags:
+                      type : string
+                      description : title of course
+                  category:
+                      type : string
+                      description : title of course
+          addCourseImage:
+              type : object
+              required : 
+                  -   image
+              properties:
+                  image:
+                      type : string
+                      format : binary
+          editCourse :
+              type : object
+              properties:
+                  title:
+                      type : string
+                      description : title of course
+                  text:
+                      type : string
+                      description : title of course
+                  short_text:
+                      type : string
+                      description : title of course
+                  price:
+                      type : string
+                      description : title of course
+                  discount:
+                      type : string
+                      description : title of course
+                  tags:
+                      type : string
+                      description : title of course
+                  category:
+                      type : string
+                      description : title of course
+              
+              
+
+
+ /admin/course/add:
+      post:
+          tags : [course]
+          summary : add a new course
+          description : add a new course
+          security : 
+              -   bearerAuth : []
+          requestBody:
+              required : true
+              content:
+                  application/x-www-form-urlencoded:
+                      schema:
+                          $ref : '#/components/schemas/addCourse'
+                  application/json:
+                      schema:
+                          $ref : '#/components/schemas/addCourse'
+          responses:
+              201 : 
+                  description : successfull
+
+
+
+
+
+ /admin/course/image/{id}:
+      post:
+          tags : [course]
+          summary : add image for course
+          description : add image for course with course ID
+          security : 
+              -   bearerAuth : []
+          requestBody:
+              required : true
+              content:
+                  application/x-www-form-urlencoded:
+                      schema:
+                          $ref : '#/components/schemas/addCourseImage'
+          responses:
+              201 : 
+                  description : successfull
+
+
+
+
+
+ /admin/course/all:
+      get:
+          tags : [course]
+          summary : get all courses
+          description : get all courses and search in all courses in  title/text/short_text
+          security : 
+              -   bearerAuth : []
+          parameters :
+              -   in : query
+                  name : search
+                  type : string
+                  description : search text
+          responses:
+              200 : 
+                  description : successfull
+
+
+
+
+
+ /admin/course/{id}:
+      get:
+          tags : [course]
+          summary : get course with ID
+          description : get course with ID
+          security : 
+              -   bearerAuth : []
+          parameters :
+              -   in : path
+                  name : id
+                  type : string
+                  required : true
+                  description : course ID
+          responses:
+              200 : 
+                  description : successfull
+
+
+
+
+ /admin/course/remove/{id}:
+      delete:
+          tags : [course]
+          summary : delete course with ID
+          description : delete course with ID
+          security : 
+              -   bearerAuth : []
+          parameters :
+              -   in : path
+                  name : id
+                  type : string
+                  required : true
+                  description : course ID
+          responses:
+              200 : 
+                  description : successfull
+
+
+
+
+
+ /admin/course/edit/{id}:
+      patch:
+          tags : [course]
+          summary : edit course with ID
+          description : edit course with ID
+          security : 
+              -   bearerAuth : []
+          parameters :
+              -   in : path
+                  name : id
+                  type : string
+                  required : true
+                  description : course ID
+          requestBody:
+              required : true
+              content : 
+                  application/x-www-form-urlencoded:
+                      schema:
+                          $ref : '#/components/schemas/editCourse'
+                  application/json:
+                      schema:
+                          $ref : '#/components/schemas/editCourse'
+          responses:
+              201 : 
+                  description : successfull

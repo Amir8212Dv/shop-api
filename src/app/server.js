@@ -45,7 +45,7 @@ class Application {
                     }
                 ]
             },
-            apis : ['./src/app/routes/*/*.js']
+            apis : ['./src/app/routes/*/swagger/*' , ]
             }) , {explorer : true})
         )
     }

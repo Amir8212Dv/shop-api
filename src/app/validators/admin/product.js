@@ -17,11 +17,7 @@ const productSchema = joi.object({
         madein : joi.string()
     }),
     tags : joi.array().items(joi.string().trim(true)),
-    category : joi.string().pattern(/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i),
-    images : joi.object({
-        name : joi.any(),
-        type : joi.string()
-    })
+    category : joi.string().pattern(/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i)
 })
 
 export default productSchema

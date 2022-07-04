@@ -9,6 +9,8 @@ import stringToArray from "../../utils/stringToArray.js"
 
 
 // add remove image method
+// add sorting for get products
+
 
 
 
@@ -24,8 +26,7 @@ class productController {
     async addProduct(req , res , next) {
         try {
             if(typeof req.body.features === 'string') req.body.features = JSON.parse(req.body.features)
-            if(typeof req.body.tags === 'string') req.body.tags = stringToArray(req.body.tags) // swagger sends arrays in format: "item1,item2,item3"
-            else req.body.tags = req.body.tags.map(tag => tag.trim())
+            req.body.tags = stringToArray(req.body.tags) // swagger sends arrays in format: "item1,item2,item3"
 
             await productSchema.validateAsync(req.body)
 
