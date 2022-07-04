@@ -1,17 +1,15 @@
 import createHttpError from "http-errors"
 import mongoose from "mongoose"
-import blogModel from "../../models/blogs.js"
-import { blogSchema } from "../../validators/admin/blog.js"
+import blogModel from "../../../models/blogs.js"
+import blogValidationSchema from "../../../validators/admin/blog.js"
 import autoBind from 'auto-bind'
 import httpStatus from 'http-status-codes'
-import createImageLink from "../../utils/createImageLink.js"
+import createImageLink from "../../../utils/createImageLink.js"
 
 
 
 
 // add a restriction that only author can change things
-
-// swagger image send has a problem
 
 
 
@@ -57,7 +55,7 @@ class blogsController {
     async createBlog(req , res , next) {
         try {
             
-            await blogSchema.validateAsync(req.boyd)
+            await blogValidationSchema.validateAsync(req.boyd)
             const author = req.user._id
 
             const blog = await blogModel.create({...req.body , author})
@@ -180,7 +178,7 @@ class blogsController {
     }
     async updateBlogById(req , res , next) {
         try {
-            await blogSchema.validateAsync(req.body)
+            await blogValidationSchema.validateAsync(req.body)
             const blogId = req.params.id 
             
             const updateBlog = await blogModel.findByIdAndUpdate(blogId , req.body , {returnDocument : 'after'})

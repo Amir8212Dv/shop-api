@@ -1,29 +1,29 @@
 import express from 'express'
-import blogsController from '../../controllers/admin/blogs.controller.js'
+import blogsController from '../../controllers/admin/blog/blog.controller.js'
 import multer from '../../middlewares/multer.js'
 
-const router = express.Router()
+const blogRouter = express.Router()
 
 
 
-router.post('/create' , blogsController.createBlog)
+blogRouter.post('/create' , blogsController.createBlog)
 
 
-router.post('/image/:id' , blogsController.addImage , multer.single('image'))
+blogRouter.post('/image/:id' , blogsController.addImage , multer.single('image'))
 
 
-router.get('/all' , blogsController.getAllBlogs)
+blogRouter.get('/all' , blogsController.getAllBlogs)
 
-router.get('/comments/:id' , blogsController.getCommentsOfBlog)
-
-
-router.get('/:id' , blogsController.getBlogById)
+blogRouter.get('/comments/:id' , blogsController.getCommentsOfBlog)
 
 
-router.delete('/remvoeBlog/:id' , blogsController.deleteBlogById)
+blogRouter.get('/:id' , blogsController.getBlogById)
 
 
-router.patch('/update/:id' , blogsController.updateBlogById)
+blogRouter.delete('/remvoeBlog/:id' , blogsController.deleteBlogById)
 
 
-export default router
+blogRouter.patch('/update/:id' , blogsController.updateBlogById)
+
+
+export default blogRouter 

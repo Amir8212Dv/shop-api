@@ -7,12 +7,18 @@ const episodeSchema = new mongoose.Schema({
     time : {type : String , required : true},
     videoAddress : {type : String , required : true},
     type : {type : String , default : 'UNLOCK'}
+} , {
+    versionKey : false,
+    timestamps : true
 })
 
 const chapterSchema = new mongoose.Schema({
     title : {type : String , required : true , trim : true},
     text : {type : String , default : '' , trim : true},
     episodes : {type : [episodeSchema] , default : []}
+} , {
+    versionKey : false,
+    timestamps : true
 })
 
 
@@ -32,7 +38,10 @@ const courseSchema = new mongoose.Schema({
     status : {type : String , default : 'notStarted'},
     teacher : {type : mongoose.Types.ObjectId , ref : 'user' , required : true},
     chapters : {type : [chapterSchema] , default : []},
-    students : {type : mongoose.Types.ObjectId , default : []}
+    students : {type : [mongoose.Types.ObjectId] , default : []}
+} , {
+    versionKey : false,
+    timestamps : true
 })
 
 courseSchema.index({title : 'text' , text : 'text' , short_text : 'text'})

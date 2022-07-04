@@ -7,4 +7,5 @@
           description : blog APIs
       -   name : product
           description : product APIs
-
+      -   name : chapter
+          description : chapter APIs

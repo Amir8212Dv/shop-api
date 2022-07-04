@@ -1,14 +1,18 @@
 import createHttpError from "http-errors"
 import httpStatus from 'http-status-codes'
-import categoryModel from "../../models/categories.js"
-import { createCategorySchema , updateCategorySchema } from "../../validators/admin/category.js"
+import categoryModel from "../../../models/categories.js"
+import { createCategoryValidationSchema , updateCategoryValidationSchema } from "../../../validators/admin/category.js"
+
+
+
+// change all queries into a sing method (aggregate / find & populate)
 
 
 
 class categoryController {
     async addCategory(req , res , next) {
         try {
-            createCategorySchema.validate(req.body)
+            createCategoryValidationSchema.validate(req.body)
             const {title , parent} = req.body
             
             if(parent){
@@ -69,7 +73,7 @@ class categoryController {
             const categoryId = req.params.id
 
             const {title} = req.body
-            updateCategorySchema.validate(req.body)
+            updateCategoryValidationSchema.validate(req.body)
 
             const category = await categoryModel.findByIdAndUpdate(categoryId , {title} , {returnDocument : 'after'})
             if(!category) throw {message : 'category not found'}
@@ -98,9 +102,7 @@ class categoryController {
                 status : httpStatus.OK,
                 message : '',
                 data : {
-                    categories : [
-                        categories
-                    ]
+                    categories
                 }
             })
             
@@ -143,9 +145,7 @@ class categoryController {
                 status : httpStatus.OK,
                 message : '',
                 data : {
-                    categories : [
-                        categories
-                    ]
+                    categories
                 }
             })
         } catch (error) {
@@ -161,9 +161,7 @@ class categoryController {
                 status : 200,
                 message : '',
                 data : {
-                    categories : [
-                        categories
-                    ]
+                    categories
                 }
             })
         } catch (error) {

@@ -1,27 +1,27 @@
 import express from 'express'
-import categoryController from '../../controllers/admin/category.controller.js'
+import categoryController from '../../controllers/admin/category/category.controller.js'
 
-const router = express.Router()
+const categoryRouter = express.Router()
 
-router.post('/create' , categoryController.addCategory)
-
-
-router.get('/all' , categoryController.getAllCategory)
-
-router.get('/headCategories' , categoryController.getHeadCategories)
+categoryRouter.post('/create' , categoryController.addCategory)
 
 
-router.get('/subCategories/:parentId' , categoryController.getSubCategories)
+categoryRouter.get('/all' , categoryController.getAllCategory)
+
+categoryRouter.get('/headCategories' , categoryController.getHeadCategories)
 
 
-router.get('/:id' , categoryController.getCategoryById)
+categoryRouter.get('/subCategories/:parentId' , categoryController.getSubCategories)
 
 
-router.patch('/edit/:id' , categoryController.editCategory)
+categoryRouter.get('/:id' , categoryController.getCategoryById)
 
 
-router.delete('/remove/:id' , categoryController.removCategory)
+categoryRouter.patch('/edit/:id' , categoryController.editCategory)
+
+
+categoryRouter.delete('/remove/:id' , categoryController.removCategory)
 
 
 
-export default router
+export default categoryRouter

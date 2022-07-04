@@ -127,7 +127,3 @@
                       image:
                           type: string
                           example : http://localhost:4000/images/62c0a341db0ebf2d03eebf91.png
-
- 
-
-

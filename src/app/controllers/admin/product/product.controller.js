@@ -1,9 +1,9 @@
-import productModel from "../../models/products.js"
+import productModel from "../../../models/products.js"
 import autobind from 'auto-bind'
-import productSchema from "../../validators/admin/product.js"
+import productValidationSchema from "../../../validators/admin/product.js"
 import createHttpError from "http-errors"
-import createImageLink from "../../utils/createImageLink.js"
-import stringToArray from "../../utils/stringToArray.js"
+import createImageLink from "../../../utils/createImageLink.js"
+import stringToArray from "../../../utils/stringToArray.js"
 import httpStatus from 'http-status-codes'
 
 
@@ -28,7 +28,7 @@ class productController {
             if(typeof req.body.features === 'string') req.body.features = JSON.parse(req.body.features)
             req.body.tags = stringToArray(req.body.tags) // swagger sends arrays in format: "item1,item2,item3"
 
-            await productSchema.validateAsync(req.body)
+            await productValidationSchema.validateAsync(req.body)
 
             const product = await productModel.create({...req.body , suplier : req.user._id})
             if(!product) throw createHttpError.InternalServerError('add product faild')
@@ -79,7 +79,7 @@ class productController {
             if(typeof data.tags === 'string') data.tags = stringToArray(data.tags) // swagger sends arrays in format: "item1,item2,item3"
             else if(!!data.tags) data.tags = data.tags.map(tag => tag.trim())
 
-            await productSchema.validateAsync(data)
+            await productValidationSchema.validateAsync(data)
 
             const product = await productModel.findByIdAndUpdate(req.params.id , data , {returnDocument : 'after'})
             if(!product) throw createHttpError.BadRequest('product not found')
@@ -108,9 +108,7 @@ class productController {
                 status : httpStatus.OK,
                 message : '',
                 data : {
-                    products : [
-                        products
-                    ]
+                    products
                 }
             })
             

@@ -1,13 +1,12 @@
 import autoBind from 'auto-bind'
-import stringToArray from '../../utils/stringToArray.js'
-import courseSchema from '../../validators/admin/course.js'
-import courseModel from '../../models/courses.js'
+import stringToArray from '../../../utils/stringToArray.js'
+import courseValidationSchema from '../../../validators/admin/course.js'
+import courseModel from '../../../models/courses.js'
 import createHttpError from 'http-errors'
 import httpStatus from 'http-status-codes'
 
 
-// create response schema for  get  methods in swagger
-
+// check for tags array to be not an array in string form
 
 
 
@@ -19,14 +18,15 @@ class courseController {
 
     async addCourse(req , res , next) {
         try {
-            req.tags = stringToArray(req.tags)
+            console.log(req.body)
+            req.body.tags = stringToArray(req.body.tags)
 
-            await courseSchema.validateAsync(req.body)
+            await courseValidationSchema.validateAsync(req.body)
             
             const course = await courseModel.create({...req.body , teacher : req.user._id})
             if(!course) throw createHttpError.InternalServerError()
 
-            res.statu(httpStatus.CREATED).send({
+            res.status(httpStatus.CREATED).send({
                 status : httpStatus.CREATED,
                 message : 'courses created successfully',
                 data : {
@@ -52,9 +52,7 @@ class courseController {
                 status : httpStatus.OK,
                 message : '',
                 data : {
-                    courses : [
-                        courses
-                    ]
+                    courses
                 }
             })
 

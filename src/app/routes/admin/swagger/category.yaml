@@ -188,4 +188,3 @@
                       application/json:
                           schema:
                               $ref: '#/definitions/getCategory'
-

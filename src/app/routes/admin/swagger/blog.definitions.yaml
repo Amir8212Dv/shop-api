@@ -109,6 +109,3 @@
                           items:
                               type : object
                               $ref : '#/definitions/comment'
-          
- 
-

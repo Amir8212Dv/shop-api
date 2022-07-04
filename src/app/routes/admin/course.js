@@ -1,19 +1,19 @@
 import express from 'express'
-import courseController from '../../controllers/admin/course.controller'
+import courseController from '../../controllers/admin/course/course.controller.js'
 
-const router = express.Router()
+const courseRouter = express.Router()
 
 
-router.post('/add' , courseController.addCourse)
+courseRouter.post('/add' , courseController.addCourse)
 
-router.post('/image/:id' , courseController.addImage)
+courseRouter.post('/image/:id' , courseController.addImage)
 
-router.get('/all' , courseController.getAllCourses)
+courseRouter.get('/all' , courseController.getAllCourses)
 
-router.get('/:id' , courseController.getCourseById)
+courseRouter.get('/:id' , courseController.getCourseById)
 
-router.delete('/remove/:id' , courseController.removeCourse)
+courseRouter.delete('/remove/:id' , courseController.removeCourse)
 
-router.patch('/edit/:id' , courseController.editCourse)
+courseRouter.patch('/edit/:id' , courseController.editCourse)
 
-export default router
+export default courseRouter
