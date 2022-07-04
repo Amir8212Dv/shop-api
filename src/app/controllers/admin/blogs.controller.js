@@ -3,7 +3,7 @@ import mongoose from "mongoose"
 import blogModel from "../../models/blogs.js"
 import { blogSchema } from "../../validators/admin/blog.js"
 import autoBind from 'auto-bind'
-import path from 'path'
+import httpStatus from 'http-status-codes'
 import createImageLink from "../../utils/createImageLink.js"
 
 
@@ -16,6 +16,7 @@ import createImageLink from "../../utils/createImageLink.js"
 
 
 class blogsController {
+
 
     constructor() {
         autoBind(this)
@@ -62,9 +63,14 @@ class blogsController {
             const blog = await blogModel.create({...req.body , author})
             if(!blog) throw createHttpError.BadRequest('create blog failed')
 
-            res.status(201).send({
-                status : 201,
-                blog
+            res.status(httpStatus.CREATED).send({
+                status : httpStatus.CREATED,
+                message : 'blog created successfully',
+                data : {
+                    blog : [
+                        ...blog
+                    ]
+                }
             })
             // req.blogId = blog._id.toString()
             // next()
@@ -74,16 +80,17 @@ class blogsController {
     }
     async addImage(req , res , next) {
         try {
-            console.log(req.file)
-            console.log(req.body)
+
             const imagePath = (req.file.path.split('public')[1]).replaceAll('\\' , '/')
-            console.log(req.file.path)
 
             const blog = await blogModel.findByIdAndUpdate(req.params.id , {image : imagePath} , {returnDocument : 'after'})
         
-            res.status(201).send({
-                status : 201,
-                image : createImageLink(req , imagePath)
+            res.status(httpStatus.CREATED).send({
+                status : httpStatus.CREATED,
+                message : 'image added to blog successfully',
+                data : {
+                    image : createImageLink(req , imagePath)
+                }
             })
         } catch (error) {
             next(error)
@@ -93,7 +100,7 @@ class blogsController {
         try {
             const blogId = req.params.id
 
-            const blog = await blogModel.aggregate([
+            const [blog] = await blogModel.aggregate([
                 {
                     $match : {_id : mongoose.Types.ObjectId(blogId)}
                 },
@@ -102,8 +109,14 @@ class blogsController {
 
             if(!blog) throw createHttpError.BadRequest('blog not found')
 
-            res.send({
-                status : 20,
+            res.status(httpStatus.OK).send({
+                status : httpStatus.OK,
+                message : '',
+                data : {
+                    blog : [
+                        blog
+                    ]
+                }
             })
         } catch (error) {
             next(error)
@@ -116,9 +129,14 @@ class blogsController {
                 ...this.#blogAggregate
             ])
             
-            res.send({
-                status : 200,
-                blogs
+            res.status(httpStatus.OK).send({
+                status : httpStatus.OK,
+                message : '',
+                data : {
+                    blogs : [
+                        blogs
+                    ]
+                }
             })
         } catch (error) {
             next(error)
@@ -127,8 +145,12 @@ class blogsController {
     async getCommentsOfBlog(req , res , next) {
         try {
             
-            res.send({
-                status : 20,
+            res.status(httpStatus.OK).send({
+                status : httpStatus.OK,
+                message : '',
+                data : {
+
+                }
             })
         } catch (error) {
             next(error)
@@ -143,9 +165,14 @@ class blogsController {
             if(!deleteBlog.acknowledged) throw createHttpError.BadRequest('blog not found')
             if(!deleteBlog.deletedCount) throw createHttpError.InternalServerError()
             
-            res.send({
-                status : 200,
-                message : 'blog deleted successfully'
+            res.status(httpStatus.OK).send({
+                status : httpStatus.OK,
+                message : 'blog deleted successfully',
+                data : {
+                    blog : [
+                        deleteBlog
+                    ]
+                }
             })
         } catch (error) {
             next(error)
@@ -158,9 +185,14 @@ class blogsController {
             
             const updateBlog = await blogModel.findByIdAndUpdate(blogId , req.body , {returnDocument : 'after'})
             
-            res.status(201).send({
-                status : 201,
-                blog : updateBlog
+            res.status(httpStatus.CREATED).send({
+                status : httpStatus.CREATED,
+                message : 'blog updated successfully',
+                data : {
+                    blog : [
+                        updateBlog
+                    ]
+                }
             })
         } catch (error) {
             next(error)

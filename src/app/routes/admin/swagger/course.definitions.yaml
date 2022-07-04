@@ -1,0 +1,31 @@
+
+ 
+ definitions:
+      course:
+          type : object
+
+              
+ 
+
+
+ 
+ 
+      getCourse:
+          type : object
+          properties:
+              status : 
+                  type : integer
+                  example : 200
+              message : 
+                  type : string
+                  example : successfull
+              data : 
+                  type : object
+                  properties:
+                      products:
+                          type: array
+                          items :
+                              type : object
+                              $ref : '#/definitions/course'
+ 
+ 

@@ -1,0 +1,29 @@
+
+ definitions:
+      sendOtp:
+          type : object
+          properties:
+              status :
+                  type : integer
+                  example : 201
+              message : 
+                  type : string
+                  example : otp sended successfully
+      login:
+          type : object
+          properties:
+              status :
+                  type : integer
+                  example : 200
+              message : 
+                  type : string
+                  example : successfull
+              data :
+                  type : object
+                  properties : 
+                      accessToken:
+                          type : string
+                          example : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtb2JpbGUiOiIwOTE0MjMwNTI0MiIsImlhdCI6MTY1Njk1NDQ4MywiZXhwIjoxNjU3MDQwODgzfQ.GKB3inryq-bxFK75P8djXDkDPpGxSPkSc2L8IDcGUEQ
+                      refreshToken:
+                          type : string
+                          example : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtb2JpbGUiOiIwOTE0MjMwNTI0MiIsImlhdCI6MTY1Njk1NDQ4MywiZXhwIjoxNjU3MDQwODgzfQ.GKB3inryq-bxFK75P8djXDkDPpGxSPkSc2L8IDcGUEQ

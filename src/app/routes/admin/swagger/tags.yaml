@@ -1,0 +1,10 @@
+ tags:
+      -   name : course
+          description : course APIs
+      -   name : category
+          description : category APIs
+      -   name : blog
+          description : blog APIs
+      -   name : product
+          description : product APIs
+

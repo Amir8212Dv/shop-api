@@ -4,7 +4,7 @@ import productSchema from "../../validators/admin/product.js"
 import createHttpError from "http-errors"
 import createImageLink from "../../utils/createImageLink.js"
 import stringToArray from "../../utils/stringToArray.js"
-
+import httpStatus from 'http-status-codes'
 
 
 
@@ -33,9 +33,14 @@ class productController {
             const product = await productModel.create({...req.body , suplier : req.user._id})
             if(!product) throw createHttpError.InternalServerError('add product faild')
 
-            res.status(201).send({
-                status : 201,
-                product
+            res.status(httpStatus.CREATED).send({
+                status : httpStatus.CREATED,
+                message : 'product added successfully',
+                data : {
+                    product : [
+                        product
+                    ]
+                }
             })
             
         } catch (error) {
@@ -54,9 +59,12 @@ class productController {
             })
             await product.save()
 
-            res.status(201).send({
-                status : 201,
-                images : product.images.map(image => createImageLink(req , image))
+            res.status(httpStatus.CREATED).send({
+                status : httpStatus.CREATED,
+                message : 'images added to product successfully',
+                data : {
+                    images : product.images.map(image => createImageLink(req , image))
+                }
             })
         } catch (error) {
             next(error)
@@ -76,9 +84,14 @@ class productController {
             const product = await productModel.findByIdAndUpdate(req.params.id , data , {returnDocument : 'after'})
             if(!product) throw createHttpError.BadRequest('product not found')
 
-            res.status(201).send({
-                status : 201,
-                product
+            res.status(httpStatus.CREATED).send({
+                status : httpStatus.CREATED,
+                message : 'product edited successfully',
+                data : {
+                    product : [
+                        product
+                    ]
+                }
             })
         } catch (error) {
             next(error)
@@ -91,9 +104,14 @@ class productController {
 
             const products = await productModel.find(searchFilter)
 
-            res.send({
-                status : 200,
-                products
+            res.status(httpStatus.OK).send({
+                status : httpStatus.OK,
+                message : '',
+                data : {
+                    products : [
+                        products
+                    ]
+                }
             })
             
         } catch (error) {
@@ -106,9 +124,14 @@ class productController {
             const product = await productModel.findById(req.params.id)
             if(!product) throw createHttpError.BadRequest('product not found')
 
-            res.send({
-                status : 200,
-                product
+            res.status(httpStatus.OK).send({
+                status : httpStatus.OK,
+                message : '',
+                data : {
+                    product : [
+                        product
+                    ]
+                }
             })
             
         } catch (error) {
@@ -120,13 +143,18 @@ class productController {
         try {
             const id = req.params.id 
             
-            const product = await productModel.findByIdAndDelete(id)
+            const deletedProduct = await productModel.findByIdAndDelete(id)
 
-            if(!product) throw createHttpError.BadRequest('product not found')
+            if(!deletedProduct) throw createHttpError.BadRequest('product not found')
 
-            res.send({
-                status : 200,
-                message : 'product deleted successfully'
+            res.status(httpStatus.OK).send({
+                status : httpStatus.OK,
+                message : 'product deleted successfully',
+                data : {
+                    product : [
+                        deletedProduct
+                    ]
+                }
             })
             
         } catch (error) {

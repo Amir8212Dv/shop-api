@@ -1,0 +1,133 @@
+
+ 
+ definitions:
+      product :
+          type : object
+          properties :
+              _id:
+                  type : string
+                  example : 62c0a341db0ebf2d03eebf91
+              title : 
+                  type : string
+                  example : product title
+              text :
+                  type : string
+                  example : product descripti
+              short_text :
+                  type : string
+                  example : product summary
+              images :
+                  type : array
+                  items :
+                      type : string
+                  example:
+                      -   /images/62c0a341db0ebf2d03eebf91/1.png
+                      -   /images/62c0a341db0ebf2d03eebf91/2.png
+              tags :
+                  type : array
+                  items : 
+                      type : string
+                  example:
+                      -   tag1
+                      -   tag2
+              category :
+                  type : string
+                  example : 62c0a341db0ebf2d03eebf91
+              features :
+                  type : object
+                  properties :
+                      width :
+                          type : number
+                          example : 10
+                      length : 
+                          type : number
+                          example : 20
+                      height : 
+                          type : number
+                          example : 5 
+                      weight : 
+                          type : number
+                          example : 1
+                      color : 
+                          type : string
+                          example : blue
+                      model : 
+                          type : string
+                          example : x1
+                      madein : 
+                          type : string
+                          example : iran
+              price :
+                  type : number
+                  example : 10000
+              count :
+                  type : number
+                  example : 20
+              discount :
+                  type : number
+                  example : 0
+              likes :
+                  type : array
+                  items : 
+                      type : string
+                  example:
+                      -   62c0a341db0ebf2d03eebf91
+                      -   62c0a341db0ebf2d03eebf91
+              bookmarks :
+                  type : array
+                  items :
+                      type : string
+                  example:
+                      -   62c0a341db0ebf2d03eebf91
+                      -   62c0a341db0ebf2d03eebf91
+              suplier :
+                  type : string
+                  example : 62c0a341db0ebf2d03eebf91
+              comments :
+                  type : array
+                  items : 
+                      type : string
+                  example:
+                      -   62c0a341db0ebf2d03eebf91
+                      -   62c0a341db0ebf2d03eebf91
+
+
+
+ 
+ 
+      getProduct:
+          type : object
+          properties:
+              status : 
+                  type : integer
+                  example : 200
+              message : 
+                  type : string
+                  example : successfull
+              data : 
+                  type : object
+                  properties:
+                      products:
+                          type: array
+                          items :
+                              type : object
+                              $ref : '#/definitions/product'
+      image :
+          type : object
+          properties:
+              status : 
+                  type : integer
+                  example : 200
+              message : 
+                  type : string
+                  example : successfull
+              data : 
+                  type : object
+                  properties:
+                      image:
+                          type: string
+                          example : http://localhost:4000/images/62c0a341db0ebf2d03eebf91.png
+
+ 
+
+

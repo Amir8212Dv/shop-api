@@ -1,5 +1,5 @@
 import createHttpError from "http-errors"
-import mongoose from "mongoose"
+import httpStatus from 'http-status-codes'
 import categoryModel from "../../models/categories.js"
 import { createCategorySchema , updateCategorySchema } from "../../validators/admin/category.js"
 
@@ -20,11 +20,13 @@ class categoryController {
             const category = await categoryModel.create({title , parent})
             if(!category) throw createHttpError.InternalServerError()
 
-            res.status(201).send({
-                status : 201,
-                success : true,
+            res.status(httpStatus.CREATED).send({
+                status : httpStatus.CREATED,
+                message : 'category created successfully',
                 data : {
-                    category
+                    category : [
+                        category
+                    ]
                 }
             })
 
@@ -48,10 +50,14 @@ class categoryController {
                 await categoryModel.deleteMany({parent : item._id})
             }
 
-            res.send({
-                status: 200,
+            res.status(httpStatus.OK).send({
+                status: httpStatus.OK,
                 message : 'category deleted successfully',
-                category : removedCategory
+                data : {
+                    category : [
+                        removedCategory
+                    ]
+                }
             })
             
         } catch (error) {
@@ -68,10 +74,14 @@ class categoryController {
             const category = await categoryModel.findByIdAndUpdate(categoryId , {title} , {returnDocument : 'after'})
             if(!category) throw {message : 'category not found'}
 
-            res.status(201).send({
-                status : 201,
+            res.status(httpStatus.CREATED).send({
+                status : httpStatus.CREATED,
                 message : 'category updated successfully',
-                category
+                data : {
+                    category : [
+                        category
+                    ]
+                }
             })
             
         } catch (error) {
@@ -84,9 +94,14 @@ class categoryController {
 
             const categories = await categoryModel.find({parent : undefined})
 
-            res.send({
-                status : 200,
-                categories
+            res.status(httpStatus.OK).send({
+                status : httpStatus.OK,
+                message : '',
+                data : {
+                    categories : [
+                        categories
+                    ]
+                }
             })
             
         } catch (error) {
@@ -100,31 +115,16 @@ class categoryController {
 
             const category = await categoryModel.findById(categoryId)
 
-
-            // const category = await categoryModel.aggregate([
-            //     {
-            //         $match : {_id : categoryId}
-            //     },
-            //     {
-            //         $lookup : {
-            //             from : 'categories',
-            //             localField : '_id',
-            //             foreignField : 'parent',
-            //             as : 'children'
-            //         }
-            //     },
-            //     {
-            //         $project : {
-            //             __v : 0,
-            //             'children.__v' : 0
-            //         }
-            //     }
-            // ])
             if(!category) throw createHttpError.BadRequest('category not found')
 
-            res.send({
-                status : 200,
-                category
+            res.status(httpStatus.OK).send({
+                status : httpStatus.OK,
+                message : '',
+                data : {
+                    category : [
+                        category
+                    ]
+                }
             })
             
         } catch (error) {
@@ -139,9 +139,14 @@ class categoryController {
                 }
             ])
 
-            res.send({
-                status : 200,
-                categories
+            res.status(httpStatus.OK).send({
+                status : httpStatus.OK,
+                message : '',
+                data : {
+                    categories : [
+                        categories
+                    ]
+                }
             })
         } catch (error) {
             next(error)
@@ -151,31 +156,15 @@ class categoryController {
         try {
             
             const categories = await categoryModel.find({parent : req.params.parentId})
-            // .aggregate([
-            //     {
-            //         $match : {
-            //             $not : {parent : undefined}
-            //         }
-            //     },
-            //     {
-            //         $lookup : {
-            //             from : 'categories',
-            //             localField : 'parent',
-            //             foreignField : '_id',
-            //             as : 'parent'
-            //         }
-            //     },
-            //     {
-            //         $project : {
-            //             __v : 0,
-            //             'parent.__v' : 0
-            //         }
-            //     }
-            // ])
 
             res.send({
                 status : 200,
-                categories
+                message : '',
+                data : {
+                    categories : [
+                        categories
+                    ]
+                }
             })
         } catch (error) {
             next(error)

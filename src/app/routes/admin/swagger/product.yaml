@@ -138,6 +138,12 @@
           responses:
               201:
                   description : successfull
+                  content:
+                      application/json:
+                          schema:
+                              $ref: '#/definitions/getProduct'
+
+
 
 
 
@@ -157,6 +163,10 @@
           responses:
               201:
                   description : successfully
+                  content:
+                      application/json:
+                          schema:
+                              $ref: '#/definitions/image'
 
 
 
@@ -179,6 +189,11 @@
           responses:
               201:
                   description : successfull
+                  content:
+                      application/json:
+                          schema:
+                              $ref: '#/definitions/getProduct'
+
 
 
 
@@ -198,8 +213,10 @@
           responses : 
               200 :
                   description : successfull
-
-
+                  content:
+                      application/json:
+                          schema:
+                              $ref: '#/definitions/getProduct'
 
 
 
@@ -218,6 +235,11 @@
           responses : 
               200 : 
                   description : successfull
+                  content:
+                      application/json:
+                          schema:
+                              $ref: '#/definitions/getProduct'
+
 
 
 
@@ -238,4 +260,8 @@
               -   bearerAuth : []
           responses : 
               200 : 
-                  description : successfull
+                  description : successful
+                  content:
+                      application/json:
+                          schema:
+                              $ref: '#/definitions/getProduct'

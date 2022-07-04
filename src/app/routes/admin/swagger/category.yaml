@@ -46,7 +46,11 @@
 
           responses:
               201:
-                  description : category created successfully 
+                  description : category created successfully
+                  content :
+                      application/json:
+                          schema:
+                              $ref: '#/definitions/getCategory'
 
 
 
@@ -61,6 +65,10 @@
           responses :
               200:
                   description : successfull
+                  content :
+                      application/json:
+                          schema:
+                              $ref: '#/definitions/getCategory'
 
 
 
@@ -75,6 +83,10 @@
           responses :
               200:
                   description : successfull
+                  content :
+                      application/json:
+                          schema:
+                              $ref: '#/definitions/getCategory'
 
 
 
@@ -94,6 +106,10 @@
           responses : 
               200 : 
                   description : successfully
+                  content :
+                      application/json:
+                          schema:
+                              $ref: '#/definitions/getCategory'
 
 
 
@@ -113,6 +129,10 @@
           responses :
               200 : 
                   description : successfull
+                  content :
+                      application/json:
+                          schema:
+                              $ref: '#/definitions/getCategory'
 
 
 
@@ -141,6 +161,10 @@
           responses : 
               201 :
                   description : successfully
+                  content :
+                      application/json:
+                          schema:
+                              $ref: '#/definitions/getCategory'
 
 
 
@@ -160,3 +184,8 @@
           responses : 
               200:
                   description : successfully
+                  content :
+                      application/json:
+                          schema:
+                              $ref: '#/definitions/getCategory'
+

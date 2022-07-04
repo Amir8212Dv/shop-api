@@ -50,6 +50,7 @@
 
 
 
+
  /admin/blog/create:
       post:
           tags : [blog]
@@ -69,6 +70,10 @@
           responses :
               201:
                   description : successfull
+                  content :
+                      application/json:
+                          schema:
+                              $ref: '#/definitions/getBlog'
 
 
 
@@ -94,6 +99,10 @@
           responses :
               201:
                   description : successfull
+                  content :
+                      application/json:
+                          schema:
+                              $ref: '#/definitions/image'
 
 
 
@@ -107,7 +116,11 @@
               -   bearerAuth : []
           responses:
               200 : 
-                  successfully
+                  description : successfully
+                  content :
+                      application/json:
+                          schema:
+                              $ref: '#/definitions/getBlog'
 
 
 
@@ -128,6 +141,10 @@
           responses : 
               200:
                   description : successfully
+                  content :
+                      application/json:
+                          schema:
+                              $ref: '#/definitions/getComments'
 
 
 
@@ -149,6 +166,10 @@
           responses : 
               200:
                   description : successfully
+                  content :
+                      application/json:
+                          schema:
+                              $ref: '#/definitions/getBlog'
 
 
 
@@ -170,6 +191,10 @@
           responses : 
               200 :
                   description : successfully
+                  content :
+                      application/json:
+                          schema:
+                              $ref: '#/definitions/getBlog'
 
 
 
@@ -200,3 +225,7 @@
           responses : 
               200:
                   description : successfully
+                  content :
+                      application/json:
+                          schema:
+                              $ref: '#/definitions/getBlog'

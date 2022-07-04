@@ -3,7 +3,7 @@ import commentSchema from './comments.schema.js'
 
 const episodeSchema = new mongoose.Schema({
     title : {type : String, required : true , trim : true},
-    text : {type : String, required : true , trim : true},
+    text : {type : String, default : '' , trim : true},
     time : {type : String , required : true},
     videoAddress : {type : String , required : true},
     type : {type : String , default : 'UNLOCK'}
@@ -11,7 +11,7 @@ const episodeSchema = new mongoose.Schema({
 
 const chapterSchema = new mongoose.Schema({
     title : {type : String , required : true , trim : true},
-    text : {type : String , required : true , trim : true},
+    text : {type : String , default : '' , trim : true},
     episodes : {type : [episodeSchema] , default : []}
 })
 

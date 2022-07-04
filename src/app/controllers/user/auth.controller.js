@@ -1,11 +1,10 @@
-import { userSchema } from "../../validators/user/auth.schema.js"
 import httpError from 'http-errors'
-import joi from 'joi'
 import validator from 'validator'
 import userModel from "../../models/users.js"
 import createToken from "../../utils/createAccessToken.js"
 import createRandomNumber from '../../utils/randomNumber.js'
 import { createRefreshToken, validateRefreshToken } from "../../utils/refreshToken.js"
+import httpStatus from 'http-status-codes'
 
 class Auth {
     async getOtp(req , res , next) {
@@ -26,7 +25,6 @@ class Auth {
             }
             res.status(201).send({
                 status : 201,
-                success : true,
                 message : 'otp sended successfully'
             })
 
@@ -46,9 +44,9 @@ class Auth {
             const accessToken = await createToken({mobile})
             const refreshToken = await createRefreshToken({mobile} , user._id)
             
-            res.send({
-                status : 200,
-                success : true,
+            res.status(httpStatus.LOCKED).send({
+                status : httpStatus.LOCKED,
+                message : 'loged in successfully',
                 data : {
                     accessToken,
                     refreshToken
@@ -71,9 +69,9 @@ class Auth {
             const accessToken = await createToken({mobile})
             const newRefreshToken = await createRefreshToken({mobile} , user._id)
     
-            res.status(201).send({
-                status : 201,
-                success : true,
+            res.status(httpStatus.CREATED).send({
+                status : httpStatus.CREATED,
+                message : '',
                 data : {
                     accessToken,
                     refreshToken : newRefreshToken
