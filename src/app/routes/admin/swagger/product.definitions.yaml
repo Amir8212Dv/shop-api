@@ -107,7 +107,7 @@
               data : 
                   type : object
                   properties:
-                      products:
+                      product:
                           type: array
                           items :
                               type : object

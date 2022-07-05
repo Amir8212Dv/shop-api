@@ -102,7 +102,7 @@ class categoryController {
                 status : httpStatus.OK,
                 message : '',
                 data : {
-                    categories
+                    category : categories
                 }
             })
             
@@ -145,7 +145,7 @@ class categoryController {
                 status : httpStatus.OK,
                 message : '',
                 data : {
-                    categories
+                    category : categories
                 }
             })
         } catch (error) {
@@ -161,7 +161,7 @@ class categoryController {
                 status : 200,
                 message : '',
                 data : {
-                    categories
+                    category : categories
                 }
             })
         } catch (error) {

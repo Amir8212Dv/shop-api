@@ -27,19 +27,17 @@
                       type : string
                       description : title of course
                   tags:
-                      type : string
+                      type : array
+                      items :
+                        type : string
                       description : title of course
                   category:
                       type : string
                       description : title of course
-          addCourseImage:
-              type : object
-              required : 
-                  -   image
-              properties:
-                  image:
-                      type : string
+                  image : 
+                      type : string 
                       format : binary
+
           editCourse :
               type : object
               properties:
@@ -64,6 +62,9 @@
                   category:
                       type : string
                       description : title of course
+                  image : 
+                      type : string
+                      format : buffer
               
               
 
@@ -78,12 +79,10 @@
           requestBody:
               required : true
               content:
-                  application/x-www-form-urlencoded:
+                  multipart/form-data:
                       schema:
                           $ref : '#/components/schemas/addCourse'
-                  application/json:
-                      schema:
-                          $ref : '#/components/schemas/addCourse'
+
           responses:
               201 : 
                   description : successfull
@@ -92,32 +91,6 @@
                           schema:
                               $ref: '#/definitions/getCourse'
                   
-
-
-
-
-
- /admin/course/image/{id}:
-      post:
-          tags : [course]
-          summary : add image for course
-          description : add image for course with course ID
-          security : 
-              -   bearerAuth : []
-          requestBody:
-              required : true
-              content:
-                  application/x-www-form-urlencoded:
-                      schema:
-                          $ref : '#/components/schemas/addCourseImage'
-          responses:
-              201 : 
-                  description : successfull
-                  content :
-                      application/json:
-                          schema:
-                              $ref: '#/definitions/getCourse'
-
 
 
 
@@ -211,12 +184,10 @@
           requestBody:
               required : true
               content : 
-                  application/x-www-form-urlencoded:
+                  multipart/form-data:
                       schema:
                           $ref : '#/components/schemas/editCourse'
-                  application/json:
-                      schema:
-                          $ref : '#/components/schemas/editCourse'
+
           responses:
               201 : 
                   description : successfull

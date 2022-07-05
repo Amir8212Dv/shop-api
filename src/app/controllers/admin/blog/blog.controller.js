@@ -1,10 +1,11 @@
 import createHttpError from "http-errors"
 import mongoose from "mongoose"
 import blogModel from "../../../models/blogs.js"
-import blogValidationSchema from "../../../validators/admin/blog.js"
+import {CreateBlogValidationSchema , UpdateBlogValidationSchema} from "../../../validators/admin/blog.js"
 import autoBind from 'auto-bind'
 import httpStatus from 'http-status-codes'
 import createImageLink from "../../../utils/createImageLink.js"
+import Controller from "../../controller.js"
 
 
 
@@ -13,30 +14,17 @@ import createImageLink from "../../../utils/createImageLink.js"
 
 
 
-class blogsController {
+class blogsController extends Controller{
 
 
     constructor() {
+        super()
         autoBind(this)
     }
 
     #blogAggregate = [
-        {
-            $lookup : {
-                from : 'users',
-                localField : 'author',
-                foreignField : '_id',
-                as : 'author'
-            }
-        },
-        {
-            $lookup : {
-                from : 'categories',
-                localField : 'category',
-                foreignField : '_id',
-                as : 'category'
-            }
-        },
+        this.userLookup('author'),
+        this.categoryLookup('category'),
         {
             $unwind : '$author'
         },
@@ -55,45 +43,35 @@ class blogsController {
     async createBlog(req , res , next) {
         try {
             
-            await blogValidationSchema.validateAsync(req.boyd)
+            console.log(req.body)   
+            
+            await CreateBlogValidationSchema.validateAsync(req.body)
             const author = req.user._id
-
+            
+            const imagePath = (req.file.path.split('public')[1]).replaceAll('\\' , '/')
+            if(imagePath) req.body.image = imagePath
+            
             const blog = await blogModel.create({...req.body , author})
             if(!blog) throw createHttpError.BadRequest('create blog failed')
+            blog.image = createImageLink(blog.image)
 
             res.status(httpStatus.CREATED).send({
                 status : httpStatus.CREATED,
                 message : 'blog created successfully',
                 data : {
                     blog : [
-                        ...blog
+                        blog
                     ]
                 }
             })
-            // req.blogId = blog._id.toString()
-            // next()
+            
         } catch (error) {
+            console.log(error)
             next(error)
         }
     }
-    async addImage(req , res , next) {
-        try {
 
-            const imagePath = (req.file.path.split('public')[1]).replaceAll('\\' , '/')
 
-            const blog = await blogModel.findByIdAndUpdate(req.params.id , {image : imagePath} , {returnDocument : 'after'})
-        
-            res.status(httpStatus.CREATED).send({
-                status : httpStatus.CREATED,
-                message : 'image added to blog successfully',
-                data : {
-                    image : createImageLink(req , imagePath)
-                }
-            })
-        } catch (error) {
-            next(error)
-        }
-    }
     async getBlogById(req , res , next) {
         try {
             const blogId = req.params.id
@@ -131,9 +109,7 @@ class blogsController {
                 status : httpStatus.OK,
                 message : '',
                 data : {
-                    blogs : [
-                        blogs
-                    ]
+                    blog : blogs
                 }
             })
         } catch (error) {
@@ -178,8 +154,10 @@ class blogsController {
     }
     async updateBlogById(req , res , next) {
         try {
-            await blogValidationSchema.validateAsync(req.body)
-            const blogId = req.params.id 
+            console.log(req.file)
+            await UpdateBlogValidationSchema.validateAsync(req.body)
+            if(req.file) req.body.image = (req.file.path.split('public')[1]).replaceAll('\\' , '/')
+            const blogId = req.params.id
             
             const updateBlog = await blogModel.findByIdAndUpdate(blogId , req.body , {returnDocument : 'after'})
             

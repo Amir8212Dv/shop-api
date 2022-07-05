@@ -7,6 +7,7 @@
                   -   text
                   -   short_text
                   -   category
+                  -   image
               properties:
                   title:
                       type : string
@@ -20,6 +21,10 @@
                   category:
                       type : string
                       description : category Id
+                  image : 
+                      type : string
+                      format : binary
+
           updateBlog:
               type : object
               properties:
@@ -35,16 +40,9 @@
                   category:
                       type : string
                       description : category Id
-          addImage:
-              type : object
-              required:
-                  -   image
-              properties:
-                  image:
-                      type : file
-                      description : image for blog
-
-          
+                  image :
+                      type : string
+                      format : binary 
 
 
 
@@ -61,12 +59,10 @@
           requestBody:
               required : true
               content:
-                  application/x-www-form-urlencoded:
+                  multipart/form-data:
                       schema:
                           $ref : '#/components/schemas/createBlog'
-                  application/json:
-                      schema:
-                          $ref : '#/components/schemas/createBlog'
+
           responses :
               201:
                   description : successfull
@@ -211,12 +207,10 @@
           requestBody:
               required : true
               content:
-                  application/x-www-form-urlencoded:
+                  multipart/form-data:
                       schema:
                           $ref : '#/components/schemas/updateBlog'
-                  application/json:
-                      schema:
-                          $ref : '#/components/schemas/updateBlog'
+
           parameters:
               -   in : path
                   name : id

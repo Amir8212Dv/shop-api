@@ -1,5 +1,5 @@
-const createImageLink = (req , path) => {
+const createFileLink = (req , path) => {
     return `${req.protocol}://${req.headers.host}/${path.replace('\\' , '/')}`
 }
 
-export default createImageLink
+export default createFileLink

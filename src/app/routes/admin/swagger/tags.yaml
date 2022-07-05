@@ -1,4 +1,8 @@
  tags:
+      -   name : episode
+          description : episode APIs
+      -   name : chapter
+          description : chapter APIs
       -   name : course
           description : course APIs
       -   name : category
@@ -7,5 +11,3 @@
           description : blog APIs
       -   name : product
           description : product APIs
-      -   name : chapter
-          description : chapter APIs

@@ -6,7 +6,7 @@ const episodeSchema = new mongoose.Schema({
     text : {type : String, default : '' , trim : true},
     time : {type : String , required : true},
     videoAddress : {type : String , required : true},
-    type : {type : String , default : 'UNLOCK'}
+    type : {type : String , default : 'unlock'}
 } , {
     versionKey : false,
     timestamps : true
@@ -17,8 +17,7 @@ const chapterSchema = new mongoose.Schema({
     text : {type : String , default : '' , trim : true},
     episodes : {type : [episodeSchema] , default : []}
 } , {
-    versionKey : false,
-    timestamps : true
+    versionKey : false
 })
 
 
@@ -36,7 +35,7 @@ const courseSchema = new mongoose.Schema({
     discount : {type : Number , required : true},
     time : {type : String , default : '00:00:00'},
     status : {type : String , default : 'notStarted'},
-    teacher : {type : mongoose.Types.ObjectId , ref : 'user' , required : true},
+    teacher : {type : mongoose.Types.ObjectId , required : true},
     chapters : {type : [chapterSchema] , default : []},
     students : {type : [mongoose.Types.ObjectId] , default : []}
 } , {

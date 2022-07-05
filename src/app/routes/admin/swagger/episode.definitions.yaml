@@ -2,7 +2,7 @@
  
  definitions:
 
-      course:
+      episode:
           type : object
           properties :
               _id:
@@ -11,10 +11,10 @@
               text:
                   type : string
                   example : description of course
-              short_text:
+              time:
                   type : string
                   example : summary of course
-              tags:
+              :
                   type : array
                   items :
                       type : string
@@ -36,52 +36,12 @@
                       type : string
                   example : 
                       -   62c3399cfc43ce4cc4afad2d
-              bookmarks:
-                  type : array
-                  items :
-                      type : string
-                  example : 
-                      -   62c3399cfc43ce4cc4afad2d
-              comments:
-                  type : array
-                  items :
-                      type : string
-                  example : 
-                      -   62c3399cfc43ce4cc4afad2d
-              teacher:
-                  type : object
-                  $ref : '#/definitions/user'
-              students:
-                  type : array
-                  items : 
-                      type : string
-                  example :
-                      -   62c3399cfc43ce4cc4afad2d
-              time:
-                  type : string
-                  example : 00:00:00
-              status:
-                  type : string
-                  example : notStarted
-              chapters:
-                  type : array
-                  items:
-                      type : string
-                  example :
-                      -   62c3399cfc43ce4cc4afad2d
-              createdAt:
-                  type : string
-                  example : 2022-07-01T19:21:48.956Z
-              updatedAd:
-                  type : string
-                  example : 2022-07-01T19:21:48.956Z
-
 
 
 
  
  
-      getCourse:
+      getEpisode:
           type : object
           properties:
               status : 
@@ -97,4 +57,4 @@
                           type: array
                           items :
                               type : object
-                              $ref : '#/definitions/course'
+                              $ref : '#/definitions/episode'

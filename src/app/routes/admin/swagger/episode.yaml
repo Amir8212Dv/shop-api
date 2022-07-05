@@ -1,0 +1,71 @@
+ components:
+    schemas :
+      addEpisode :
+        type : object
+        required :
+          - courseId
+          - chapterId 
+          - title
+          - video
+          - type 
+        properties : 
+          courseId :
+            type : string
+            description : course ID 
+          chapterId :
+            type : string
+            description : chapter ID
+          title : 
+            type : string 
+            description : title of episode 
+          text : 
+            type : string 
+            description : description of episode 
+          video : 
+            type : string
+            format : binary
+            description : episode video
+          type : 
+            type : string
+            enum : 
+              - lock
+              - unlock
+
+
+ /admin/episode/add:
+    post:
+      tags : [episode]
+      summary : add episode
+      description : add episode
+      security:
+        - bearerAuth : []
+      requestBody:
+        required : true
+        content:
+          multipart/form-data:
+            schema :
+              $ref : '#/components/schemas/addEpisode'
+      responses :
+        201:
+          description: successfull
+          # content:
+          #   application/json:
+          #     $ref : '#/definitions/getEpisode'
+ /admin/episode/delete/{episodeId}:
+    delete:
+      tags : [episode]
+      summary : delete episode
+      description : delete episode with episode id 
+      security:
+        - bearerAuth : []
+      parameters : 
+        - in : path
+          type : string
+          name : episodeId
+          required : true
+      responses :
+        200:
+          description: successfull
+          # content:
+          #   application/json:
+          #     $ref : '#/definitions/getEpisode'

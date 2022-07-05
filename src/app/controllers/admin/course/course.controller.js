@@ -1,27 +1,50 @@
 import autoBind from 'auto-bind'
 import stringToArray from '../../../utils/stringToArray.js'
-import courseValidationSchema from '../../../validators/admin/course.js'
+import {createCourseValidationSchema , updateCourseValidationSchema} from '../../../validators/admin/course.js'
 import courseModel from '../../../models/courses.js'
 import createHttpError from 'http-errors'
 import httpStatus from 'http-status-codes'
-
+import Controller from '../../controller.js'
+import mongoose from 'mongoose'
 
 // check for tags array to be not an array in string form
 
+// add aggregate or populate for all controllers
+
+// add a check in multer , for check documents existence
 
 
-class courseController {
-    #aggregateSchema = []
+
+class courseController extends Controller {
+    #aggregateSchema = [
+        this.userLookup('teacher'),
+        this.categoryLookup('category'),
+        // {
+        //     $unwind : '$teacher'
+        // },
+        // {
+        //     $unwind : '$category'
+        // },
+        {
+            $project : {
+                'teacher.mobile' : 0,
+                'teacher.bills' : 0,
+                'teacher.otp' : 0
+            }
+        }
+    ]
     constructor() {
+        super()
         autoBind(this)
     }
 
     async addCourse(req , res , next) {
         try {
-            console.log(req.body)
+            req.body.image = (req.file.path.split('public')[1]).replaceAll('\\' , '/')
+
             req.body.tags = stringToArray(req.body.tags)
 
-            await courseValidationSchema.validateAsync(req.body)
+            await createCourseValidationSchema.validateAsync(req.body)
             
             const course = await courseModel.create({...req.body , teacher : req.user._id})
             if(!course) throw createHttpError.InternalServerError()
@@ -44,15 +67,21 @@ class courseController {
         try {
             const search = req.query.search
             
-            const filter = search ? {$text : {$search : search}} : {}
+            // const filter = search ? {$text : {$search : search}} : {}
 
-            const courses = await courseModel.find(filter)
+            const courses = await courseModel.aggregate([
+                {
+                    $match : {...(search && {$text : {$search : search}})}
+                }, 
+                ...this.#aggregateSchema,
+            ])
+            console.log(this.#aggregateSchema)
 
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,
                 message : '',
                 data : {
-                    courses
+                    course : courses
                 }
             })
 
@@ -63,9 +92,14 @@ class courseController {
     }
     async getCourseById(req , res , next) {
         try {
-            const id = req.query.id
+            const id = mongoose.Types.ObjectId(req.query.id)
 
-            const course = await courseModel.findById(id)
+            const course = await courseModel.aggregate([
+                {
+                    $match : {_id : id}
+                }, 
+                ...this.#aggregateSchema,
+            ])
             if(!course) throw createHttpError.BadRequest('course not found')
 
             res.status(httpStatus.OK).send({

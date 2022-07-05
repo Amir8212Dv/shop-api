@@ -1,0 +1,147 @@
+ components:
+    schemas:
+      addChapter:
+        type : object
+        required:
+          - id
+          - title
+        properties:
+          id :
+            type : string
+            description : id of course you want add chapters
+          title :
+            type : string
+            description : title of chapter 
+          text :
+            type : string 
+            description : description for chapter
+      updateChapter:
+        type : object
+        required:
+          - title
+          - text
+        properties:
+          title :
+            type : string
+            description : title of chapter 
+          text :
+            type : string 
+            description : description for chapter
+
+
+
+
+ /admin/chapter/add:
+    put:
+      tags: [chapter]
+      summary : add a new chapter in course 
+      description : add a new chapter in course 
+      security : 
+        - bearerAuth : []
+      requestBody :
+        required : true
+        content:
+          application/x-www-form-urlencoded:
+            schema: 
+              $ref : '#/components/schemas/addChapter'
+          application/json:
+            schema: 
+              $ref : '#/components/schemas/addChapter'
+      responses:
+        201:
+          description : successfull 
+          content:
+            application/json:
+              schema :
+                $ref : '#/definitions/getChapter'
+
+
+ /admin/chapter/all/{chapterId}:
+    get:
+      tags: [chapter]
+      summary : get all chapters
+      description : get all chapters of a course with courseId
+      security : 
+        - bearerAuth : []
+      parameters :
+        - in : path
+          name : courseId 
+          type : string 
+          required : true
+      responses:
+        200:
+          description : successfull 
+          content:
+            application/json:
+              schema :
+                $ref : '#/definitions/getChapter'
+
+
+
+ /admin/chapter/{chapterId}:
+    get:
+      tags: [chapter]
+      summary : get one chapter
+      description : get one chapte by id
+      security : 
+        - bearerAuth : []
+      parameters :
+        - in : path
+          name : chapterId 
+          type : string 
+          required : true
+      responses:
+        200:
+          description : successfull 
+          content:
+            application/json:
+              schema :
+                $ref : '#/definitions/getChapter'
+
+
+
+ /admin/chapter/delete/{chapterId}:
+    delete:
+      tags: [chapter]
+      summary : delete chapter
+      description : delete chapter by id
+      security : 
+        - bearerAuth : []
+      parameters :
+        - in : path
+          name : chapterId 
+          type : string 
+          required : true
+      responses:
+        200:
+          description : successfull 
+          content:
+            application/json:
+              schema :
+                $ref : '#/definitions/deleteChapter'
+
+ /admin/chapter/edit/{chapterId}:
+    patch:
+      tags: [chapter]
+      summary : delete chapter
+      description : delete chapter by id
+      security : 
+        - bearerAuth : []
+      parameters :
+        - in : path
+          name : chapterId 
+          type : string 
+          required : true
+      requestBody:
+        required : true 
+        content :
+          application/x-www-form-urlencoded:
+            schema : 
+              $ref : '#/components/schemas/updateChapter'
+      responses:
+        200:
+          description : successfull 
+          content:
+            application/json:
+              schema :
+                $ref : '#/definitions/getChapter'

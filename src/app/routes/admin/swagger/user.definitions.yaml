@@ -1,0 +1,16 @@
+ definitions:
+    user:
+      type : object
+      properties :
+        first_name:
+          type : string 
+          example : Amir Mohammad
+        last_name : 
+          type : string
+          example : Razmi
+        email :
+          type : string 
+          example : example@gmail.com
+        _id :
+          type : string
+          example : 62bc1feb57aa9615479a1597
