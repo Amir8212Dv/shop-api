@@ -30,10 +30,28 @@
             enum : 
               - lock
               - unlock
+      editEpisode :
+        type : object
+        properties : 
+          title : 
+            type : string 
+            description : title of episode 
+          text : 
+            type : string 
+            description : description of episode 
+          video : 
+            type : string
+            format : binary
+            description : episode video
+          type : 
+            type : string
+            enum : 
+              - lock
+              - unlock
 
 
  /admin/episode/add:
-    post:
+    put:
       tags : [episode]
       summary : add episode
       description : add episode
@@ -65,6 +83,30 @@
           required : true
       responses :
         200:
+          description: successfull
+          # content:
+          #   application/json:
+          #     $ref : '#/definitions/getEpisode'
+ /admin/episode/edit/{episodeId}:
+    patch:
+      tags : [episode]
+      summary : delete episode
+      description : delete episode with episode id 
+      security:
+        - bearerAuth : []
+      parameters : 
+        - in : path
+          type : string
+          name : episodeId
+          required : true
+      requestBody:
+        required : true
+        content:
+          multipart/form-data:
+            schema :
+              $ref : '#/components/schemas/editEpisode'
+      responses :
+        201:
           description: successfull
           # content:
           #   application/json:

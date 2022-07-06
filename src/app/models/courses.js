@@ -1,24 +1,6 @@
 import mongoose from 'mongoose'
 import commentSchema from './comments.schema.js'
 
-const episodeSchema = new mongoose.Schema({
-    title : {type : String, required : true , trim : true},
-    text : {type : String, default : '' , trim : true},
-    time : {type : String , required : true},
-    videoAddress : {type : String , required : true},
-    type : {type : String , default : 'unlock'}
-} , {
-    versionKey : false,
-    timestamps : true
-})
-
-const chapterSchema = new mongoose.Schema({
-    title : {type : String , required : true , trim : true},
-    text : {type : String , default : '' , trim : true},
-    episodes : {type : [episodeSchema] , default : []}
-} , {
-    versionKey : false
-})
 
 
 const courseSchema = new mongoose.Schema({
@@ -36,7 +18,7 @@ const courseSchema = new mongoose.Schema({
     time : {type : String , default : '00:00:00'},
     status : {type : String , default : 'notStarted'},
     teacher : {type : mongoose.Types.ObjectId , required : true},
-    chapters : {type : [chapterSchema] , default : []},
+    chapters : {type : [mongoose.Types.ObjectId] , ref: 'chapter' , default : []},
     students : {type : [mongoose.Types.ObjectId] , default : []}
 } , {
     versionKey : false,

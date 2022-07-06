@@ -4,6 +4,8 @@ import {createChapterValidationSchema , updateChapterValidationSchema} from "../
 import httpStatus from 'http-status-codes'
 import createHttpError from "http-errors"
 import validateObjectId from "../../../validators/objectId.js"
+import chapterModel from "../../../models/course.chapters.js"
+import episodeModel from "../../../models/course.chapter.episodes.js"
 
 
 // re-write  delete methods in all projects
@@ -19,16 +21,22 @@ class chapterController {
     async addChapter(req , res , next) {
         try {
             await createChapterValidationSchema.validateAsync(req.body)
-            const {id , title , text} = req.body
+            const {courseId , title , text} = req.body
 
-            const course = await courseModel.findByIdAndUpdate(id , {$push : {chapters : {title , text}}} , {returnDocument : 'after'})
+            const course = await courseModel.findById(courseId)
+            if(!course) throw createHttpError.BadRequest('course not found')
+            
+            const chapter = await chapter.create({title , text})
+
+            course.chapters.push(chapter._id)
+            course.save()
 
             res.status(httpStatus.CREATED).send({
                 status : httpStatus.CREATED,
                 message : 'chapter added to course successfully',
                 data : {
-                    course : [
-                        course
+                    chapter : [
+                        chapter
                     ]
                 }
             })
@@ -42,14 +50,14 @@ class chapterController {
             const {courseId} = req.params
             await validateObjectId.validateAsync(courseId)
 
-            const course = await courseModel.findById(courseId , {chapters : 1})
-            if(!course) throw createHttpError.NotFound('course not found')
+            const chapters = await chapterModel.find({courseId})
+            // if(!course) throw createHttpError.NotFound('course not found')
 
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,
                 message : '',
                 data : {
-                    chapter : course.chapters
+                    chapters
                 }
             })
             
@@ -61,14 +69,16 @@ class chapterController {
         try {
             const {chapterId} = req.params
             
-            const {chapters} = await courseModel.findOne({'chapters._id' : chapterId} , {'chapters.$' : 1})
-            if(!chapters) throw createHttpError.NotFound('chapter not found')
+            const chapter = await chapterModel.findById(chapterId)
+            if(!chapter) throw createHttpError.NotFound('chapter not found')
 
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,
                 message : '',
                 data : {
-                    chapter : chapters
+                    chapter : [
+                        chapter
+                    ]
                 }
             })
             
@@ -85,19 +95,17 @@ class chapterController {
             await validateObjectId.validateAsync(chapterId)
             await updateChapterValidationSchema.validateAsync(data)
             
-            const {chapters} = await courseModel.findOneAndUpdate(
-                {'chapters._id' : chapterId} , 
-                {'chapters.$' : data} , 
-                {returnDocument : 'after'}
-            )
-            if(!chapters) throw createHttpError.NotFound('chapter not found')
+            const chapter = await chapterModel.findByIdAndUpdate(chapterId , data , {returnDocument : 'after'})
+            if(!chapter) throw createHttpError.NotFound('chapter not found')
 
 
             res.status(httpStatus.CREATED).send({
                 status : httpStatus.CREATED,
                 message : 'chapter updated successfully',
                 data : {
-                    chapters
+                    chapter : [
+                        chapter
+                    ]
                 }
             })
             
@@ -111,10 +119,12 @@ class chapterController {
             const {chapterId} = req.params
             await validateObjectId.validateAsync(chapterId)
 
-            const course = await courseModel.updateOne({'chapters._id' : chapterId} , {$pull : {chapters : {_id : chapterId}}} , {returnDocument : 'after'})
-            console.log(course)
-            if(!course.matchedCount) throw createHttpError.NotFound('chapter not found')
-            if(!course.modifiedCount) throw createHttpError.InternalServerError('delete chapter faild')
+            const chapter = await chapterModel.findByIdAndDelete(chapterId)
+            if(!chapter) throw createHttpError.NotFound('chapter not found')
+            
+            const deleteEpisodes = await episodeModel.deleteMany({chapterId})
+            const updateCourse = await courseModel.findByIdAndUpdate(chapter.courseId , {$pull : {chapters : chapterId}})
+
 
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,

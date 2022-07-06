@@ -150,21 +150,6 @@ class courseController extends Controller {
             next(error)
         }
     }
-    async addImage(req , res , next) {
-        try {
-            res.status(httpStatus.OK).send({
-                status : httpStatus.OK,
-                message : '',
-                data : {
-        
-                }
-            })
 
-        } catch (error) {
-            next(error)
-        }
-    }
-
-}
 
 export default new courseController()

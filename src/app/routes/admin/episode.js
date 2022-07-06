@@ -4,8 +4,10 @@ import { imageUpload , videoUpload } from '../../middlewares/multer.js'
 
 const episodeRouter = express.Router()
 
-episodeRouter.post('/add' , videoUpload.single('video') , episodeController.addEpisode)
+episodeRouter.put('/add' , videoUpload.single('video') , episodeController.addEpisode)
 
 episodeRouter.delete('/delete/:episodeId' , episodeController.deleteEpisode)
+
+episodeRouter.patch('/edit/:episodeId' , videoUpload.single('video') , episodeController.editEpisode)
 
 export default episodeRouter
