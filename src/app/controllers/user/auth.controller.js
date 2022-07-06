@@ -6,6 +6,9 @@ import createRandomNumber from '../../utils/randomNumber.js'
 import { createRefreshToken, validateRefreshToken } from "../../utils/refreshToken.js"
 import httpStatus from 'http-status-codes'
 
+// change create user codes
+
+
 class Auth {
     async getOtp(req , res , next) {
         try {

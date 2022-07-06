@@ -28,7 +28,7 @@ class episodeController {
             // const course = await courseModel.findOne({_id : courseId , 'chapters._id' : chapterId})
 
             const chapter = await chapterModel.findById(chapterId)
-            if(!chapter) throw createHttpError.BadRequest('chapter not found')
+            if(!chapter) throw createHttpError.NotFound('chapter not found')
             if(chapter.courseId.toString() !== courseId) throw createHttpError('course not found')
 
             const episode = await episodeModel.create(episodeData)
@@ -60,7 +60,7 @@ class episodeController {
 
             const episode = await episodeModel.findByIdAndDelete(episodeId , {chapterId : 1})
 
-            if(!episode) throw createHttpError.BadRequest('episode not found')
+            if(!episode) throw createHttpError.NotFound('episode not found')
 
             const updateChapter = await chapterModel.updateOne({_id : episode.chapterId} , {$pull : {episodes : episode._id}})
             const updateCourse = await courseModel.updateOne({_id : episode.courseId} , {$inc : {time : -episode.time}})
@@ -83,7 +83,7 @@ class episodeController {
             const data = await updateEpisodeValidationSchema.validateAsync(req.body)
 
             const episode = await episodeModel.findByIdAndUpdate(episodeId , data , {returnDocument : 'after'})
-            if(!episode) throw createHttpError.BadRequest('episode not found')
+            if(!episode) throw createHttpError.NotFound('episode not found')
             
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,

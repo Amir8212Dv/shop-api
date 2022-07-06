@@ -24,7 +24,7 @@ class chapterController {
             const {courseId , title , text} = req.body
 
             const course = await courseModel.findById(courseId)
-            if(!course) throw createHttpError.BadRequest('course not found')
+            if(!course) throw createHttpError.NotFound('course not found')
             
             const chapter = await chapter.create({title , text})
 

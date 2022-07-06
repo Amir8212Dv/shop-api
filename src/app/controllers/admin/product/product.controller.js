@@ -68,7 +68,7 @@ class productController {
             await updateProductValidationSchema.validateAsync(data)
 
             const product = await productModel.findByIdAndUpdate(productId , data , {returnDocument : 'after'})
-            if(!product) throw createHttpError.BadRequest('product not found')
+            if(!product) throw createHttpError.NotFound('product not found')
 
             res.status(httpStatus.CREATED).send({
                 status : httpStatus.CREATED,
@@ -108,7 +108,7 @@ class productController {
             await validateObjectId.validateAsync(productId)
 
             const product = await productModel.findById(productId)
-            if(!product) throw createHttpError.BadRequest('product not found')
+            if(!product) throw createHttpError.NotFound('product not found')
 
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,
@@ -131,7 +131,7 @@ class productController {
             
             const deletedProduct = await productModel.findByIdAndDelete(productId)
 
-            if(!deletedProduct) throw createHttpError.BadRequest('product not found')
+            if(!deletedProduct) throw createHttpError.NotFound('product not found')
 
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,

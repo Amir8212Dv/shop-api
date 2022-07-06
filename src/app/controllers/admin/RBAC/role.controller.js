@@ -24,7 +24,7 @@ class roleController {
                 if(roleData.permissions.length) {
                     roleData.permission.map(async permission => {
                         const checkPermissionExists = await permissionModel.findById(permission)
-                        if(!checkPermissionExists) throw createHttpError.BadRequest(`permission with id : ${permission} not found`)
+                        if(!checkPermissionExists) throw createHttpError.NotFound(`permission with id : ${permission} not found`)
                     })
                 }
 
@@ -68,7 +68,7 @@ class roleController {
 
             const deleteRole = await roleModel.deleteOne({_id : roleId})
 
-            if(!deleteRole.acknowledged) throw createHttpError.BadRequest('role not found')
+            if(!deleteRole.acknowledged) throw createHttpError.NotFound('role not found')
             if(+deleteRole.deletedCount === 0) throw createHttpError.InternalServerError('delete role faild')
 
             res.status(httpStatus.OK).send({

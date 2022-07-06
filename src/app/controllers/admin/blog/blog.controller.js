@@ -58,7 +58,7 @@ class blogsController extends Controller{
             if(imagePath) req.body.image = imagePath
             
             const blog = await blogModel.create({...req.body , author})
-            if(!blog) throw createHttpError.BadRequest('create blog failed')
+            if(!blog) throw createHttpError.InternalServerError('create blog failed')
             blog.image = createImageLink(blog.image)
 
             res.status(httpStatus.CREATED).send({
@@ -89,7 +89,7 @@ class blogsController extends Controller{
                 ...this.#blogAggregate
             ])
 
-            if(!blog) throw createHttpError.BadRequest('blog not found')
+            if(!blog) throw createHttpError.NotFound('blog not found')
 
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,
@@ -143,7 +143,7 @@ class blogsController extends Controller{
 
             const deleteBlog = await blogModel.deleteOne({_id : blogId})
 
-            if(!deleteBlog.acknowledged) throw createHttpError.BadRequest('blog not found')
+            if(!deleteBlog.acknowledged) throw createHttpError.NotFound('blog not found')
             if(!deleteBlog.deletedCount) throw createHttpError.InternalServerError()
             
             res.status(httpStatus.OK).send({

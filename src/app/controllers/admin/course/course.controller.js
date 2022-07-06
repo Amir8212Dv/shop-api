@@ -104,7 +104,7 @@ class courseController extends Controller {
                 }, 
                 ...this.#aggregateSchema,
             ])
-            if(!course) throw createHttpError.BadRequest('course not found')
+            if(!course) throw createHttpError.NotFound('course not found')
 
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,
@@ -127,7 +127,7 @@ class courseController extends Controller {
             await validateObjectId.validateAsync(courseId)
 
             const deleteCourse = await courseModel.deleteOne({_id : courseId})
-            if(!deleteCourse.acknowledged) throw createHttpError.BadRequest('course not found')
+            if(!deleteCourse.acknowledged) throw createHttpError.NotFound('course not found')
             if(deleteCourse.deletedCount === 0) throw createHttpError.InternalServerError('delete course faild')
 
             const deleteChapters = await chapterModel.deleteMany({courseId})

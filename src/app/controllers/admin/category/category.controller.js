@@ -17,7 +17,7 @@ class categoryController {
             
             if(parent){
                 const parentCategory = await categoryModel.findById(parent)
-                if(!parentCategory) throw createHttpError.BadRequest('parent category not find')
+                if(!parentCategory) throw createHttpError.NotFound('parent category not found')
             }
 
 
@@ -43,7 +43,7 @@ class categoryController {
             const {categoryId} = req.params
 
             const removedCategory = await categoryModel.findByIdAndDelete(categoryId)
-            if(!removedCategory) throw createHttpError.BadRequest('category not found')
+            if(!removedCategory) throw createHttpError.NotFound('category not found')
 
             const subCategories = await categoryModel.find({parent : categoryId})
             // subCategories.forEach(async item => {
@@ -117,7 +117,7 @@ class categoryController {
 
             const category = await categoryModel.findById(categoryId)
 
-            if(!category) throw createHttpError.BadRequest('category not found')
+            if(!category) throw createHttpError.NotFound('category not found')
 
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,
