@@ -3,7 +3,7 @@ import mongoose from 'mongoose'
 const chapterSchema = new mongoose.Schema({
     title : {type : String , required : true , trim : true},
     text : {type : String , default : '' , trim : true},
-    episodes : {type : [mongoose.Types.ObjectId] , default : []},
+    episodes : {type : [mongoose.Types.ObjectId] , ref : 'episode' , default : []},
     courseId : { type : mongoose.Types.ObjectId , ref:'course' , required : true}
 } , {
     versionKey : false,

@@ -40,7 +40,7 @@ class categoryController {
     }
     async removCategory(req , res , next) {
         try {
-            const categoryId = req.params.id 
+            const {categoryId} = req.params
 
             const removedCategory = await categoryModel.findByIdAndDelete(categoryId)
             if(!removedCategory) throw createHttpError.BadRequest('category not found')
@@ -70,7 +70,7 @@ class categoryController {
     }
     async editCategory(req , res , next) {
         try {
-            const categoryId = req.params.id
+            const {categoryId} = req.params
 
             const {title} = req.body
             updateCategoryValidationSchema.validate(req.body)
@@ -113,7 +113,7 @@ class categoryController {
     async getCategoryById(req , res , next) {
         try {
             // const categoryId = mongoose.Types.ObjectId(req.params.id)
-            const categoryId = req.params.id 
+            const {categoryId} = req.params
 
             const category = await categoryModel.findById(categoryId)
 
@@ -154,8 +154,8 @@ class categoryController {
     }
     async getSubCategories(req , res, next) {
         try {
-            
-            const categories = await categoryModel.find({parent : req.params.parentId})
+            const {parentId} = req.params
+            const categories = await categoryModel.find({parent : parentId})
 
             res.send({
                 status : 200,

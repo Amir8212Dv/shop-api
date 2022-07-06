@@ -31,7 +31,14 @@ const productSchema = new mongoose.Schema({
     suplier    : { type : mongoose.Types.ObjectId , required : true },
     features   : { type : productFeaturesSchema , required : true},
 } , {
-    versionKey : false
+    versionKey : false,
+    toJSON : {
+        virtuals : true
+    }
+})
+
+productSchema.virtual('imagesURL').get(function(){
+    return this.images.map(image => `${process.env.BASE_URL}${image}`)
 })
 
 productSchema.index({title : 'text' , text : 'text' , short_text : 'text'})

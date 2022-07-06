@@ -5,6 +5,7 @@ import createHttpError from "http-errors"
 import createImageLink from "../../../utils/createImageLink.js"
 import stringToArray from "../../../utils/stringToArray.js"
 import httpStatus from 'http-status-codes'
+import validateObjectId from "../../../validators/objectId.js"
 
 
 
@@ -52,31 +53,13 @@ class productController {
             next(error)
         }
     }
-    // async addImage(req , res , next) {
-    //     try {
-    
-    //         const product = await productModel.findById(req.params.id )
-            
-    //         paths.forEach(item => {
-    //             if(!(product.images.includes(item))) product.images.push(item)
-    //         })
-    //         await product.save()
 
-    //         res.status(httpStatus.CREATED).send({
-    //             status : httpStatus.CREATED,
-    //             message : 'images added to product successfully',
-    //             data : {
-    //                 images : product.images.map(image => createImageLink(req , image))
-    //             }
-    //         })
-    //     } catch (error) {
-    //         next(error)
-    //     }
-    // }
 
     async editProduct(req , res , next) {
         try {
             const data = req.body
+            const {productId} = req.params
+            await validateObjectId.validateAsync(productId)
 
             if(typeof data.features === 'string') data.features = JSON.parse(data.features)
             if(typeof data.tags === 'string') data.tags = stringToArray(data.tags) // swagger sends arrays in format: "item1,item2,item3"
@@ -84,7 +67,7 @@ class productController {
 
             await updateProductValidationSchema.validateAsync(data)
 
-            const product = await productModel.findByIdAndUpdate(req.params.id , data , {returnDocument : 'after'})
+            const product = await productModel.findByIdAndUpdate(productId , data , {returnDocument : 'after'})
             if(!product) throw createHttpError.BadRequest('product not found')
 
             res.status(httpStatus.CREATED).send({
@@ -121,8 +104,10 @@ class productController {
     } 
     async getProductById(req , res , next) {
         try {
+            const {productId} = req.params
+            await validateObjectId.validateAsync(productId)
 
-            const product = await productModel.findById(req.params.id)
+            const product = await productModel.findById(productId)
             if(!product) throw createHttpError.BadRequest('product not found')
 
             res.status(httpStatus.OK).send({
@@ -142,9 +127,9 @@ class productController {
 
     async removeProduct(req , res , next) {
         try {
-            const id = req.params.id 
+            const {productId} = req.params
             
-            const deletedProduct = await productModel.findByIdAndDelete(id)
+            const deletedProduct = await productModel.findByIdAndDelete(productId)
 
             if(!deletedProduct) throw createHttpError.BadRequest('product not found')
 

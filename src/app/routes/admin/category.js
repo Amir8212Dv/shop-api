@@ -14,13 +14,13 @@ categoryRouter.get('/headCategories' , categoryController.getHeadCategories)
 categoryRouter.get('/subCategories/:parentId' , categoryController.getSubCategories)
 
 
-categoryRouter.get('/:id' , categoryController.getCategoryById)
+categoryRouter.get('/categoryId' , categoryController.getCategoryById)
 
 
-categoryRouter.patch('/edit/:id' , categoryController.editCategory)
+categoryRouter.patch('/edit/categoryId' , categoryController.editCategory)
 
 
-categoryRouter.delete('/remove/:id' , categoryController.removCategory)
+categoryRouter.delete('/remove/categoryId' , categoryController.removCategory)
 
 
 

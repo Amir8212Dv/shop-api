@@ -1,4 +1,8 @@
  tags:
+      -   name : RBAC
+          description : Role Base Access Controll
+      -   name : user
+          description : user APIs
       -   name : episode
           description : episode APIs
       -   name : chapter

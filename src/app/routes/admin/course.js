@@ -7,14 +7,13 @@ const courseRouter = express.Router()
 
 courseRouter.post('/add' , imageUpload.single('image') , courseController.addCourse)
 
-courseRouter.post('/image/:id' , courseController.addImage)
 
 courseRouter.get('/all' , courseController.getAllCourses)
 
-courseRouter.get('/:id' , courseController.getCourseById)
+courseRouter.get('/:courseId' , courseController.getCourseById)
 
-courseRouter.delete('/remove/:id' , courseController.removeCourse)
+courseRouter.delete('/remove/:courseId' , courseController.removeCourse)
 
-courseRouter.patch('/edit/:id' , imageUpload.single('image') , courseController.editCourse)
+courseRouter.patch('/edit/:courseId' , imageUpload.single('image') , courseController.editCourse)
 
 export default courseRouter

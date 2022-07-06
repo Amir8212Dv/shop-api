@@ -11,15 +11,15 @@ productRouter.post('/add' , imageUpload.array('images' , 10) , productController
 // productRouter.post('/addImage/:id' , multer.array('images' , 10) , productController.addImage)
 
 
-productRouter.patch('/update/:id' , imageUpload.array('images' , 10) , productController.editProduct)
+productRouter.patch('/update/:productId' , imageUpload.array('images' , 10) , productController.editProduct)
 
 
-productRouter.delete('/remove/:id' , productController.removeProduct)
+productRouter.delete('/remove/:productId' , productController.removeProduct)
 
 
 productRouter.get('/all' , productController.getAllProducts)
 
 
-productRouter.get('/:id' , productController.getProductById)
+productRouter.get('/:productId' , productController.getProductById)
 
 export default productRouter

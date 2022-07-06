@@ -15,14 +15,17 @@ const courseSchema = new mongoose.Schema({
     bookmarks : {type : [mongoose.Types.ObjectId] , deafult : []},
     price : {type : Number , required : true},
     discount : {type : Number , required : true},
-    time : {type : String , default : '00:00:00'},
+    time : {type : Number , default : 0 , min : 0},
     status : {type : String , default : 'notStarted'},
     teacher : {type : mongoose.Types.ObjectId , required : true},
     chapters : {type : [mongoose.Types.ObjectId] , ref: 'chapter' , default : []},
     students : {type : [mongoose.Types.ObjectId] , default : []}
 } , {
     versionKey : false,
-    timestamps : true
+    timestamps : true,
+    toJSON : {
+        virtuals : true
+    }
 })
 
 courseSchema.index({title : 'text' , text : 'text' , short_text : 'text'})

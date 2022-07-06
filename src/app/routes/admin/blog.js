@@ -17,16 +17,16 @@ blogRouter.post('/create' , imageUpload.single('image') , blogsController.create
 
 blogRouter.get('/all' , blogsController.getAllBlogs)
 
-blogRouter.get('/comments/:id' , blogsController.getCommentsOfBlog)
+blogRouter.get('/comments/:blogId' , blogsController.getCommentsOfBlog)
 
 
-blogRouter.get('/:id' , blogsController.getBlogById)
+blogRouter.get('/:blogId' , blogsController.getBlogById)
 
 
-blogRouter.delete('/remvoeBlog/:id' , blogsController.deleteBlogById)
+blogRouter.delete('/remvoeBlog/:blogId' , blogsController.deleteBlogById)
 
 
-blogRouter.patch('/update/:id' , imageUpload.single('image') , blogsController.updateBlogById)
+blogRouter.patch('/update/:blogId' , imageUpload.single('image') , blogsController.updateBlogById)
 
 
 export default blogRouter 

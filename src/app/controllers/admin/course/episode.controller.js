@@ -36,6 +36,7 @@ class episodeController {
 
             chapter.episodes.push(episode._id)
             chapter.save()
+            const course = await courseModel.updateOne({_id : episode.courseId} , {$inc : {time}})
 
             res.status(httpStatus.CREATED).send({
                 status : httpStatus.CREATED,
@@ -61,8 +62,9 @@ class episodeController {
 
             if(!episode) throw createHttpError.BadRequest('episode not found')
 
-            const chapter = await chapterModel.updateOne({_id : episode.chapterId} , {$pull : {episodes : episode._id}})
-            
+            const updateChapter = await chapterModel.updateOne({_id : episode.chapterId} , {$pull : {episodes : episode._id}})
+            const updateCourse = await courseModel.updateOne({_id : episode.courseId} , {$inc : {time : -episode.time}})
+
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,
                 message : 'episode deleted successfully'

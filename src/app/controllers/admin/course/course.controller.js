@@ -6,6 +6,9 @@ import createHttpError from 'http-errors'
 import httpStatus from 'http-status-codes'
 import Controller from '../../controller.js'
 import mongoose from 'mongoose'
+import validateObjectId from '../../../validators/objectId.js'
+import chapterModel from '../../../models/course.chapters.js'
+import episodeModel from '../../../models/course.chapter.episodes.js'
 
 // check for tags array to be not an array in string form
 
@@ -40,7 +43,7 @@ class courseController extends Controller {
 
     async addCourse(req , res , next) {
         try {
-            req.body.image = (req.file.path.split('public')[1]).replaceAll('\\' , '/')
+            if(req.file) req.body.image = (req.file.path.split('public')[1]).replaceAll('\\' , '/')
 
             req.body.tags = stringToArray(req.body.tags)
 
@@ -60,6 +63,7 @@ class courseController extends Controller {
             })
             
         } catch (error) {
+            console.log(error)
             next(error)
         }
     }
@@ -118,15 +122,21 @@ class courseController extends Controller {
     }
     async removeCourse(req , res , next) {
         try {
-            const course = ''
+
+            const {courseId} = req.params
+            await validateObjectId.validateAsync(courseId)
+
+            const deleteCourse = await courseModel.deleteOne({_id : courseId})
+            if(!deleteCourse.acknowledged) throw createHttpError.BadRequest('course not found')
+            if(deleteCourse.deletedCount === 0) throw createHttpError.InternalServerError('delete course faild')
+
+            const deleteChapters = await chapterModel.deleteMany({courseId})
+            const deleteEpisodes = await episodeModel.deleteMany({courseId})
+
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,
-                message : '',
-                data : {
-                    course : [
-                        course
-                    ]
-                }
+                message : 'course deleted successfully',
+                data : {deleteCourse}
             })
             
         } catch (error) {
@@ -135,7 +145,17 @@ class courseController extends Controller {
     }
     async editCourse(req , res , next) {
         try {
-            const course = ''
+
+            const { courseId } = req.params 
+            await validateObjectId.validateAsync(courseId)
+
+            const updateData = req.body
+            await updateCourseValidationSchema.validateAsync(updateData)
+        
+
+            const course = await courseModel.findByIdAndUpdate(courseId , updateData , {returnDocument : 'after'})
+            if(!course) throw createHttpError.NotFound('course not found')            
+
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,
                 message : '',
@@ -150,6 +170,6 @@ class courseController extends Controller {
             next(error)
         }
     }
-
+}
 
 export default new courseController()

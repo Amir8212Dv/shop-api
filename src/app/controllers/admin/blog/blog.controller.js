@@ -6,6 +6,7 @@ import autoBind from 'auto-bind'
 import httpStatus from 'http-status-codes'
 import createImageLink from "../../../utils/createImageLink.js"
 import Controller from "../../controller.js"
+import validateObjectId from "../../../validators/objectId.js"
 
 
 
@@ -36,6 +37,11 @@ class blogsController extends Controller{
                 'author.roles' : 0,
                 'author.mobile' : 0,
                 
+            }
+        },
+        {
+            $addFields : {
+                imageURL : {$concat : [process.env.BASE_URL , '$image']}
             }
         }
     ]
@@ -74,7 +80,7 @@ class blogsController extends Controller{
 
     async getBlogById(req , res , next) {
         try {
-            const blogId = req.params.id
+            const {blogId} = req.params
 
             const [blog] = await blogModel.aggregate([
                 {
@@ -104,6 +110,7 @@ class blogsController extends Controller{
             const blogs = await blogModel.aggregate([
                 ...this.#blogAggregate
             ])
+            // const blogs = await blogModel.find({})
             
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,
@@ -132,7 +139,7 @@ class blogsController extends Controller{
     }
     async deleteBlogById(req , res , next) {
         try {
-            const blogId = req.params.id
+            const {blogId} = req.params
 
             const deleteBlog = await blogModel.deleteOne({_id : blogId})
 
@@ -154,10 +161,14 @@ class blogsController extends Controller{
     }
     async updateBlogById(req , res , next) {
         try {
-            console.log(req.file)
-            await UpdateBlogValidationSchema.validateAsync(req.body)
-            if(req.file) req.body.image = (req.file.path.split('public')[1]).replaceAll('\\' , '/')
-            const blogId = req.params.id
+
+            const {blogId} = req.params
+            const updateData = req.body
+
+            if(req.file) updateData.image = (req.file.path.split('public')[1]).replaceAll('\\' , '/')
+
+            await UpdateBlogValidationSchema.validateAsync(updateData)
+            await validateObjectId.validateAsync(blogId)            
             
             const updateBlog = await blogModel.findByIdAndUpdate(blogId , req.body , {returnDocument : 'after'})
             

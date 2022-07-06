@@ -1,0 +1,18 @@
+
+ /admin/user/all:
+    get:
+      tags : [user]
+      summary : get all users
+      description : get all users and search in users  first_name , last_name , mobile and email
+      parameters :
+        - in : query
+          type : string
+          name : search
+      security :
+        - bearerAuth : []
+      responses :
+        200 :
+          description : successfull
+          content:
+            application/json:
+              $ref : 'definitions/user'
