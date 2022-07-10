@@ -20,10 +20,7 @@ const blogSchema = new mongoose.Schema({
     }
 })
 
-blogSchema.virtual('imageURL').get(function(){
-    return `${process.env.BASE_URL}${this.image}`
-})
-
+blogSchema.index({title : 'text'})
 
 const blogModel = mongoose.model('blog' , blogSchema)
 

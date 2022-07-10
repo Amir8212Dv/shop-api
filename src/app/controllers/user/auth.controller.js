@@ -22,7 +22,7 @@ class Auth {
             console.log(code)
             const expire = new Date().getTime() + 120000
             if(!user) {
-                await userModel.create({mobile , otp : {code , expire} , roles : ['USER']})
+                await userModel.create({mobile , otp : {code , expire} , roles : 'SUPLIER'})
             } else {
                 await userModel.updateOne({mobile} , {otp : {code , expire}})
             }

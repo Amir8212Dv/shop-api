@@ -20,16 +20,18 @@ class episodeController {
         try {
             const videoAddress = (req.file.path.split('public')[1]).replaceAll('\\' , '/')
             const time = await getVideoDurationInSeconds(createFileLink(req , videoAddress))
-            const {title , type , text , courseId , chapterId} = await createEpisodeValidationSchema.validateAsync(req.body)
+            const episodeData = req.body
+            await createEpisodeValidationSchema.validateAsync(episodeData)
 
             // await updateEpisodeValidationSchema.validateAsync(req.body)
 
-            const episodeData = {title , type , text , time , videoAddress , courseId , chapterId}
+            episodeData.time = time
+            episodeData.videoAddress = videoAddress
             // const course = await courseModel.findOne({_id : courseId , 'chapters._id' : chapterId})
 
-            const chapter = await chapterModel.findById(chapterId)
+            const chapter = await chapterModel.findById(episodeData.chapterId)
             if(!chapter) throw createHttpError.NotFound('chapter not found')
-            if(chapter.courseId.toString() !== courseId) throw createHttpError('course not found')
+            if(chapter.courseId.toString() !== episodeData.courseId) throw createHttpError('course not found')
 
             const episode = await episodeModel.create(episodeData)
             if(!episode) throw createHttpError.InternalServerError('create episode faild')

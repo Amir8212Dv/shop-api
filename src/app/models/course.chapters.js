@@ -10,7 +10,20 @@ const chapterSchema = new mongoose.Schema({
     timestamps : true
 })
 
+chapterSchema.virtual('episodesList' , {
+    localField : 'episodes',
+    foreignField : '_id',
+    ref : 'episode'
+})
 
+chapterSchema.pre('find' , function(next) {
+    this.populate([{path : 'episodes'}])
+    next()
+})
+chapterSchema.pre('findOne' , function(next) {
+    this.populate([{path : 'episodes'}])
+    next()
+})
 const chapterModel = mongoose.model('chapter' , chapterSchema)
 
 export default chapterModel

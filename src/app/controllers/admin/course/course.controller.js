@@ -22,6 +22,22 @@ class courseController extends Controller {
     #aggregateSchema = [
         this.userLookup('teacher'),
         this.categoryLookup('category'),
+        {
+            $lookup : {
+                from : 'chapters',
+                localField : 'chapters',
+                foreignField : '_id',
+                as : 'chapters'
+            }
+        },
+        {
+            $lookup : {
+                from : 'episodes',
+                localField : 'chapters.episodes',
+                foreignField : '_id',
+                as : 'chapters.episodes'
+            }
+        },
         // {
         //     $unwind : '$teacher'
         // },

@@ -3,10 +3,10 @@
       addChapter:
         type : object
         required:
-          - id
+          - courseId
           - title
         properties:
-          id :
+          courseId :
             type : string
             description : id of course you want add chapters
           title :

@@ -16,3 +16,17 @@
           content:
             application/json:
               $ref : 'definitions/user'
+          
+
+ /admin/user/getProfile:
+    get :
+      tags : [user]
+      summary : get Profile
+      description : get Profile
+      security :
+        - bearerAuth : []
+
+      responses : 
+        200 :
+          description : successfull
+          

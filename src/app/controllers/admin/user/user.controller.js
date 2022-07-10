@@ -30,6 +30,25 @@ class userController {
             next(error)
         }
     }
+    async getProfile(req , res , next) {
+        try {
+            
+            const user = req.user
+
+            res.status(httpStatus.OK).send({
+                status : httpStatus.OK,
+                message : '',
+                data : {
+                    user : [
+                        user
+                    ]
+                }
+            })
+
+        } catch (error) {
+            next(error)
+        }
+    }
 }
 
 export default new userController()

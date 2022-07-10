@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const schema = new mongoose.Schema({
+const categorySchema = new mongoose.Schema({
     title : { type : String, required : true , unique : true },
     parent : {type : mongoose.Types.ObjectId , ref : 'category' , default : undefined}
 } , {
@@ -11,7 +11,7 @@ const schema = new mongoose.Schema({
     }
 })
 
-schema.virtual('children' , {
+categorySchema.virtual('children' , {
     localField : '_id',
     foreignField : 'parent',
     ref : 'category'
@@ -22,9 +22,12 @@ function populate(next) {
     next()
 }
 
-schema.pre('findOne' , populate)
+categorySchema.index({title : 'text'})
+
+
+categorySchema.pre('findOne' , populate)
 .pre('find' , populate)
 
-const categoryModel = mongoose.model('category' , schema)
+const categoryModel = mongoose.model('category' , categorySchema)
 
 export default categoryModel

@@ -21,12 +21,12 @@ class chapterController {
     async addChapter(req , res , next) {
         try {
             await createChapterValidationSchema.validateAsync(req.body)
-            const {courseId , title , text} = req.body
+            const chapterData = req.body
 
-            const course = await courseModel.findById(courseId)
+            const course = await courseModel.findById(chapterData.courseId)
             if(!course) throw createHttpError.NotFound('course not found')
             
-            const chapter = await chapter.create({title , text})
+            const chapter = await chapterModel.create(chapterData)
 
             course.chapters.push(chapter._id)
             course.save()

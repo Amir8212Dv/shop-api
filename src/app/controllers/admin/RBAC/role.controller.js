@@ -2,7 +2,7 @@ import roleModel from '../../../models/roles.js'
 import httpStatus from 'http-status-codes'
 import createHttpError from 'http-errors'
 import permissionModel from '../../../models/permissions.js'
-import {createRoleValidationSchema} from '../../../validators/admin/role.js'
+import {createRoleValidationSchema , updateRoleValidationSchema} from '../../../validators/admin/role.js'
 import stringToArray from '../../../utils/stringToArray.js'
 import validateObjectId from '../../../validators/objectId.js'
 
@@ -11,13 +11,15 @@ import validateObjectId from '../../../validators/objectId.js'
 
 //create check category exists in utils folder
 
+// check all  stringToArray  methods
+
 class roleController {
 
     async createRole(req , res , next) {
         try {
             
             const roleData = req.body
-            stringToArray(roleData.permissions)
+            roleData.permission = stringToArray(roleData.permissions)
 
             await createRoleValidationSchema.validateAsync(roleData)
             await (async () => {    
@@ -61,7 +63,7 @@ class roleController {
             next(error)
         }
     }
-    async deleteRoleByTitle(req , res , next) {
+    async deleteRoleById(req , res , next) {
         try {
             const {roleId} = req.params
             await validateObjectId.validateAsync(roleId)
@@ -75,6 +77,34 @@ class roleController {
                 status : httpStatus.OK,
                 message : 'role deleted successfully',
                 data : {}
+            })
+
+            
+        } catch (error) {
+            next(error)
+        }
+    }
+    async updateRoleById(req , res , next) {
+        try {
+            const {roleId} = req.params
+            const updateData = req.body
+            updateData.permission = stringToArray(updateData.permissions)
+
+            await validateObjectId.validateAsync(roleId)
+            await updateRoleValidationSchema.validateAsync(updateData)
+
+            const updateRole = await roleModel.findByIdAndUpdate(roleId , updateData)
+
+            if(!updateRole) throw createHttpError.NotFound('role not found')
+
+            res.status(httpStatus.OK).send({
+                status : httpStatus.OK,
+                message : 'role updated successfully',
+                data : {
+                    role : {
+                        updateRole
+                    }
+                }
             })
 
             

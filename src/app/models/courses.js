@@ -28,6 +28,21 @@ const courseSchema = new mongoose.Schema({
     }
 })
 
+courseSchema.virtual('chaptersList' , {
+    localField : 'chapters',
+    foreignField : '_id',
+    ref : 'chapter'
+})
+
+courseSchema.pre('find' , function(next) {
+    this.populate([{path : 'chapters'}])
+    next()
+})
+courseSchema.pre('findOne' , function(next) {
+    this.populate([{path : 'chapters'}])
+    next()
+})
+
 courseSchema.index({title : 'text' , text : 'text' , short_text : 'text'})
 
 const courseModel = mongoose.model('course' , courseSchema)

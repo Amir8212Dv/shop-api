@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 
 const roleSchema = new mongoose.Schema({
     title : {type : String , required : true , trim : true , unique : true},
-    permission : {type : [mongoose.Types.ObjectId] , default : [] , ref : 'permission'}
+    permission : {type : [String] , default : [] , ref : 'permission'}
 } , {
     versionKey : false,
     toJSON : {
