@@ -9,7 +9,7 @@ const blogSchema = new mongoose.Schema({
     image    : { type : String },
     tags     : { type : [String], default : [] },
     category : { type : [mongoose.Types.ObjectId], required : true },
-    comments : { type : [commentsSchema], default : [] },
+    comments : { type : [mongoose.Types.ObjectId], default : [] },
     like     : { type : [mongoose.Types.ObjectId], default : [] },
     bookmark : { type : [mongoose.Types.ObjectId], default : [] }
 } , {

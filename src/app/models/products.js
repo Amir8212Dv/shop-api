@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import commentsSchema from "./comments.schema.js";
 
 const productFeaturesSchema = new mongoose.Schema({
     length : {type : Number , required : true},
@@ -22,7 +21,7 @@ const productSchema = new mongoose.Schema({
     images     : { type : [String], required : true },
     tags       : { type : [String], default : [] },
     category   : { type : mongoose.Types.ObjectId, required : true },
-    comments   : { type : [commentsSchema] , default : [] },
+    comments   : { type : [mongoose.Types.ObjectId] , default : [] },
     likes      : { type : [mongoose.Types.ObjectId], default : [] },
     bookemarks : { type : [mongoose.Types.ObjectId], default : [] },
     price      : { type : Number, required : true },

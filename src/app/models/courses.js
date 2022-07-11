@@ -1,5 +1,4 @@
 import mongoose from 'mongoose'
-import commentSchema from './comments.schema.js'
 
 
 
@@ -10,7 +9,7 @@ const courseSchema = new mongoose.Schema({
     image : {type : String},
     tags : {type : [String] , default : []},
     category : {type : [mongoose.Types.ObjectId] , required : true},
-    comments : {type : [commentSchema] , deafult : []},
+    comments : {type : [mongoose.Types.ObjectId] , deafult : []},
     likes : {type : [mongoose.Types.ObjectId] , deafult : []},
     bookmarks : {type : [mongoose.Types.ObjectId] , deafult : []},
     price : {type : Number , required : true},

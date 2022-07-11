@@ -6,7 +6,7 @@ const answerCommentSchema = new mongoose.Schema({
     show : {type : Boolean , default : false},
     parent : {type : mongoose.Types.ObjectId , required : true}
 },{
-    timestamps : true,
+    timestamps : {createdAt : true , updatedAt : false},
     versionKey : false
 })
 
@@ -16,8 +16,10 @@ const commentsSchema = new mongoose.Schema({
     answers : { type : [answerCommentSchema] , default : []},
     show : {type : Boolean , default : false}
 },{
-    timestamps : true,
+    timestamps : {createdAt : true , updatedAt : false},
     versionKey : false
 })
 
-export default commentsSchema
+const commentModel = mongoose.model('comment' , commentsSchema)
+
+export default commentModel

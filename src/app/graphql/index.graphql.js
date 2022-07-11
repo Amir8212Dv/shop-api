@@ -19,7 +19,9 @@ const rootQuery = new graphql.GraphQLObjectType({
 const rootMutation = new graphql.GraphQLObjectType({
     name : 'Mutation',
     fields : {
-        createCommentForBlog : createComment
+        createCommentForBlog : createComment.createCommentForBlogs,
+        createCommentForCourses : createComment.createCommentForCourses,
+        createCommentForProducts : createComment.createCommentForProducts,
     }
 })
 
