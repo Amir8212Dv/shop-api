@@ -3,7 +3,8 @@ import mongoose from 'mongoose'
 const answerCommentSchema = new mongoose.Schema({
     author : { type : mongoose.Types.ObjectId, required : true },
     comment   : { type : String, trim : true , required : true},
-    show : {type : Boolean , default : false}
+    show : {type : Boolean , default : false},
+    parent : {type : mongoose.Types.ObjectId , required : true}
 },{
     timestamps : true,
     versionKey : false

@@ -1,6 +1,6 @@
-import { GraphQLString , GraphQLObjectTyp , GraphQLBoolean } from 'graphql'
+import { GraphQLString , GraphQLObjectType , GraphQLBoolean } from 'graphql'
 
-const commentType = new GraphQLObjectTyp({
+const commentType = new GraphQLObjectType({
     name : 'commentType',
     fields : {
         author : {type : GraphQLString},
