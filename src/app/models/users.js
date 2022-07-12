@@ -1,5 +1,20 @@
 import mongoose from "mongoose";
 
+
+const productSchema = new mongoose.Schema({
+    productId : {type : mongoose.Types.ObjectId , required : true},
+    count : {type : Number , default : 1}
+})
+const courseSchema = new mongoose.Schema({
+    courseId : {type : mongoose.Types.ObjectId , required : true},
+    count : {type : Number , default : 1}
+})
+
+const basketSchema = new mongoose.Schema({
+    products : {type : [productSchema] , default : []},
+    courses : {type : [courseSchema] , default : []}
+})
+
 const userSchema = new mongoose.Schema({
     // username   : { type : String , required : true , trim : true , lowerCase : true },
     first_name : { type : String , trim : true },
@@ -12,7 +27,8 @@ const userSchema = new mongoose.Schema({
     }},
     bills      : { type : [], default : [] },
     discount   : { type : Number , default : 0},
-    role : {type : String , default : 'USER'}
+    role : {type : String , default : 'USER'},
+    basket : {type : basketSchema}
 } , {
     timestamps : true,
     versionKey : false

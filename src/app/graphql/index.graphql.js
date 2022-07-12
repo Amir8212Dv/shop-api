@@ -9,6 +9,8 @@ import getUserBookmarks from './query/bookmark.resolver.js'
 import categoryResolver from './query/category.resolver.js'
 import courseResolver from './query/course.resolver.js'
 import productResolver from './query/product.resolver.js'
+import addBasketResolver from './mutation/addBasket.resolver.js'
+import deleteFromBasketResolver from './mutation/deleteFromBasket.resolver.js'
 
 const rootQuery = new graphql.GraphQLObjectType({
     name : 'query',
@@ -28,18 +30,30 @@ const rootMutation = new graphql.GraphQLObjectType({
         createCommentForBlog : createComment.createCommentForBlogs,
         createCommentForCourses : createComment.createCommentForCourses,
         createCommentForProducts : createComment.createCommentForProducts,
+        
         likeProduct : likeResolver.likeProduct,
         likeCourse : likeResolver.likeCourse,
         likeBlog : likeResolver.likeBlog,
+
         dislikeProduct : dislikeResolver.dislikeProduct,
         dislikeCourse : dislikeResolver.dislikeCourse,
         dislikeBlog : dislikeResolver.dislikeBlog,
+
         bookmarkProduct : bookmarkResolver.bookmarkProduct,
         bookmarkCourse : bookmarkResolver.bookmarkCourse,
         bookmarkBlog : bookmarkResolver.bookmarkBlog,
+
         deleteBookmarkProduct : deleteBookmarkResolver.deleteBookmarkProduct,
         deleteBookmarkCourse : deleteBookmarkResolver.deleteBookmarkCourse,
-        deleteBookmarkBlog : deleteBookmarkResolver.deleteBookmarkBlog
+        deleteBookmarkBlog : deleteBookmarkResolver.deleteBookmarkBlog,
+
+        addProductToBasket : addBasketResolver.addProduct,
+        addCourseToBasket : addBasketResolver.addCourse,
+
+        decreaseBasketProduct : deleteFromBasketResolver.decreaseProduct,
+        decreaseBasketCourse : deleteFromBasketResolver.decreaseCourse,
+        deleteBasketProduct : deleteFromBasketResolver.deleteProduct,
+        deleteBasketCourse : deleteFromBasketResolver.deleteCourse,
     }
 })
 
