@@ -1,18 +1,23 @@
 import mongoose from "mongoose";
+import courseModel from "./courses.js";
+import productModel from "./products.js";
 
 
 const productSchema = new mongoose.Schema({
-    productId : {type : mongoose.Types.ObjectId , required : true},
-    count : {type : Number , default : 1}
+    productId : {type : mongoose.Types.ObjectId , ref : 'product' , required : true},
+    count : {type : Number , default : 1},
+    price : {type : Number , required : true}
 })
 const courseSchema = new mongoose.Schema({
     courseId : {type : mongoose.Types.ObjectId , required : true},
-    count : {type : Number , default : 1}
+    count : {type : Number , default : 1},
+    price : {type : Number , required : true}
 })
 
 const basketSchema = new mongoose.Schema({
     products : {type : [productSchema] , default : []},
-    courses : {type : [courseSchema] , default : []}
+    courses : {type : [courseSchema] , default : []},
+    totalPrice : {type : Number , default : 0}
 })
 
 const userSchema = new mongoose.Schema({
@@ -31,8 +36,15 @@ const userSchema = new mongoose.Schema({
     basket : {type : basketSchema}
 } , {
     timestamps : true,
-    versionKey : false
+    versionKey : false,
+    toObject : {
+        virtuals : true
+    },
+    toJSON : {
+        virtuals : true
+    }
 })
+
 
 userSchema.index({first_name : 'text' , last_name : 'text' , mobile : 'text' , email : 'text'})
 
@@ -40,4 +52,3 @@ const userModel = mongoose.model('user' , userSchema)
 
 export default userModel
 
-//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtb2JpbGUiOiIwOTE0MjMwNTI0MSIsImlhdCI6MTY1NzE4NjkyOSwiZXhwIjoxNjU3MjczMzI5fQ.xudG0TIOqxfAFWOq3HDg5s6cZNbvre7560uWcyY_eyI

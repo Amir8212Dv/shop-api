@@ -11,6 +11,7 @@ import courseResolver from './query/course.resolver.js'
 import productResolver from './query/product.resolver.js'
 import addBasketResolver from './mutation/addBasket.resolver.js'
 import deleteFromBasketResolver from './mutation/deleteFromBasket.resolver.js'
+import getBasket from './query/basket.resolver.js'
 
 const rootQuery = new graphql.GraphQLObjectType({
     name : 'query',
@@ -20,7 +21,8 @@ const rootQuery = new graphql.GraphQLObjectType({
         categoryChildren : categoryResolver.getChildrenOfCategory,
         allProducts : productResolver.getAllProducts,
         courses : courseResolver.getAllCourses,
-        bookmarks : getUserBookmarks
+        bookmarks : getUserBookmarks,
+        getBasket : getBasket
     }
 })
 
@@ -30,7 +32,7 @@ const rootMutation = new graphql.GraphQLObjectType({
         createCommentForBlog : createComment.createCommentForBlogs,
         createCommentForCourses : createComment.createCommentForCourses,
         createCommentForProducts : createComment.createCommentForProducts,
-        
+
         likeProduct : likeResolver.likeProduct,
         likeCourse : likeResolver.likeCourse,
         likeBlog : likeResolver.likeBlog,
