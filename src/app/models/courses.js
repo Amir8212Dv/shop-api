@@ -33,6 +33,13 @@ courseSchema.virtual('chaptersList' , {
     ref : 'chapter'
 })
 
+courseSchema.virtual('bookmarksCount').get(function(){
+    return this.bookmarks.length
+})
+courseSchema.virtual('likesCount').get(function(){
+    return this.likes.length
+})
+
 courseSchema.pre('find' , function(next) {
     this.populate([{path : 'chapters'}])
     next()

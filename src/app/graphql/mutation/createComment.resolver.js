@@ -10,7 +10,7 @@ import courseModel from "../../models/courses.js";
 import productModel from "../../models/products.js";
 import commentModel from "../../models/comments.schema.js";
 
-const responseType = new GraphQLObjectType({
+export const responseType = new GraphQLObjectType({
     name : 'createCommentResponse',
     fields : {
         status : {type : GraphQLInt},
@@ -57,7 +57,6 @@ class createComment {
                 status : StatusCode.CREATED,
                 message : 'comment created successfully'
             }
-    
         }
 
     }

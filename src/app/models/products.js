@@ -23,22 +23,27 @@ const productSchema = new mongoose.Schema({
     category   : { type : mongoose.Types.ObjectId, required : true },
     comments   : { type : [mongoose.Types.ObjectId] , default : [] },
     likes      : { type : [mongoose.Types.ObjectId], default : [] },
-    bookemarks : { type : [mongoose.Types.ObjectId], default : [] },
+    bookmarks  : { type : [mongoose.Types.ObjectId], default : [] },
     price      : { type : Number, required : true },
     discount   : { type : Number , default : 0 },
     count      : { type : Number, required : true },
     suplier    : { type : mongoose.Types.ObjectId , required : true },
     features   : { type : productFeaturesSchema , required : true},
 } , {
+    id : false,
     versionKey : false,
-    toJSON : {
+    toObject : {
         virtuals : true
     }
 })
 
-productSchema.virtual('imagesURL').get(function(){
-    return this.images.map(image => `${process.env.BASE_URL}${image}`)
+productSchema.virtual('bookmarksCount').get(function(){
+    return this.bookmarks.length
 })
+productSchema.virtual('likesCount').get(function(){
+    return this.likes.length
+})
+
 
 productSchema.index({title : 'text' , text : 'text' , short_text : 'text'})
 

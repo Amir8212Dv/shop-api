@@ -1,4 +1,4 @@
-import {GraphQLString , GraphQLObjectType , GraphQLList} from 'graphql'
+import {GraphQLString , GraphQLObjectType , GraphQLList , GraphQLInt} from 'graphql'
 import userType from './user.type.js'
 
 
@@ -12,7 +12,9 @@ const blogType = new GraphQLObjectType({
         short_text : {type : GraphQLString},
         tags : {type : new GraphQLList(GraphQLString)},
         image : {type : GraphQLString},
-        category : {type : GraphQLString}
+        category : {type : GraphQLString},
+        bookmarksCount : { type : GraphQLInt },
+        likesCount : { type : GraphQLInt }
     }
 })
 
