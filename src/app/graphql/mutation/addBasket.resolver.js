@@ -95,23 +95,14 @@ class addToBasket {
                         $push: {
                             "basket.courses": {
                                 courseId,
-                                count: 1,
-                                price: courseFinalPrice,
+                                price: courseFinalPrice
                             },
                         },
-                        $inc: { "basket.totalPrice": courseFinalPrice },
+                        $inc: { "basket.totalPrice": courseFinalPrice }
                     }
                 );
             else
-                await userModel.updateOne(
-                    { _id: userId, "basket.courses.courseId": courseId },
-                    {
-                        $inc: {
-                            "basket.courses.$.count": 1,
-                            "basket.totalPrice": courseFinalPrice,
-                        },
-                    }
-                );
+                throw createHttpError.BadRequest('course is already in the basket')
 
             return {
                 status: httpStatus.CREATED,

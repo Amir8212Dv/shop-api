@@ -11,7 +11,11 @@ import userModel from "../../models/users.js";
 
 
 
-// update user basket when products and courses updated
+// update user basket when products and courses updated (price & discount)
+
+// add role restriction for all routes
+
+// add restriction that every user can buy each course just one time
 
 
 class deleteFromBasket {
@@ -53,43 +57,6 @@ class deleteFromBasket {
         },
     };
 
-    decreaseCourse = {
-        type: responseType,
-        args: {
-            courseId: { type: GraphQLString },
-            count: { type: GraphQLInt },
-        },
-        resolve: async (obj, args, context, info) => {
-            await verifyAccessTokenGraphQL(context.req);
-            const { courseId } = args;
-            const userId = context.req.user._id;
-            await validateObjectId.validateAsync(courseId);
-
-            const user = await userModel.findOne(
-                { _id: userId, "basket.courses.courseId": courseId },
-                { "basket.courses.$": 1 }
-            );
-
-
-            const coursePrice = user.basket.courses[0].price
-
-            if (user.basket.courses[0].count <= 1) {
-                await userModel.updateOne(
-                    { _id: userId, "basket.courses.courseId": courseId },
-                    { $pull: { "basket.courses": { courseId: courseId } } , $inc : {"basket.totalPrice": -coursePrice} }
-                );
-            } else
-                await userModel.updateOne(
-                    { _id: userId, "basket.courses.courseId": courseId },
-                    { $inc: { "basket.courses.$.count": -1 , "basket.totalPrice": -coursePrice } }
-                );
-
-            return {
-                status: httpStatus.CREATED,
-                message: "course bookmakre delete successfully",
-            };
-        },
-    };
     deleteProduct = {
         type: responseType,
         args: {
@@ -136,7 +103,7 @@ class deleteFromBasket {
                 { _id: userId, "basket.courses.courseId": courseId },
                 { "basket.courses.$": 1 }
             );
-            const coursesTotalPrice = user.basket.courses[0].price * user.basket.courses[0].count
+            const coursesTotalPrice = user.basket.courses[0].price
 
             await userModel.updateOne(
                 { _id: userId, "basket.courseId": courseId },

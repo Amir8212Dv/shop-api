@@ -10,7 +10,6 @@ const productSchema = new mongoose.Schema({
 })
 const courseSchema = new mongoose.Schema({
     courseId : {type : mongoose.Types.ObjectId , required : true},
-    count : {type : Number , default : 1},
     price : {type : Number , required : true}
 })
 
