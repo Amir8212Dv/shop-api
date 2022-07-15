@@ -53,7 +53,6 @@ const rootMutation = new graphql.GraphQLObjectType({
         addCourseToBasket : addBasketResolver.addCourse,
 
         decreaseBasketProduct : deleteFromBasketResolver.decreaseProduct,
-        decreaseBasketCourse : deleteFromBasketResolver.decreaseCourse,
         deleteBasketProduct : deleteFromBasketResolver.deleteProduct,
         deleteBasketCourse : deleteFromBasketResolver.deleteCourse,
     }

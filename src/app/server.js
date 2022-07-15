@@ -7,6 +7,8 @@ import httpError from 'http-errors'
 import swaggerUi from 'swagger-ui-express'
 import swaggerDocs from 'swagger-jsdoc'
 import redis from './utils/initRedis.js'
+import expressEjsLayouts from 'express-ejs-layouts'
+import ejs from 'ejs'
 
 
 class Application {
@@ -20,6 +22,7 @@ class Application {
         this.#DB_URL = DB_URL
         this.#routes = routes
         this.serverConfig()
+        this.initTemplateEngine()
         this.createServer()
         this.connectDatabase()
         this.connectRedis()
@@ -54,6 +57,14 @@ class Application {
         server.listen(this.#PORT , () => {
             console.log('server is running on : http://localhost:' + this.#PORT)
         })
+    }
+    initTemplateEngine () {
+        this.#app.use(expressEjsLayouts)
+        this.#app.set('view engine' , 'ejs')
+        this.#app.set('views' , 'resource/views')
+        this.#app.set('layout extraStyles' , true)
+        this.#app.set('layout extraScripts' , true)
+        this.#app.set('layout' , './layouts/master.ejs')
     }
     connectDatabase() {
         mongoose.connect(this.#DB_URL , (err) => {

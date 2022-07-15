@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
         code   : '',
         expire : 0 
     }},
-    bills      : { type : [], default : [] },
+    bills      : { type : [mongoose.Types.ObjectId], default : [] },
     discount   : { type : Number , default : 0},
     role : {type : String , default : 'USER'},
     basket : {type : basketSchema}
