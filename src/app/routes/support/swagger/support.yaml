@@ -21,7 +21,6 @@
               required:
                   -   name
                   -   description
-                  -   namespace
               properties:
                   name:
                       type: string
@@ -32,10 +31,6 @@
                   image:
                       type: file
                       description: the index picture of blog
-                  namespace:
-                      type: string
-                      description: namespace of conversation
-  
 
 
 
@@ -60,6 +55,11 @@
       post:
           tags: [support]
           summary: add room in namespaces for chatroom
+          parameters :
+            -   in : path
+                name : spaceId
+                required : true
+                type : string
           requestBody:
               required: true
               content:

@@ -1,10 +1,11 @@
 import express from 'express'
 import roomController from '../../controllers/support/room.controller.js'
+import { imageUpload } from '../../middlewares/multer.js'
 
-const namespaceRouter = express.Router()
+const roomRouter = express.Router()
 
-namespaceRouter.post('/create/:spaceId' , roomController.createRoom)
+roomRouter.post('/create/:spaceId' , imageUpload.single('image') , roomController.createRoom)
 
-namespaceRouter.get('/all/:spaceId' , roomController.getAllRooms)
+roomRouter.get('/all/:spaceId' , roomController.getAllRooms)
 
-export default namespaceRouter
+export default roomRouter

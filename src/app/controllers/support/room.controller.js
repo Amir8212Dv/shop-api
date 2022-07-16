@@ -8,7 +8,7 @@ class namespaceController {
     async createRoom(req , res , next) {
         try {
             
-            const imagePath = (req.file.path.split('public')[1]).replaceAll('\\' , '/')
+            const imagePath = req.file && (req.file.path.split('public')[1]).replaceAll('\\' , '/')
             if(imagePath) req.body.image = imagePath
 
             const updatedNamespace = await converstationModel.updateOne({_id : req.params.spaceId} , {$push : {rooms : req.body}})
@@ -34,7 +34,7 @@ class namespaceController {
                 status : httpStatus.OK,
                 message : '',
                 data : {
-                    namespaces.rooms
+                    rooms : namespaces.rooms
                 }
             })
             

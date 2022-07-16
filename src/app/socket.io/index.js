@@ -1,10 +1,7 @@
 import socketController from "./socketController.js"
 
 const socketHandler = io => {
-    const socketio = new socketController(io)
-    socketio.initConnection()
-    
-    
-    return socketio
+    const enpoint = new socketController(io).initConnection()
+    new socketController(io).createNamespaces()
 }
 export default socketHandler

@@ -11,7 +11,7 @@ const messageSchema = new mongoose.Schema({
 const roomSchema = new mongoose.Schema({
     name : { type : String , required : true},
     description : {type : String, default : ''},
-    image : {type : String},
+    image : {type : String , default : '/images/defaultRoom.jpg'},
     messages : {type : [messageSchema] , default : []}
 }, {
     versionKey : false

@@ -1,5 +1,6 @@
 const createFileLink = (req , path) => {
-    return `${req.protocol}://${req.headers.host}/${path.replace('\\' , '/')}`
+    if(req) return `${req.protocol}://${req.headers.host}/${path.replace('\\' , '/')}`
+    // return `${process.en}/${path.replace('\\' , '/')}`
 }
 
 export default createFileLink
