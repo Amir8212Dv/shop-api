@@ -9,6 +9,8 @@ import swaggerDocs from 'swagger-jsdoc'
 import redis from './utils/initRedis.js'
 import expressEjsLayouts from 'express-ejs-layouts'
 import ejs from 'ejs'
+import initSocketIo from './utils/initSocketIo.js'
+import socketHandler from './socket.io/index.js'
 
 
 class Application {
@@ -54,6 +56,10 @@ class Application {
     }
     createServer() {
         const server = http.createServer(this.#app)
+
+        const io = initSocketIo(server)
+        const socket = socketHandler(io)
+
         server.listen(this.#PORT , () => {
             console.log('server is running on : http://localhost:' + this.#PORT)
         })
@@ -62,8 +68,8 @@ class Application {
         this.#app.use(expressEjsLayouts)
         this.#app.set('view engine' , 'ejs')
         this.#app.set('views' , 'resource/views')
-        this.#app.set('layout extraStyles' , true)
-        this.#app.set('layout extraScripts' , true)
+        this.#app.set('layout extractStyles' , true)
+        this.#app.set('layout extractScripts' , true)
         this.#app.set('layout' , './layouts/master.ejs')
     }
     connectDatabase() {

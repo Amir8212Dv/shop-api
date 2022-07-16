@@ -7,8 +7,8 @@ import { permissions } from '../utils/constants.js'
 import expressGraphql from 'express-graphql'
 import graphqlConfig from '../graphql/graphql.config.js'
 import paymentRouter from './api/payment.js'
-import supportRouter from './support.js'
-
+import supportRouter from './support/support.routes.js'
+ 
 const router = express.Router()
 
 router.use('/user' , authRouter)

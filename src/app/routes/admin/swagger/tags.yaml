@@ -1,4 +1,6 @@
  tags:
+      -   name : support
+          description : support APIs
       -   name : RBAC
           description : Role Base Access Controll
       -   name : user

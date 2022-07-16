@@ -49,7 +49,6 @@ class blogsController extends Controller{
     async createBlog(req , res , next) {
         try {
             
-            console.log(req.body)   
             
             await CreateBlogValidationSchema.validateAsync(req.body)
             const author = req.user._id
