@@ -46,6 +46,8 @@ class Auth {
 
             const accessToken = await createToken({mobile})
             const refreshToken = await createRefreshToken({mobile} , user._id)
+
+            res.cookie('authorization' , `Bearer ${accessToken}` , {signed : true , httpOnly : true , expires : new Date(Date.now() + + (60 * 60 * 24 * 1000))})
             
             res.status(httpStatus.LOCKED).send({
                 status : httpStatus.LOCKED,

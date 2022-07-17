@@ -20,12 +20,12 @@
               type : object
               required:
                   -   mobile
-                  -   otp
+                  -   code
               properties:
                   mobile:
                       type : string
                       description : phone number for login
-                  otp :
+                  code :
                       type : string
                       description : one time password that sneded to phone number
           refreshToken:

@@ -11,7 +11,8 @@ import expressEjsLayouts from 'express-ejs-layouts'
 import ejs from 'ejs'
 import initSocketIo from './utils/initSocketIo.js'
 import socketHandler from './socket.io/index.js'
-
+import cookieParser from 'cookie-parser'
+import cors from 'cors'
 
 class Application {
     #app = express()
@@ -26,6 +27,7 @@ class Application {
         this.serverConfig()
         this.initTemplateEngine()
         this.createServer()
+        this.setCookieParser()
         this.connectDatabase()
         this.connectRedis()
         this.createRoutes()
@@ -36,6 +38,7 @@ class Application {
         this.#app.use(express.json())
         this.#app.use(express.urlencoded({extended : true}))
         this.#app.use(express.static(path.join(process.argv[1] , '..' , '..' , 'public')))
+        this.#app.use(cors())
         this.#app.use('/api-doc' , swaggerUi.serve , swaggerUi.setup(swaggerDocs({
             swaggerDefinition : {
                 openapi : '3.0.0',
@@ -46,7 +49,10 @@ class Application {
                 },
                 servers : [
                     {
-                        url : 'http://localhost:4000'
+                        url : 'http://localhost:4000',
+                    },
+                    {
+                        url : 'http://192.168.1.5:4000',
                     }
                 ]
             },
@@ -89,7 +95,10 @@ class Application {
     createRoutes() {
         this.#app.use(this.#routes)
     }
-    errorHandling() {
+    setCookieParser(){
+        this.#app.use(cookieParser('cookiesecretekey'))
+    }
+    errorHandling() { 
         this.#app.use((req , res , next) => {
             next(httpError.NotFound('page not found'))
         })
