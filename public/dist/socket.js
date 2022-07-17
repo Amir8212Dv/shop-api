@@ -1,7 +1,7 @@
 const socket = io("http://localhost:4000");
 const socket2 = io("http://192.168.1.5:4000");
 let namespaceSocket
-let userId
+let user
 
 
 
@@ -16,7 +16,6 @@ const initNamespacesConnection = endpoint => {
     const messagesDivElement = document.querySelector('div.messages')
     
     namespaceSocket.on('connect' , () => {
-        console.log(namespaceSocket.io.nsps)
         window.addEventListener('keydown' , e => {
             if (e.code === 'Enter') sendMessage(namespaceSocket)
         })
@@ -49,16 +48,16 @@ const initNamespacesConnection = endpoint => {
             }
             namespaceSocket.emit('joinRoom' , roomsList[0].name)
             namespaceSocket.on('roomInfo' , roomInfo => {
-                console.log(roomInfo)
                 document.getElementById('count').innerText = roomInfo.onlineUsers.length
                 document.querySelector('#roomName h3').innerText = roomInfo.room.name
                 document.getElementById('roomImage').setAttribute('src' , roomInfo.room.image)
                 messagesElement.innerHTML = ''
                 for(const message of roomInfo.room.messages) {
+                    console.log(message)
                     messagesElement.insertAdjacentHTML("beforeend",
                     `  
-                        <li class="${message.sender.toString() === userId ? 'sent' : 'replies'}">
-                            <p>${message.sender.toString()} --> ${message.message}</p>
+                        <li class="${message.sender.senderId === user.senderId ? 'sent' : 'replies'}">
+                            <p>${message.sender.senderName} --> ${message.message}</p>
                         </li>
                     `)
                 }
@@ -68,11 +67,10 @@ const initNamespacesConnection = endpoint => {
     })
 
     namespaceSocket.on('newwMessage' , ({message , sender}) => {
-        console.log('a')
         messagesElement.insertAdjacentHTML("beforeend",
         `  
-            <li class="${sender === userId ? 'sent' : 'replies'}">
-                <p>${sender} --> ${message}</p>
+            <li class="${sender.senderId.toString() === user.senderId.toString() ? 'sent' : 'replies'}">
+                <p>${sender.senderName} --> ${message}</p>
             </li>
         `)
 
@@ -103,9 +101,9 @@ socket.on('connect' , () => {
         })
     })
     
-    socket.on('userId' , data => {
-        userId = data
-        document.getElementById('user').innerText = userId
+    socket.on('userInfo' , data => {
+        user = data
+        document.getElementById('user').innerText = data.senderName
     })
     
 })
@@ -117,8 +115,7 @@ const sendMessage = (socket) => {
     const messageInput = document.getElementById('messageInput')
     const messageInputValue = messageInput.value.trim()
     if(!messageInputValue) return
-
-    socket.emit('newMessage' , {message : messageInputValue , sender : userId})
+    socket.emit('newMessage' , {message : messageInputValue , sender : user})
 
     messageInput.value = ''
     
@@ -140,7 +137,6 @@ const initNamespacesConnection2 = endpoint => {
     const messagesDivElement = document.querySelector('div.messages')
     
     namespaceSocket.on('connect' , () => {
-        console.log(namespaceSocket.io.nsps)
         window.addEventListener('keydown' , e => {
             if (e.code === 'Enter') sendMessage(namespaceSocket)
         })
@@ -180,7 +176,7 @@ const initNamespacesConnection2 = endpoint => {
                 for(const message of roomInfo.room.messages) {
                     messagesElement.insertAdjacentHTML("beforeend",
                     `  
-                        <li class="${message.sender.toString() === userId ? 'sent' : 'replies'}">
+                        <li class="${message.sender.toString() === user.senderId ? 'sent' : 'replies'}">
                             <p>${message.sender.toString()} --> ${message.message}</p>
                         </li>
                     `)
@@ -191,11 +187,10 @@ const initNamespacesConnection2 = endpoint => {
     })
 
     namespaceSocket.on('newwMessage' , ({message , sender}) => {
-        console.log('a')
         messagesElement.insertAdjacentHTML("beforeend",
         `  
-            <li class="${sender === userId ? 'sent' : 'replies'}">
-                <p>${sender} --> ${message}</p>
+            <li class="${sender.senderId.toString() === user.senderId.toString() ? 'sent' : 'replies'}">
+                <p>${sender.senderName} --> ${message}</p>
             </li>
         `)
 

@@ -1,9 +1,10 @@
 import converstationModel from '../models/converstation.js'
 import cookieParser from 'cookie-parser'
+import userModel from '../models/users.js'
 
 class socketController {
     #io
-    #userId
+    #user
     constructor(io) {
         this.#io = io
     }
@@ -14,8 +15,8 @@ class socketController {
             const cookies = socket.request.headers.cookie
             if(!cookies) return
             const userId = cookies.split('userId=')[1]
-            this.#userId = userId
-            console.log(this.#userId)
+            const user = await userModel.findById(userId)
+            this.#user = user
             next()
         })
 
@@ -23,7 +24,7 @@ class socketController {
             const namespaces = await converstationModel.find({} , {title : 1 , endpoint : 1}).sort({_id : -1})
 
             socket.emit('namespacesList' , namespaces)
-            socket.emit('userId' , this.#userId)
+            socket.emit('userInfo' , {senderId : this.#user._id.toString() , senderName : `${this.#user.first_name || ''} ${this.#user.last_name || ''}`})
         })
     }
 
@@ -58,6 +59,7 @@ class socketController {
     }
     newMessage(socket , namespace) {
         socket.on('newMessage' , async ({message , sender}) => {
+            console.log(sender)
             const roomName = Array.from(socket.rooms)[1]
             console.log(roomName)
             const updateNamespace = await converstationModel.updateOne(

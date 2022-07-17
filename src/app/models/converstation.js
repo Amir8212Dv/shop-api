@@ -1,7 +1,16 @@
 import mongoose from 'mongoose'
 
+const senderSchema = new mongoose.Schema({
+    senderId : {type : mongoose.Types.ObjectId , required :true},
+    senderName : {type : String , required : true}
+} , {
+    versionKey : false ,
+    _id : false,
+    id : false
+})
+
 const messageSchema = new mongoose.Schema({
-    sender : {type : mongoose.Types.ObjectId , required :true},
+    sender : {type : senderSchema , required :true},
     message : {type : String , required : true},
 }, {
     versionKey : false,
