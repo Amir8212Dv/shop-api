@@ -39,7 +39,6 @@ class socketController {
                     const lastestRoom = Array.from(socket.rooms)[1]
                     if(lastestRoom) await socket.leave(lastestRoom)
                     socket.join(roomName)
-
                     
                     const roomInfo = await converstationModel.findOne({_id : space._id , 'rooms.name' : roomName} , {'rooms.$' : 1})
                     const room = roomInfo.rooms[0]
@@ -50,15 +49,17 @@ class socketController {
                     socket.on('disconnect' , () => {
                         this.#io.of(`/${space.endpoint}`).in(roomName).emit('roomInfo' , {room , onlineUsers : Array.from(onlineUsers)})
                     })
-                    this.newMessage(socket , space , roomName)
-
+                    
                 })
+                this.newMessage(socket , space)
+                // console.log(socket.rooms)
             })
         })
     }
-    newMessage(socket , namespace , roomName) {
+    newMessage(socket , namespace) {
         socket.on('newMessage' , async ({message , sender}) => {
-            console.log('a')
+            const roomName = Array.from(socket.rooms)[1]
+            console.log(roomName)
             const updateNamespace = await converstationModel.updateOne(
                 {_id : namespace._id , 'rooms.name' : roomName},
                 {$push : {'rooms.$.messages' : {sender , message}}}
