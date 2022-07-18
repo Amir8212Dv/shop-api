@@ -12,6 +12,7 @@ const senderSchema = new mongoose.Schema({
 const messageSchema = new mongoose.Schema({
     sender : {type : senderSchema , required :true},
     message : {type : String , required : true},
+    type : {type : String , default : 'message'}
 }, {
     versionKey : false,
     timestamps : true

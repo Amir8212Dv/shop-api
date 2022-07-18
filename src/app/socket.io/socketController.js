@@ -1,6 +1,8 @@
 import converstationModel from '../models/converstation.js'
-import cookieParser from 'cookie-parser'
 import userModel from '../models/users.js'
+import path from 'path'
+import fs from 'fs'
+import createObjectId from '../utils/createObjectId.js'
 
 class socketController {
     #io
@@ -10,7 +12,6 @@ class socketController {
     }
 
     initConnection() {
-
         this.#io.use(async (socket , next) => {
             const cookies = socket.request.headers.cookie
             if(!cookies) return
@@ -36,6 +37,7 @@ class socketController {
         namespaces.forEach(space => {
             this.#io.of(`/${space.endpoint}`).on('connection' , socket => {
                 socket.emit('roomsList' , space.rooms)
+
                 socket.on('joinRoom' , async roomName => {
                     const lastestRoom = Array.from(socket.rooms)[1]
                     if(lastestRoom) await socket.leave(lastestRoom)
@@ -52,21 +54,36 @@ class socketController {
                     })
                     
                 })
+
                 this.newMessage(socket , space)
-                // console.log(socket.rooms)
             })
         })
     }
     newMessage(socket , namespace) {
-        socket.on('newMessage' , async ({message , sender}) => {
-            console.log(sender)
+
+        socket.on('newMessage' , async ({message , sender , type}) => {
             const roomName = Array.from(socket.rooms)[1]
-            console.log(roomName)
-            const updateNamespace = await converstationModel.updateOne(
+
+            const createMessage = {message , sender , type : type || 'message'}
+            if(type === 'file') {
+                console.log(message)
+                const [fileType , fileExt] = message.fileType.split('/')
+                if(fileType !== 'image') return
+
+                const _id = createObjectId()
+                const filePath = `/socket/${_id.toString()}.${fileExt}`
+                createMessage._id = _id
+                createMessage.message = filePath
+
+                fs.mkdirSync('public/socket' , {recursive : true})
+                fs.writeFileSync(`public${filePath}` , message.file)
+            }
+            await converstationModel.updateOne(
                 {_id : namespace._id , 'rooms.name' : roomName},
-                {$push : {'rooms.$.messages' : {sender , message}}}
+                {$push : {'rooms.$.messages' : createMessage}}
             )
-            this.#io.of(`/${namespace.endpoint}`).in(roomName).emit('newwMessage' , {message , sender})
+
+            this.#io.of(`/${namespace.endpoint}`).in(roomName).emit('newwMessage' , createMessage)
         })
         
     }
