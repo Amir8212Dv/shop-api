@@ -9,6 +9,8 @@ import episodeRouter from './episode.js'
 import userRouter from './user.js'
 import roleRouter from './role.js'
 import permissionRouter from './permission.js'
+import checkRole from '../../middlewares/checkRole.js'
+import { permissions } from '../../utils/constants.js'
 
 
 const router = express.Router()
@@ -20,8 +22,8 @@ router.use('/course' , courseRouter)
 router.use('/chapter' , chapterRouter)
 router.use('/episode' , episodeRouter)
 router.use('/user' , userRouter)
-router.use('/role' , roleRouter)
-router.use('/permission' , permissionRouter)
+router.use('/role' , checkRole(permissions.ADMIN) , roleRouter)
+router.use('/permission' , checkRole(permissions.ADMIN) , permissionRouter)
 
 
 

@@ -3,15 +3,15 @@ import createHttpError from "http-errors";
 import { verifyAccessTokenGraphQL } from "../../middlewares/verifyAccessToken.js";
 import validateObjectId from "../../validators/objectId.js";
 import httpStatus from "http-status-codes";
-import { responseType } from "./createComment.resolver.js";
 import courseModel from "../../models/courses.js";
 import blogModel from "../../models/blogs.js";
 import productModel from "../../models/products.js";
 import userModel from "../../models/users.js";
+import createResponseType from "../types/responseType.js";
 
 class addToBasket {
     addProduct = {
-        type: responseType,
+        type: createResponseType(),
         args: {
             productId: { type: GraphQLString },
         },
@@ -61,12 +61,13 @@ class addToBasket {
             return {
                 status: httpStatus.CREATED,
                 message: "product bookmarke delete successfully",
+                data : {}
             };
         },
     };
 
     addCourse = {
-        type: responseType,
+        type: createResponseType(),
         args: {
             courseId: { type: GraphQLString },
         },
@@ -84,29 +85,33 @@ class addToBasket {
             const courseFinalPrice = course.price - course.discount;
 
             const user = await userModel.findOne(
-                { _id: userId, "basket.courses.courseId": courseId },
-                { "basket.courses.$": 1 }
+                { $and : [
+                    {_id : userId} , {$or : [
+                        {"basket.courses.courseId": courseId} , 
+                        {courses : courseId}
+                    ]}
+                ]}
             );
 
-            if (!user)
-                await userModel.updateOne(
-                    { _id: userId },
-                    {
-                        $push: {
-                            "basket.courses": {
-                                courseId,
-                                price: courseFinalPrice
-                            },
+            if (user) throw createHttpError.BadRequest('course already taken')
+            
+            await userModel.updateOne(
+                { _id: userId },
+                {
+                    $push: {
+                        "basket.courses": {
+                            courseId,
+                            price: courseFinalPrice
                         },
-                        $inc: { "basket.totalPrice": courseFinalPrice }
-                    }
-                );
-            else
-                throw createHttpError.BadRequest('course is already in the basket')
-
+                    },
+                    $inc: { "basket.totalPrice": courseFinalPrice }
+                }
+            );
+            
             return {
                 status: httpStatus.CREATED,
                 message: "course bookmakre delete successfully",
+                data : {}
             };
         },
     };

@@ -3,15 +3,15 @@ import createHttpError from 'http-errors'
 import { verifyAccessTokenGraphQL } from '../../middlewares/verifyAccessToken.js'
 import validateObjectId from '../../validators/objectId.js'
 import httpStatus from 'http-status-codes'
-import { responseType } from './createComment.resolver.js'
 import courseModel from '../../models/courses.js'
 import blogModel from '../../models/blogs.js'
 import productModel from '../../models/products.js'
+import createResponseType from '../types/responseType.js'
 
 class deleteBookmark {
 
     deleteBookmarkProduct = {
-        type : responseType,
+        type : createResponseType(),
         args : {
             productId : {type : GraphQLString}
         },
@@ -27,13 +27,14 @@ class deleteBookmark {
 
             return {
                 status : httpStatus.CREATED,
-                message : 'product bookmarke delete successfully'
+                message : 'product bookmarke delete successfully',
+                data : {}
             }
         }
     }
 
     deleteBookmarkCourse = {
-        type : responseType,
+        type : createResponseType(),
         args : {
             courseId : {type : GraphQLString}
         },
@@ -49,13 +50,14 @@ class deleteBookmark {
 
             return {
                 status : httpStatus.CREATED,
-                message : 'course bookmakre delete successfully'
+                message : 'course bookmakre delete successfully',
+                data : {}
             }
         }
     }
 
     deleteBookmarkBlog = {
-        type : responseType,
+        type : createResponseType(),
         args : {
             blogId : {type : GraphQLString}
         },
@@ -71,7 +73,8 @@ class deleteBookmark {
 
             return {
                 status : httpStatus.CREATED,
-                message : 'blog bookmark delete successfully'
+                message : 'blog bookmark delete successfully',
+                data : {}
             }
         }
     }

@@ -9,18 +9,12 @@ import validateObjectId from "../../validators/objectId.js";
 import courseModel from "../../models/courses.js";
 import productModel from "../../models/products.js";
 import commentModel from "../../models/comments.schema.js";
+import createResponseType from "../types/responseType.js";
 
-export const responseType = new GraphQLObjectType({
-    name : 'createCommentResponse',
-    fields : {
-        status : {type : GraphQLInt},
-        message : {type : GraphQLString}
-    }
-})
 
 class createComment {
     createCommentForBlogs = {
-        type : responseType,
+        type : createResponseType(),
         args : {
             comment : {type : GraphQLString},
             parent : {type : GraphQLString},
@@ -55,13 +49,14 @@ class createComment {
     
             return {
                 status : StatusCode.CREATED,
-                message : 'comment created successfully'
+                message : 'comment created successfully',
+                data : {}
             }
         }
 
     }
     createCommentForCourses = {
-        type : responseType,
+        type : createResponseType(),
         args : {
             comment : {type : GraphQLString},
             parent : {type : GraphQLString},
@@ -98,14 +93,15 @@ class createComment {
     
             return {
                 status : StatusCode.CREATED,
-                message : 'comment created successfully'
+                message : 'comment created successfully',
+                data : {}
             }
     
         }
 
     }
     createCommentForProducts = {
-        type : responseType,
+        type : createResponseType(),
         args : {
             comment : {type : GraphQLString},
             parent : {type : GraphQLString},
@@ -139,7 +135,8 @@ class createComment {
     
             return {
                 status : StatusCode.CREATED,
-                message : 'comment created successfully'
+                message : 'comment created successfully',
+                data : {}
             }
     
         }

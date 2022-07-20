@@ -5,13 +5,6 @@ import { createPermissionValidationSchema,updatePermissionValidationSchema } fro
 import validateObjectId from '../../../validators/objectId.js'
 
 
-
-// reFactor codes :  for createError section =>  if(x !== 0) throw -> if(!+x)
-// reFactor codes :  for createHttpErrors  => change not found error , to  NotFound() (404)
-
-
-// new database model for roles 
-
 class permissionController {
     async createPermission(req , res , next) {
         try {
@@ -63,10 +56,10 @@ class permissionController {
             const {permissionId} = req.params
             await validateObjectId.validateAsync(permissionId)
 
-            const deletePermission = await permissionModel.deleteOne({_id : permissionId})
+            const permission = await permissionModel.deleteOne({_id : permissionId})
 
-            if(!deletePermission.acknowledged) throw createHttpError.NotFound('permission not found')
-            if(!+deletePermission.deletedCount) throw createHttpError.InternalServerError('delete permission faild')
+            icreateNotFoundError({permission})
+            if(!+permission.deletedCount) throw createHttpError.InternalServerError('delete permission faild')
 
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,
@@ -86,9 +79,9 @@ class permissionController {
             await validateObjectId.validateAsync(permissionId)
             await updatePermissionValidationSchema.validateAsync(updateData)
 
-            const updatePermission = await roleModel.findByIdAndUpdate(permissionId , updateData)
+            const permission = await roleModel.findByIdAndUpdate(permissionId , updateData)
 
-            if(!updatePermission) throw createHttpError.NotFound('role not found')
+            icreateNotFoundError({permission})
 
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,

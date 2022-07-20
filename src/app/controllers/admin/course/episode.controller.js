@@ -10,10 +10,6 @@ import chapterModel from "../../../models/course.chapters.js"
 
 
 
-// increase and decrease  full time of course when adding and deleting episodes
-
-
-
 class episodeController {
 
     async addEpisode(req , res , next) {
@@ -30,15 +26,15 @@ class episodeController {
             // const course = await courseModel.findOne({_id : courseId , 'chapters._id' : chapterId})
 
             const chapter = await chapterModel.findById(episodeData.chapterId)
-            if(!chapter) throw createHttpError.NotFound('chapter not found')
-            if(chapter.courseId.toString() !== episodeData.courseId) throw createHttpError('course not found')
+            createNotFoundError({chapter})   
+            if(chapter.courseId.toString() !== episodeData.courseId) throw createHttpError.NotFound('course not found')
 
             const episode = await episodeModel.create(episodeData)
             if(!episode) throw createHttpError.InternalServerError('create episode faild')
 
             chapter.episodes.push(episode._id)
             chapter.save()
-            const course = await courseModel.updateOne({_id : episode.courseId} , {$inc : {time}})
+            const updateCourse = await courseModel.updateOne({_id : episode.courseId} , {$inc : {time}})
 
             res.status(httpStatus.CREATED).send({
                 status : httpStatus.CREATED,
@@ -62,18 +58,18 @@ class episodeController {
 
             const episode = await episodeModel.findByIdAndDelete(episodeId , {chapterId : 1})
 
-            if(!episode) throw createHttpError.NotFound('episode not found')
+            createNotFoundError({episode})
 
             const updateChapter = await chapterModel.updateOne({_id : episode.chapterId} , {$pull : {episodes : episode._id}})
             const updateCourse = await courseModel.updateOne({_id : episode.courseId} , {$inc : {time : -episode.time}})
 
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,
-                message : 'episode deleted successfully'
+                message : 'episode deleted successfully',
+                data : {}
             })
 
         } catch (error) {
-            console.log(error)
             next(error)
         }
     }
@@ -85,7 +81,6 @@ class episodeController {
             const data = await updateEpisodeValidationSchema.validateAsync(req.body)
 
             const episode = await episodeModel.findByIdAndUpdate(episodeId , data , {returnDocument : 'after'})
-            if(!episode) throw createHttpError.NotFound('episode not found')
             
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,
@@ -96,7 +91,6 @@ class episodeController {
             })
 
         } catch (error) {
-            console.log(error)
             next(error)
         }
     }

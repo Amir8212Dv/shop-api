@@ -87,10 +87,6 @@ export const imageUpload = multer({storage : imageUploadSetting , limits : {file
     if(fileType.toLowerCase() !== 'image' || !(['png' , 'jpg' , 'jpeg' , 'webp' , 'gif' , 'mp4'].includes(fileExtension.toLowerCase()))) {
         return cb(new Error('uploded file type is not supported'))
     }
-    // if(req.baseUrl === '/admin/product') {
-    //         const blog = 
-    //         if(!blog) cb(new Error('blog not found'))
-    //     }
     cb(null , true)
 }})
 
@@ -101,10 +97,6 @@ export const videoUpload = multer({storage : videoUploadSetting , limits : {file
     if(fileType.toLowerCase() !== 'video' || !(['mp4' , 'mov' , 'mpg' , 'avi' , 'mkv'].includes(fileExtension.toLowerCase()))) {
         return cb(new Error('uploded file type is not supported'))
     }
-    // if(req.baseUrl === '/admin/product') {
-    //         const blog = 
-    //         if(!blog) cb(new Error('blog not found'))
-    //     }
     cb(null , true)
 }})
 

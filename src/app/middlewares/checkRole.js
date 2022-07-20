@@ -6,9 +6,8 @@ import { roles } from "../utils/constants.js"
 
 
 
-const checkRole = permissions => async (req , res , next) => {
+const checkRole = (...permissions) => async (req , res , next) => {
     try {
-        // permissions :  [[1 , 2] , [2 , 4]]
         
         if(!permissions || permissions.length === 0) return next()
         const userId = req.user._id

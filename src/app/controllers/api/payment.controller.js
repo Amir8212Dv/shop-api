@@ -57,7 +57,7 @@ class paymentController {
             const zarinpalVerifyURL = 'https://api.zarinpal.com/pg/v4/payment/verify.json'
 
             const payment = await paymentModel.findOne({$and : [{$in : {_id : user.bills}} , {authority , verify : false}]})
-            if(!payment) throw createHttpError('payment not found')
+            if(!payment) throw createHttpError.NotFound('payment not found')
 
             const {data : responseResult} = await axios.post(zarinpalVerifyURL , {authority , amount : payment.amount , merchant_id : process.env.ZARINPAL_MERCHANTID})
             const {data , error} = responseResult

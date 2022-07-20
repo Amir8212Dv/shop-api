@@ -9,53 +9,47 @@ import mongoose from 'mongoose'
 import validateObjectId from '../../../validators/objectId.js'
 import chapterModel from '../../../models/course.chapters.js'
 import episodeModel from '../../../models/course.chapter.episodes.js'
-
-// check for tags array to be not an array in string form
-
-// add aggregate or populate for all controllers
-
-// add a check in multer , for check documents existence
-
+import { createNotFoundError } from '../../../utils/createError.js'
 
 
 class courseController extends Controller {
-    #aggregateSchema = [
-        this.userLookup('teacher'),
-        this.categoryLookup('category'),
-        {
-            $lookup : {
-                from : 'chapters',
-                localField : 'chapters',
-                foreignField : '_id',
-                as : 'chapters'
-            }
-        },
-        {
-            $lookup : {
-                from : 'episodes',
-                localField : 'chapters.episodes',
-                foreignField : '_id',
-                as : 'chapters.episodes'
-            }
-        },
-        // {
-        //     $unwind : '$teacher'
-        // },
-        // {
-        //     $unwind : '$category'
-        // },
-        {
-            $project : {
-                'teacher.mobile' : 0,
-                'teacher.bills' : 0,
-                'teacher.otp' : 0
-            }
-        }
-    ]
-    constructor() {
-        super()
-        autoBind(this)
-    }
+    // #aggregateSchema = [
+    //     this.userLookup('teacher'),
+    //     this.categoryLookup('category'),
+    //     {
+    //         $lookup : {
+    //             from : 'chapters',
+    //             localField : 'chapters',
+    //             foreignField : '_id',
+    //             as : 'chapters'
+    //         }
+    //     },
+    //     {
+    //         $lookup : {
+    //             from : 'episodes',
+    //             localField : 'chapters.episodes',
+    //             foreignField : '_id',
+    //             as : 'chapters.episodes'
+    //         }
+    //     },
+    //     // {
+    //     //     $unwind : '$teacher'
+    //     // },
+    //     // {
+    //     //     $unwind : '$category'
+    //     // },
+    //     {
+    //         $project : {
+    //             'teacher.mobile' : 0,
+    //             'teacher.bills' : 0,
+    //             'teacher.otp' : 0
+    //         }
+    //     }
+    // ]
+    // constructor() {
+    //     super()
+    //     autoBind(this)
+    // }
 
     async addCourse(req , res , next) {
         try {
@@ -66,7 +60,7 @@ class courseController extends Controller {
             await createCourseValidationSchema.validateAsync(req.body)
             
             const course = await courseModel.create({...req.body , teacher : req.user._id})
-            if(!course) throw createHttpError.InternalServerError()
+            createNotFoundError({course})
 
             res.status(httpStatus.CREATED).send({
                 status : httpStatus.CREATED,
@@ -83,68 +77,68 @@ class courseController extends Controller {
             next(error)
         }
     }
-    async getAllCourses(req , res , next) {
-        try {
-            const search = req.query.search
+    // async getAllCourses(req , res , next) {
+    //     try {
+    //         const search = req.query.search
             
-            // const filter = search ? {$text : {$search : search}} : {}
+    //         // const filter = search ? {$text : {$search : search}} : {}
 
-            const courses = await courseModel.aggregate([
-                {
-                    $match : {...(search && {$text : {$search : search}})}
-                }, 
-                ...this.#aggregateSchema,
-            ])
-            console.log(this.#aggregateSchema)
+    //         const courses = await courseModel.aggregate([
+    //             {
+    //                 $match : {...(search && {$text : {$search : search}})}
+    //             }, 
+    //             ...this.#aggregateSchema,
+    //         ])
+    //         console.log(this.#aggregateSchema)
 
-            res.status(httpStatus.OK).send({
-                status : httpStatus.OK,
-                message : '',
-                data : {
-                    course : courses
-                }
-            })
+    //         res.status(httpStatus.OK).send({
+    //             status : httpStatus.OK,
+    //             message : '',
+    //             data : {
+    //                 course : courses
+    //             }
+    //         })
 
 
-        } catch (error) {
-            next(error)
-        }
-    }
-    async getCourseById(req , res , next) {
-        try {
-            const id = mongoose.Types.ObjectId(req.query.id)
+    //     } catch (error) {
+    //         next(error)
+    //     }
+    // }
+    // async getCourseById(req , res , next) {
+    //     try {
+    //         const id = mongoose.Types.ObjectId(req.query.id)
 
-            const course = await courseModel.aggregate([
-                {
-                    $match : {_id : id}
-                }, 
-                ...this.#aggregateSchema,
-            ])
-            if(!course) throw createHttpError.NotFound('course not found')
+    //         const course = await courseModel.aggregate([
+    //             {
+    //                 $match : {_id : id}
+    //             }, 
+    //             ...this.#aggregateSchema,
+    //         ])
+    //         if(!course) throw createHttpError.NotFound('course not found')
 
-            res.status(httpStatus.OK).send({
-                status : httpStatus.OK,
-                message : '',
-                data : {
-                    course : [
-                        course
-                    ]
-                }
-            })
+    //         res.status(httpStatus.OK).send({
+    //             status : httpStatus.OK,
+    //             message : '',
+    //             data : {
+    //                 course : [
+    //                     course
+    //                 ]
+    //             }
+    //         })
 
-        } catch (error) {
-            next(error)
-        }
-    }
+    //     } catch (error) {
+    //         next(error)
+    //     }
+    // }
     async removeCourse(req , res , next) {
         try {
 
             const {courseId} = req.params
             await validateObjectId.validateAsync(courseId)
 
-            const deleteCourse = await courseModel.deleteOne({_id : courseId})
-            if(!deleteCourse.acknowledged) throw createHttpError.NotFound('course not found')
-            if(deleteCourse.deletedCount === 0) throw createHttpError.InternalServerError('delete course faild')
+            const course = await courseModel.deleteOne({_id : courseId})
+            createNotFoundError({course})
+            if(course.deletedCount === 0) throw createHttpError.InternalServerError('delete course faild')
 
             const deleteChapters = await chapterModel.deleteMany({courseId})
             const deleteEpisodes = await episodeModel.deleteMany({courseId})
@@ -152,7 +146,7 @@ class courseController extends Controller {
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,
                 message : 'course deleted successfully',
-                data : {deleteCourse}
+                data : {}
             })
             
         } catch (error) {
@@ -170,7 +164,7 @@ class courseController extends Controller {
         
 
             const course = await courseModel.findByIdAndUpdate(courseId , updateData , {returnDocument : 'after'})
-            if(!course) throw createHttpError.NotFound('course not found')            
+  
 
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,

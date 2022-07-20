@@ -3,15 +3,15 @@ import createHttpError from 'http-errors'
 import { verifyAccessTokenGraphQL } from '../../middlewares/verifyAccessToken.js'
 import validateObjectId from '../../validators/objectId.js'
 import httpStatus from 'http-status-codes'
-import { responseType } from './createComment.resolver.js'
 import courseModel from '../../models/courses.js'
 import blogModel from '../../models/blogs.js'
 import productModel from '../../models/products.js'
+import createResponseType from '../types/responseType.js'
 
 class disLike {
 
     dislikeProduct = {
-        type : responseType,
+        type : createResponseType(),
         args : {
             productId : {type : GraphQLString}
         },
@@ -27,13 +27,14 @@ class disLike {
 
             return {
                 status : httpStatus.CREATED,
-                message : 'like removed successfully'
+                message : 'like removed successfully',
+                data : {}
             }
         }
     }
 
     dislikeCourse = {
-        type : responseType,
+        type : createResponseType(),
         args : {
             courseId : {type : GraphQLString}
         },
@@ -49,13 +50,14 @@ class disLike {
 
             return {
                 status : httpStatus.CREATED,
-                message : 'like removed successfully'
+                message : 'like removed successfully',
+                data : {}
             }
         }
     }
 
     dislikeBlog = {
-        type : responseType,
+        type : createResponseType(),
         args : {
             blogId : {type : GraphQLString}
         },
@@ -71,7 +73,8 @@ class disLike {
 
             return {
                 status : httpStatus.CREATED,
-                message : 'like removed successfully'
+                message : 'like removed successfully',
+                data : {}
             }
         }
     }

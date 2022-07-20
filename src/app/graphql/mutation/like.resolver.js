@@ -3,15 +3,15 @@ import createHttpError from 'http-errors'
 import { verifyAccessTokenGraphQL } from '../../middlewares/verifyAccessToken.js'
 import validateObjectId from '../../validators/objectId.js'
 import httpStatus from 'http-status-codes'
-import { responseType } from './createComment.resolver.js'
 import courseModel from '../../models/courses.js'
 import blogModel from '../../models/blogs.js'
 import productModel from '../../models/products.js'
+import createResponseType from '../types/responseType.js'
 
 class like {
 
     likeProduct = {
-        type : responseType,
+        type : createResponseType(),
         args : {
             productId : {type : GraphQLString}
         },
@@ -28,13 +28,14 @@ class like {
 
             return {
                 status : httpStatus.CREATED,
-                message : 'like added successfully'
+                message : 'like added successfully',
+                data : {}
             }
         }
     }
 
     likeCourse = {
-        type : responseType,
+        type : createResponseType(),
         args : {
             courseId : {type : GraphQLString}
         },
@@ -50,13 +51,14 @@ class like {
 
             return {
                 status : httpStatus.CREATED,
-                message : 'like added successfully'
+                message : 'like added successfully',
+                data : {}
             }
         }
     }
 
     likeBlog = {
-        type : responseType,
+        type : createResponseType(),
         args : {
             blogId : {type : GraphQLString}
         },
@@ -72,7 +74,8 @@ class like {
 
             return {
                 status : httpStatus.CREATED,
-                message : 'like added successfully'
+                message : 'like added successfully',
+                data : {}
             }
         }
     }

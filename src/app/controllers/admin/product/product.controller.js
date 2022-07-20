@@ -9,14 +9,6 @@ import validateObjectId from "../../../validators/objectId.js"
 
 
 
-// add remove image method
-// add sorting for get products
-
-
-
-
-
-
 class productController {
     #aggregateScheam = []
     constructor() {
@@ -62,13 +54,11 @@ class productController {
             await validateObjectId.validateAsync(productId)
 
             if(typeof data.features === 'string') data.features = JSON.parse(data.features)
-            if(typeof data.tags === 'string') data.tags = stringToArray(data.tags) // swagger sends arrays in format: "item1,item2,item3"
-            else if(!!data.tags) data.tags = data.tags.map(tag => tag.trim())
+            stringToArray(data.tags) // swagger sends arrays in format: "item1,item2,item3"
 
             await updateProductValidationSchema.validateAsync(data)
 
             const product = await productModel.findByIdAndUpdate(productId , data , {returnDocument : 'after'})
-            if(!product) throw createHttpError.NotFound('product not found')
 
             res.status(httpStatus.CREATED).send({
                 status : httpStatus.CREATED,
@@ -83,64 +73,60 @@ class productController {
             next(error)
         }
     } 
-    async getAllProducts(req , res , next) {
-        try {
+    // async getAllProducts(req , res , next) {
+    //     try {
 
-            // const searchFilter = req.query.search ? {$text : {$search : req.query.search}} : {}
+    //         // const searchFilter = req.query.search ? {$text : {$search : req.query.search}} : {}
 
-            const products = await productModel.find({ ...(req.query.search && {$text : {$search : req.query.search}}) })
+    //         const products = await productModel.find({ ...(req.query.search && {$text : {$search : req.query.search}}) })
 
-            res.status(httpStatus.OK).send({
-                status : httpStatus.OK,
-                message : '',
-                data : {
-                    product : products
-                }
-            })
+    //         res.status(httpStatus.OK).send({
+    //             status : httpStatus.OK,
+    //             message : '',
+    //             data : {
+    //                 product : products
+    //             }
+    //         })
             
-        } catch (error) {
-            next(error)
-        }
-    } 
-    async getProductById(req , res , next) {
-        try {
-            const {productId} = req.params
-            await validateObjectId.validateAsync(productId)
+    //     } catch (error) {
+    //         next(error)
+    //     }
+    // } 
+    // async getProductById(req , res , next) {
+    //     try {
+    //         const {productId} = req.params
+    //         await validateObjectId.validateAsync(productId)
 
-            const product = await productModel.findById(productId)
-            if(!product) throw createHttpError.NotFound('product not found')
+    //         const product = await productModel.findById(productId)
+    //         if(!product) throw createHttpError.NotFound('product not found')
 
-            res.status(httpStatus.OK).send({
-                status : httpStatus.OK,
-                message : '',
-                data : {
-                    product : [
-                        product
-                    ]
-                }
-            })
+    //         res.status(httpStatus.OK).send({
+    //             status : httpStatus.OK,
+    //             message : '',
+    //             data : {
+    //                 product : [
+    //                     product
+    //                 ]
+    //             }
+    //         })
             
-        } catch (error) {
-            next(error)
-        }
-    } 
+    //     } catch (error) {
+    //         next(error)
+    //     }
+    // }
 
     async removeProduct(req , res , next) {
         try {
             const {productId} = req.params
             
-            const deletedProduct = await productModel.findByIdAndDelete(productId)
+            const product = await productModel.findByIdAndDelete(productId)
 
-            if(!deletedProduct) throw createHttpError.NotFound('product not found')
+            createNotFoundError({product})
 
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,
                 message : 'product deleted successfully',
-                data : {
-                    product : [
-                        deletedProduct
-                    ]
-                }
+                data : {}
             })
             
         } catch (error) {

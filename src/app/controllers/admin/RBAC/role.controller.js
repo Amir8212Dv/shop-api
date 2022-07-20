@@ -7,12 +7,6 @@ import stringToArray from '../../../utils/stringToArray.js'
 import validateObjectId from '../../../validators/objectId.js'
 
 
-//create check permission exists in utils folder
-
-//create check category exists in utils folder
-
-// check all  stringToArray  methods
-
 class roleController {
 
     async createRole(req , res , next) {
@@ -68,10 +62,10 @@ class roleController {
             const {roleId} = req.params
             await validateObjectId.validateAsync(roleId)
 
-            const deleteRole = await roleModel.deleteOne({_id : roleId})
+            const role = await roleModel.deleteOne({_id : roleId})
 
-            if(!deleteRole.acknowledged) throw createHttpError.NotFound('role not found')
-            if(+deleteRole.deletedCount === 0) throw createHttpError.InternalServerError('delete role faild')
+            icreateNotFoundError({role})
+            if(+role.deletedCount === 0) throw createHttpError.InternalServerError('delete role faild')
 
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,
@@ -93,9 +87,9 @@ class roleController {
             await validateObjectId.validateAsync(roleId)
             await updateRoleValidationSchema.validateAsync(updateData)
 
-            const updateRole = await roleModel.findByIdAndUpdate(roleId , updateData)
+            const role = await roleModel.findByIdAndUpdate(roleId , updateData)
 
-            if(!updateRole) throw createHttpError.NotFound('role not found')
+            icreateNotFoundError({role})
 
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,

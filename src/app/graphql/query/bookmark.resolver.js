@@ -7,26 +7,40 @@ import blogType from '../types/blog.type.js'
 import bookmarkType from '../types/bookmark.type.js'
 import courseType from '../types/course.type.js'
 import productType from '../types/product.type.js'
+import httpStatus from 'http-status-codes'
+import createResponseType from '../types/responseType.js'
 
-const getUserBookmarks = {
-    type : bookmarkType,
-    resolve : async (obj , args , context , info) => {
-        await verifyAccessTokenGraphQL(context.req)
-        const userId = context.req.user._id
+const responseType = {
+     bookmarks : {type : new GraphQLList(bookmarkType)}
+}
+class bookmarkResolver {
 
-        const products = await productModel.find({bookmarks : userId})
+    getUserBookmarks = {
+        type : createResponseType(responseType),
+        resolve : async (obj , args , context , info) => {
+            await verifyAccessTokenGraphQL(context.req)
+            const userId = context.req.user._id
+            await validateObjectId.validateAsync(userId)
 
-        const count = await productModel.findOne({})
-        console.log(count)
-        const courses = await courseModel.find({bookmarks : userId})
-        const blogs = await blogModel.find({bookmark : userId})
+            const products = await productModel.find({bookmarks : userId})
 
-        return {
-            products,
-            courses,
-            blogs
+            const count = await productModel.findOne({})
+            const courses = await courseModel.find({bookmarks : userId})
+            const blogs = await blogModel.find({bookmark : userId})
+
+            return {
+                status : httpStatus.OK,
+                message : '',
+                data : {
+                    bookmarks : {
+                        products,
+                        courses,
+                        blogs
+                    }
+                }
+            }
         }
     }
-}
 
-export default getUserBookmarks
+}
+export default new bookmarkResolver()

@@ -21,6 +21,17 @@ class Controller {
         }
         
     }
+    commentsLookup() {
+        return {
+            $lookup : {
+                from : 'comments',
+                localField : 'comments',
+                foreignField : '_id',
+                as : 'comments'
+            }
+        }
+        
+    }
 }
 
 export default Controller

@@ -1,12 +1,9 @@
 import createHttpError from "http-errors"
 import httpStatus from 'http-status-codes'
 import categoryModel from "../../../models/categories.js"
+import { createNotFoundError } from "../../../utils/createError.js"
 import { createCategoryValidationSchema , updateCategoryValidationSchema } from "../../../validators/admin/category.js"
-
-
-
-// change all queries into a sing method (aggregate / find & populate)
-
+import validateObjectId from "../../../validators/objectId.js"
 
 
 class categoryController {
@@ -14,11 +11,6 @@ class categoryController {
         try {
             createCategoryValidationSchema.validate(req.body)
             const {title , parent} = req.body
-            
-            if(parent){
-                const parentCategory = await categoryModel.findById(parent)
-                if(!parentCategory) throw createHttpError.NotFound('parent category not found')
-            }
 
 
             const category = await categoryModel.create({title , parent})
@@ -41,27 +33,18 @@ class categoryController {
     async removCategory(req , res , next) {
         try {
             const {categoryId} = req.params
+            await validateObjectId.validateAsync(categoryId)
 
-            const removedCategory = await categoryModel.findByIdAndDelete(categoryId)
-            if(!removedCategory) throw createHttpError.NotFound('category not found')
+            const category = await categoryModel.findByIdAndDelete(categoryId)
+            createNotFoundError({category})
 
-            const subCategories = await categoryModel.find({parent : categoryId})
-            // subCategories.forEach(async item => {
-            // })
-            
-            for(const item in subCategories) {
-                await categoryModel.deleteOne({_id : item._id})
-                await categoryModel.deleteMany({parent : item._id})
-            }
+            const subCategories = await categoryModel.deleteMany({parent : categoryId})
+
 
             res.status(httpStatus.OK).send({
                 status: httpStatus.OK,
-                message : 'category deleted successfully',
-                data : {
-                    category : [
-                        removedCategory
-                    ]
-                }
+                message : 'category and all sub categories deleted successfully',
+                data : { }
             })
             
         } catch (error) {
@@ -76,7 +59,7 @@ class categoryController {
             updateCategoryValidationSchema.validate(req.body)
 
             const category = await categoryModel.findByIdAndUpdate(categoryId , {title} , {returnDocument : 'after'})
-            if(!category) throw {message : 'category not found'}
+            createNotFoundError({category})
 
             res.status(httpStatus.CREATED).send({
                 status : httpStatus.CREATED,
@@ -92,82 +75,82 @@ class categoryController {
             next(error)
         }
     }
-    async getAllCategory(req , res , next) {
-        try {
+    // async getAllCategory(req , res , next) {
+    //     try {
 
 
-            const categories = await categoryModel.find({parent : undefined})
+    //         const categories = await categoryModel.find({parent : undefined})
 
-            res.status(httpStatus.OK).send({
-                status : httpStatus.OK,
-                message : '',
-                data : {
-                    category : categories
-                }
-            })
+    //         res.status(httpStatus.OK).send({
+    //             status : httpStatus.OK,
+    //             message : '',
+    //             data : {
+    //                 category : categories
+    //             }
+    //         })
             
-        } catch (error) {
-            next(error)
-        }
-    }
-    async getCategoryById(req , res , next) {
-        try {
-            // const categoryId = mongoose.Types.ObjectId(req.params.id)
-            const {categoryId} = req.params
+    //     } catch (error) {
+    //         next(error)
+    //     }
+    // }
+    // async getCategoryById(req , res , next) {
+    //     try {
+    //         // const categoryId = mongoose.Types.ObjectId(req.params.id)
+    //         const {categoryId} = req.params
 
-            const category = await categoryModel.findById(categoryId)
+    //         const category = await categoryModel.findById(categoryId)
 
-            if(!category) throw createHttpError.NotFound('category not found')
+    //         if(!category) throw createHttpError.NotFound('category not found')
 
-            res.status(httpStatus.OK).send({
-                status : httpStatus.OK,
-                message : '',
-                data : {
-                    category : [
-                        category
-                    ]
-                }
-            })
+    //         res.status(httpStatus.OK).send({
+    //             status : httpStatus.OK,
+    //             message : '',
+    //             data : {
+    //                 category : [
+    //                     category
+    //                 ]
+    //             }
+    //         })
             
-        } catch (error) {
-            next(error)
-        }
-    }
-    async getHeadCategories(req , res , next) {
-        try {
-            const categories = await categoryModel.aggregate([
-                {
-                    $match : {parent : undefined}
-                }
-            ])
+    //     } catch (error) {
+    //         next(error)
+    //     }
+    // }
+    // async getHeadCategories(req , res , next) {
+    //     try {
+    //         const categories = await categoryModel.aggregate([
+    //             {
+    //                 $match : {parent : undefined}
+    //             }
+    //         ])
 
-            res.status(httpStatus.OK).send({
-                status : httpStatus.OK,
-                message : '',
-                data : {
-                    category : categories
-                }
-            })
-        } catch (error) {
-            next(error)
-        }
-    }
-    async getSubCategories(req , res, next) {
-        try {
-            const {parentId} = req.params
-            const categories = await categoryModel.find({parent : parentId})
+    //         res.status(httpStatus.OK).send({
+    //             status : httpStatus.OK,
+    //             message : '',
+    //             data : {
+    //                 category : categories
+    //             }
+    //         })
+    //     } catch (error) {
+    //         next(error)
+    //     }
+    // }
+    // async getSubCategories(req , res, next) {
+    //     try {
+    //         const {parentId} = req.params
+    //         const categories = await categoryModel.find({parent : parentId})
 
-            res.send({
-                status : 200,
-                message : '',
-                data : {
-                    category : categories
-                }
-            })
-        } catch (error) {
-            next(error)
-        }
-    }
+    //         res.send({
+    //             status : 200,
+    //             message : '',
+    //             data : {
+    //                 category : categories
+    //             }
+    //         })
+    //     } catch (error) {
+    //         next(error)
+    //     }
+    // }
 
 }
 

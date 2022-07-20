@@ -21,12 +21,19 @@ function populate(next) {
     this.populate([{path : 'children' , select : {__v : 0 , id : 0}}])
     next()
 }
+async function deleteCategoryChildren(next) {
+    await categoryModel.deleteMany({parent : this._id})
+    next()
+}
 
 categorySchema.index({title : 'text'})
 
 
 categorySchema.pre('findOne' , populate)
 .pre('find' , populate)
+
+categorySchema.pre('deleteOne' , deleteCategoryChildren)
+.pre('deleteMany' , deleteCategoryChildren)
 
 const categoryModel = mongoose.model('category' , categorySchema)
 

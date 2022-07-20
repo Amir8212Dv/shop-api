@@ -3,24 +3,18 @@ import createHttpError from "http-errors";
 import { verifyAccessTokenGraphQL } from "../../middlewares/verifyAccessToken.js";
 import validateObjectId from "../../validators/objectId.js";
 import httpStatus from "http-status-codes";
-import { responseType } from "./createComment.resolver.js";
 import courseModel from "../../models/courses.js";
 import blogModel from "../../models/blogs.js";
 import productModel from "../../models/products.js";
 import userModel from "../../models/users.js";
+import createResponseType from "../types/responseType.js";
 
 
-
-// update user basket when products and courses updated (price & discount)
-
-// add role restriction for all routes
-
-// add restriction that every user can buy each course just one time
 
 
 class deleteFromBasket {
     decreaseProduct = {
-        type: responseType,
+        type: createResponseType(),
         args: {
             productId: { type: GraphQLString },
             count: { type: GraphQLInt },
@@ -53,12 +47,13 @@ class deleteFromBasket {
             return {
                 status: httpStatus.CREATED,
                 message: "product bookmarke delete successfully",
+                data : {}
             };
         },
     };
 
     deleteProduct = {
-        type: responseType,
+        type: createResponseType(),
         args: {
             productId: { type: GraphQLString },
         },
@@ -84,12 +79,13 @@ class deleteFromBasket {
             return {
                 status: httpStatus.CREATED,
                 message: "product bookmarke delete successfully",
+                data : {}
             };
         },
     };
 
     deleteCourse = {
-        type: responseType,
+        type: createResponseType(),
         args: {
             courseId: { type: GraphQLString },
         },
@@ -113,6 +109,7 @@ class deleteFromBasket {
             return {
                 status: httpStatus.CREATED,
                 message: "course bookmakre delete successfully",
+                data : {}
             };
         },
     };

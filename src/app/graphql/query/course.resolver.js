@@ -1,12 +1,57 @@
 import courseType from "../types/course.type.js";
 import courseModel from '../../models/courses.js'
-import { GraphQLList,GraphQLString } from 'graphql'
+import { GraphQLList,GraphQLObjectType,GraphQLString } from 'graphql'
 import createQueryFilter from "../../utils/createQueryFilter.js";
+import httpStatus from 'http-status-codes'
+import createResponseType from "../types/responseType.js";
+import Controller from "../../controllers/controller.js";
+import autoBind from "auto-bind";
 
-class courseResolver {
-    
+const responseType = {
+    course : {type : new GraphQLList(courseType)}
+}
+
+
+class courseResolver extends Controller {
+    #aggregateSchema = [
+        this.userLookup('teacher'),
+        this.categoryLookup('category'),
+        {
+            $lookup : {
+                from : 'chapters',
+                localField : 'chapters',
+                foreignField : '_id',
+                as : 'chapters'
+            }
+        },
+        {
+            $lookup : {
+                from : 'episodes',
+                localField : 'chapters.episodes',
+                foreignField : '_id',
+                as : 'chapters.episodes'
+            }
+        },
+        // {
+        //     $unwind : '$teacher'
+        // },
+        // {
+        //     $unwind : '$category'
+        // },
+        {
+            $project : {
+                'teacher.mobile' : 0,
+                'teacher.bills' : 0,
+                'teacher.otp' : 0
+            }
+        }
+    ]
+    constructor() {
+        super()
+        autoBind(this)
+    }
     getAllCourses = {
-        type : new GraphQLList(courseType),
+        type : createResponseType(responseType),
         args : {
             teacher : {type : GraphQLString},
             search : {type : GraphQLString},
@@ -19,9 +64,57 @@ class courseResolver {
         resolve : async (obj , args , context , info) => {
             
             const queryFilter = createQueryFilter(args)
-            const courses = await courseModel.find(queryFilter)
-            console.log(courses[0].price)
-            return courses
+            
+            const courses = await courseModel.aggregate([
+                {
+                    $match : queryFilter
+                }, 
+                ...this.#aggregateSchema,
+            ])
+
+
+            res.status(httpStatus.OK).send({
+                status : httpStatus.OK,
+                message : '',
+                data : {
+                    course : courses
+                }
+            })
+            return {
+                status : httpStatus.OK,
+                message : '',
+                data : {
+                    course : courses
+                }
+            }
+        }
+    }
+    getCourseById = {
+        type : createResponseType(responseType),
+        args : {
+            courseId : {type : GraphQLString}
+        },
+        resolve : async (obj , args , context , info) => {
+            const courseId = mongoose.Types.ObjectId(args.id)
+            await validateObjectId.validateAsync(courseId)
+            
+            const course = await courseModel.aggregate([
+                {
+                    $match : {_id : courseId}
+                }, 
+                ...this.#aggregateSchema,
+            ])
+            if(!course) throw createHttpError.NotFound('course not found')
+
+            res.status(httpStatus.OK).send({
+                status : httpStatus.OK,
+                message : '',
+                data : {
+                    course : [
+                        course
+                    ]
+                }
+            })
         }
     }
 }

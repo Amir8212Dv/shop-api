@@ -1,12 +1,17 @@
 import productType from "../types/product.type.js";
-import { GraphQLList , GraphQLString} from 'graphql'
+import {GraphQLObjectType , GraphQLList , GraphQLString} from 'graphql'
 import productModel from '../../models/products.js'
 import createQueryFilter from "../../utils/createQueryFilter.js";
+import createResponseType from "../types/responseType.js";
+import httpStatus from 'http-status-codes'
 
+const responseType = {
+    products : {type : new GraphQLList(productType)}
+}
 
 class productResolver {
     getAllProducts = {
-        type : new GraphQLList(productType),
+        type : createResponseType(responseType),
         args : {
             suplier : {type : GraphQLString},
             search : {type : GraphQLString},
@@ -21,7 +26,37 @@ class productResolver {
 
             const products = await productModel.find(queryFilter)
 
-            return products
+            return {
+                status : httpStatus.OK,
+                message : '',
+                data : {
+                    product : products
+                }
+            }
+        }
+    }
+    getProductById = {
+        type : createResponseType(responseType),
+        args : {
+            productId : {type : GraphQLString}
+        },
+        resolve : async (obj , args , context , info) => {
+
+            const {productId} = args
+            await validateObjectId.validateAsync(productId)
+
+            const product = await productModel.findById(productId)
+            if(!product) throw createHttpError.NotFound('product not found')
+
+            res.status(httpStatus.OK).send({
+                status : httpStatus.OK,
+                message : '',
+                data : {
+                    product : [
+                        product
+                    ]
+                }
+            })
         }
     }
 }
