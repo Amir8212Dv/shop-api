@@ -9,7 +9,7 @@ const responseType = {
     category : {type : new GraphQLList(nestedCategoryType)}
 }
 
-class categoryResolver {
+class CategoryQuery {
     getAllCategories = {
         type : createResponseType(responseType),
         args : {
@@ -74,4 +74,4 @@ class categoryResolver {
     }
 }
 
-export default new categoryResolver()
+export default new CategoryQuery()

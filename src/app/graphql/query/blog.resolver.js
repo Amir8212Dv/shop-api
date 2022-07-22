@@ -12,11 +12,9 @@ import autoBind from 'auto-bind'
 const responseType = {
     blogs : {type : new GraphQLList(blogType)}
 }
-const commentResponseType = {
-    blogs : {type : new GraphQLList(commentType)}
-}
 
-class blogResolver extends Controller {
+
+class BlogQuery extends Controller {
     constructor() {
         super()
         autoBind(this)
@@ -96,37 +94,8 @@ class blogResolver extends Controller {
             }
         }
     }
-    getBlogComments = {
-        type : createResponseType(commentResponseType),
-        args : {
-            blogId : {type : GraphQLString}
-        },
-        resolve : async (obj , args , context , info) => {
-            const {blogId} = args
-            await validateObjectId.validateAsync(blogId)
 
-            const [blog] = await blogModel.aggregate([
-                {
-                    $match : {_id : mongoose.Types.ObjectId(blogId)}
-                },
-                {
-                    $project : {comments : 1}
-                },
-                this.commentsLookup()
-            ])
-
-            if(!blog) throw createHttpError.NotFound('blog not found')
-
-            return {
-                status : httpStatus.OK,
-                message : '',
-                data : {
-                    comments : blog.comments
-                }
-            }
-        }
-    }
 
 }
 
-export default new blogResolver()
+export default new BlogQuery()

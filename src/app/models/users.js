@@ -3,26 +3,10 @@ import courseModel from "./courses.js";
 import productModel from "./products.js";
 
 
-const productSchema = new mongoose.Schema({
-    productId : {type : mongoose.Types.ObjectId , ref : 'product' , required : true},
-    count : {type : Number , default : 1},
-    price : {type : Number , required : true}
-})
-const courseSchema = new mongoose.Schema({
-    courseId : {type : mongoose.Types.ObjectId , required : true},
-    price : {type : Number , required : true}
-})
-
-const basketSchema = new mongoose.Schema({
-    products : {type : [productSchema] , default : []},
-    courses : {type : [courseSchema] , default : []},
-    totalPrice : {type : Number , default : 0}
-})
-
 const userSchema = new mongoose.Schema({
     // username   : { type : String , required : true , trim : true , lowerCase : true },
-    first_name : { type : String , trim : true },
-    last_name  : { type : String , trim : true },
+    first_name : { type : String , trim : true , required : true },
+    last_name  : { type : String , trim : true , required : true },
     mobile     : { type : String , required : true , unique : true },
     email      : { type : String , trim : true , lowerCase : true , unique : true , sparse : true },
     otp        : { type : Object , default : {
@@ -32,7 +16,8 @@ const userSchema = new mongoose.Schema({
     bills      : { type : [mongoose.Types.ObjectId], default : [] },
     discount   : { type : Number , default : 0},
     role : {type : String , default : 'USER'},
-    basket : {type : basketSchema}
+    basket : {type : mongoose.Types.ObjectId},
+    password : {type : String , required : true}
 } , {
     timestamps : true,
     versionKey : false,

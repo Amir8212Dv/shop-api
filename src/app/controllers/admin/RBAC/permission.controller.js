@@ -5,7 +5,7 @@ import { createPermissionValidationSchema,updatePermissionValidationSchema } fro
 import validateObjectId from '../../../validators/objectId.js'
 
 
-class permissionController {
+class PermissionController {
     async createPermission(req , res , next) {
         try {
             
@@ -100,4 +100,4 @@ class permissionController {
     }
 }
 
-export default new permissionController()
+export default new PermissionController()

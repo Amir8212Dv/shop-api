@@ -1,7 +1,7 @@
-import socketController from "./socketController.js"
+import SocketController from "./socketController.js"
 
 const socketHandler = io => {
-    const controller = new socketController(io)
+    const controller = new SocketController(io)
     controller.initConnection()
     controller.createNamespaces()
 }

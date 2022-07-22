@@ -10,9 +10,11 @@ import validateObjectId from '../../../validators/objectId.js'
 import chapterModel from '../../../models/course.chapters.js'
 import episodeModel from '../../../models/course.chapter.episodes.js'
 import { createNotFoundError } from '../../../utils/createError.js'
+import userModel from '../../../models/users.js'
+import deleteFile from '../../../utils/deleteFiles.js'
 
 
-class courseController extends Controller {
+class CourseController extends Controller {
     // #aggregateSchema = [
     //     this.userLookup('teacher'),
     //     this.categoryLookup('category'),
@@ -136,12 +138,29 @@ class courseController extends Controller {
             const {courseId} = req.params
             await validateObjectId.validateAsync(courseId)
 
-            const course = await courseModel.deleteOne({_id : courseId})
+            const user = await userModel.find({courses : courseId})
+            if(user) throw createHttpError.BadRequest('course can not be deleted , because some users already got that')
+
+            const course = await courseModel.findByIdAndDelete(courseId)
             createNotFoundError({course})
             if(course.deletedCount === 0) throw createHttpError.InternalServerError('delete course faild')
 
             const deleteChapters = await chapterModel.deleteMany({courseId})
             const deleteEpisodes = await episodeModel.deleteMany({courseId})
+
+            deleteFile(course.image)
+
+        
+            const totalPrice = course.price - course.discount
+            const baskets = await basketModel.find({'courses.courseId' : courseId})
+            baskets.forEach(basket => {
+                basket.courses = basket.courses.filter(item => item.courseId.toString() !== courseId)
+
+                basket.totalPrice -= totalPrice
+                basket.save()
+            })
+
+            
 
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,
@@ -162,9 +181,29 @@ class courseController extends Controller {
             const updateData = req.body
             await updateCourseValidationSchema.validateAsync(updateData)
         
+            const {price : curPrice , discount : curDiscount} = await courseModel.findById(courseId)
 
             const course = await courseModel.findByIdAndUpdate(courseId , updateData , {returnDocument : 'after'})
   
+            if(updateData.price || updateData.discount) {
+        
+                const oldTotalPrice = curPrice - curDiscount
+                const newTotalPrice = course.price - course.discount
+
+        
+                const baskets = await basketModel.find({'courses.courseId' : courseId})
+                
+                baskets.forEach(basket => {
+                    const basketCourse = basket.courses.find(item => item.courseId.toString() === courseId)
+                    basketCourse.price = newTotalPrice
+
+                    basket.totalPrice += (newTotalPrice - oldTotalPrice)
+                    basket.save()
+
+                    
+                })
+
+            }
 
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,
@@ -182,4 +221,4 @@ class courseController extends Controller {
     }
 }
 
-export default new courseController()
+export default new CourseController()

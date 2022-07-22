@@ -1,60 +1,71 @@
 import graphql from 'graphql'
-import bookmarkResolver from './mutation/bookmark.resolver.js'
-import createComment from './mutation/createComment.resolver.js'
-import deleteBookmarkResolver from './mutation/deleteBookmark.resolver.js'
-import dislikeResolver from './mutation/dislike.resolver.js'
-import likeResolver from './mutation/like.resolver.js'
-import blogResolver from './query/blog.resolver.js'
+import BookmarkMutation from './mutation/bookmark.resolver.js'
+import CommentMutation from './mutation/createComment.resolver.js'
+import DeleteBookmarkMutation from './mutation/deleteBookmark.resolver.js'
+import DislikeMutation from './mutation/dislike.resolver.js'
+import LikeMutation from './mutation/like.resolver.js'
+import BlogQuery from './query/blog.resolver.js'
 import getUserBookmarks from './query/bookmark.resolver.js'
-import categoryResolver from './query/category.resolver.js'
-import courseResolver from './query/course.resolver.js'
-import productResolver from './query/product.resolver.js'
-import addBasketResolver from './mutation/addBasket.resolver.js'
-import deleteFromBasketResolver from './mutation/deleteFromBasket.resolver.js'
-import getBasket from './query/basket.resolver.js'
+import CategoryQuery from './query/category.resolver.js'
+import CourseQuery from './query/course.resolver.js'
+import ProductQuery from './query/product.resolver.js'
+import AddBasketMutation from './mutation/addBasket.resolver.js'
+import DeleteFromBasketMutation from './mutation/deleteFromBasket.resolver.js'
+import BasketQuery from './query/basket.resolver.js'
+import BookmarkQuery from './query/bookmark.resolver.js'
+import ChapterQuery from './query/chapter.resolver.js'
+import EpisodeQuery from './query/episode.resolver.js'
 
 const rootQuery = new graphql.GraphQLObjectType({
     name : 'query',
     fields : {
-        blogs : blogResolver.getAllBlogs,
-        allCategories : categoryResolver.getAllCategories,
-        categoryChildren : categoryResolver.getChildrenOfCategory,
-        allProducts : productResolver.getAllProducts,
-        courses : courseResolver.getAllCourses,
-        bookmarks : getUserBookmarks,
-        getBasket : getBasket
+        allBlogs : BlogQuery.getAllBlogs,
+        getBlogById : BlogQuery.getBlogById,
+        getBlogComments : BlogQuery.getBlogComments,
+        allCategories : CategoryQuery.getAllCategories,
+        categoryChildren : CategoryQuery.getChildrenOfCategory,
+        getCategoryById : CategoryQuery.getCategoryById,
+        allChapters : ChapterQuery.getAllChapters,
+        getChapterById : ChapterQuery.getChapterById,
+        allProducts : ProductQuery.getAllProducts,
+        getProductById : ProductQuery.getProductById,
+        allCourses : CourseQuery.getAllCourses,
+        getCourseById : CourseQuery.getCourseById,
+        getEpisodeById : EpisodeQuery.getEpisodeById,
+        bookmarks : BookmarkQuery.getUserBookmarks,
+        getBasket : BasketQuery.getBasket
     }
 })
 
 const rootMutation = new graphql.GraphQLObjectType({
     name : 'Mutation',
     fields : {
-        createCommentForBlog : createComment.createCommentForBlogs,
-        createCommentForCourses : createComment.createCommentForCourses,
-        createCommentForProducts : createComment.createCommentForProducts,
+        createCommentForBlog : CommentMutation.createCommentForBlogs,
+        createCommentForCourses : CommentMutation.createCommentForCourses,
+        createCommentForProducts : CommentMutation.createCommentForProducts,
 
-        likeProduct : likeResolver.likeProduct,
-        likeCourse : likeResolver.likeCourse,
-        likeBlog : likeResolver.likeBlog,
+        likeProduct : LikeMutation.likeProduct,
+        likeCourse : LikeMutation.likeCourse,
+        likeBlog : LikeMutation.likeBlog,
 
-        dislikeProduct : dislikeResolver.dislikeProduct,
-        dislikeCourse : dislikeResolver.dislikeCourse,
-        dislikeBlog : dislikeResolver.dislikeBlog,
+        dislikeProduct : DislikeMutation.dislikeProduct,
+        dislikeCourse : DislikeMutation.dislikeCourse,
+        dislikeBlog : DislikeMutation.dislikeBlog,
 
-        bookmarkProduct : bookmarkResolver.bookmarkProduct,
-        bookmarkCourse : bookmarkResolver.bookmarkCourse,
-        bookmarkBlog : bookmarkResolver.bookmarkBlog,
+        bookmarkProduct : BookmarkMutation.bookmarkProduct,
+        bookmarkCourse : BookmarkMutation.bookmarkCourse,
+        bookmarkBlog : BookmarkMutation.bookmarkBlog,
 
-        deleteBookmarkProduct : deleteBookmarkResolver.deleteBookmarkProduct,
-        deleteBookmarkCourse : deleteBookmarkResolver.deleteBookmarkCourse,
-        deleteBookmarkBlog : deleteBookmarkResolver.deleteBookmarkBlog,
+        deleteBookmarkProduct : DeleteBookmarkMutation.deleteBookmarkProduct,
+        deleteBookmarkCourse : DeleteBookmarkMutation.deleteBookmarkCourse,
+        deleteBookmarkBlog : DeleteBookmarkMutation.deleteBookmarkBlog,
 
-        addProductToBasket : addBasketResolver.addProduct,
-        addCourseToBasket : addBasketResolver.addCourse,
+        addProductToBasket : AddBasketMutation.addProduct,
+        addCourseToBasket : AddBasketMutation.addCourse,
 
-        decreaseBasketProduct : deleteFromBasketResolver.decreaseProduct,
-        deleteBasketProduct : deleteFromBasketResolver.deleteProduct,
-        deleteBasketCourse : deleteFromBasketResolver.deleteCourse,
+        decreaseBasketProduct : DeleteFromBasketMutation.decreaseProduct,
+        deleteBasketProduct : DeleteFromBasketMutation.deleteProduct,
+        deleteBasketCourse : DeleteFromBasketMutation.deleteCourse,
     }
 })
 

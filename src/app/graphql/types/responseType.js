@@ -1,17 +1,22 @@
 import { GraphQLInt, GraphQLObjectType, GraphQLString } from "graphql"
 
-const emptyDataType = new GraphQLObjectType({name : 'emptyObject'})
+// const emptyDataType = new GraphQLObjectType({name : 'emptyObject'})
+
+const responseData = {}
 
 const responseType = new GraphQLObjectType({
     name : 'responseType',
     fields : {
         status : {type : GraphQLInt},
         message : {type : GraphQLString},
-        // data : dataType
+        data : {type : new GraphQLObjectType({
+            name : 'responseDataType',
+            fields : responseData
+        })}
     }
 })
-const createResponseType = (dataType = emptyDataType) => {
-    responseType.toConfig().fields.data = dataType
+const createResponseType = (dataType = {}) => {
+    Object.assign(responseData , dataType)
     return responseType
 }
 

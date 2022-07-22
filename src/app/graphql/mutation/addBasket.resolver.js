@@ -8,8 +8,9 @@ import blogModel from "../../models/blogs.js";
 import productModel from "../../models/products.js";
 import userModel from "../../models/users.js";
 import createResponseType from "../types/responseType.js";
+import basketModel from "../../models/basket.js";
 
-class addToBasket {
+class AddToBasketMutation {
     addProduct = {
         type: createResponseType(),
         args: {
@@ -18,7 +19,7 @@ class addToBasket {
         resolve: async (obj, args, context, info) => {
             await verifyAccessTokenGraphQL(context.req);
             const { productId } = args;
-            const userId = context.req.user._id;
+            const basketId = context.req.user.basket;
             await validateObjectId.validateAsync(productId);
 
             const product = await productModel.findById(productId, {
@@ -26,25 +27,24 @@ class addToBasket {
                 discount: 1,
             });
             const productFinalPrice = product.price - product.discount;
-            console.log(productFinalPrice)
 
-            const user = await userModel.findOne(
-                { _id: userId, "basket.products.productId": productId },
-                { "basket.products.$": 1 }
+            const basket = await basketModel.findOne(
+                { _id: basketId, "products.productId": productId },
+                { "products.$": 1 }
             );
 
-            if (!user)
-                await userModel.updateOne(
-                    { _id: userId },
+            if (!basket)
+                await basketModel.updateOne(
+                    { _id: basketId },
                     {
                         $push: {
-                            "basket.products": {
+                            products: {
                                 productId,
                                 count: 1,
                                 price: productFinalPrice,
                             },
                         },
-                        $inc : {"basket.totalPrice": productFinalPrice} ,
+                        $inc : {totalPrice: productFinalPrice} ,
                     }
                 );
             else
@@ -52,15 +52,15 @@ class addToBasket {
                     { _id: userId, "basket.products.productId": productId },
                     {
                         $inc: {
-                            "basket.products.$.count": 1,
-                            "basket.totalPrice": productFinalPrice,
+                            "products.$.count": 1,
+                            totalPrice: productFinalPrice,
                         },
                     }
                 );
 
             return {
                 status: httpStatus.CREATED,
-                message: "product bookmarke delete successfully",
+                message: "product added to basket successfully",
                 data : {}
             };
         },
@@ -72,10 +72,9 @@ class addToBasket {
             courseId: { type: GraphQLString },
         },
         resolve: async (obj, args, context, info) => {
-            console.log('a')
             await verifyAccessTokenGraphQL(context.req);
             const { courseId } = args;
-            const userId = context.req.user._id;
+            const basketId = context.req.user.basket;
             await validateObjectId.validateAsync(courseId);
 
             const course = await courseModel.findById(courseId, {
@@ -84,27 +83,29 @@ class addToBasket {
             });
             const courseFinalPrice = course.price - course.discount;
 
-            const user = await userModel.findOne(
+            const basket = await basketModel.findOne(
                 { $and : [
-                    {_id : userId} , {$or : [
-                        {"basket.courses.courseId": courseId} , 
-                        {courses : courseId}
-                    ]}
+                    {_id : basketId} , {
+                        $or : [
+                            {"courses.courseId": courseId} , 
+                            {courses : courseId}
+                        ]
+                    }
                 ]}
             );
 
-            if (user) throw createHttpError.BadRequest('course already taken')
+            if (basket) throw createHttpError.BadRequest('course already taken')
             
-            await userModel.updateOne(
-                { _id: userId },
+            await basketModel.updateOne(
+                { _id: basketId },
                 {
                     $push: {
-                        "basket.courses": {
+                        courses: {
                             courseId,
                             price: courseFinalPrice
                         },
                     },
-                    $inc: { "basket.totalPrice": courseFinalPrice }
+                    $inc: { totalPrice: courseFinalPrice }
                 }
             );
             
@@ -117,4 +118,4 @@ class addToBasket {
     };
 }
 
-export default new addToBasket();
+export default new AddToBasketMutation();

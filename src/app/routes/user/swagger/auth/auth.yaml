@@ -8,26 +8,64 @@
 
  components:
       schemas:
-          getOtp:
+          signup:
               type : object
               required :
                   -   mobile
+                  -   first_name
+                  -   last_name
+                  -   password
               properties:
                   mobile:
                       type : string
                       description : phone number for send the otp
-          login:
+                  first_name:
+                      type : string
+                      description : first_name
+                  last_name:
+                      type : string
+                      description : last_name
+                  email:
+                      type : string
+                      description : email
+                  password :
+                      type : string
+                      description : password
+          loginWithPassword:
               type : object
-              required:
+              required : 
+                  -   password
+              properties:
+                  mobile:
+                      type : string
+                      description : phone number for login
+                  email :
+                      type : string
+                      description : one time password that sneded to phone number
+                  password :
+                      type : string
+                      description : your password
+          loginWithOtp:
+              type : object
+              required : 
+                  -   mobile
+              properties:
+                  mobile:
+                      type : string
+                      description : phone number for login
+          checkOtp:
+              type : object
+              required : 
                   -   mobile
                   -   code
               properties:
                   mobile:
                       type : string
                       description : phone number for login
-                  code :
+                  code:
                       type : string
-                      description : one time password that sneded to phone number
+                      description : verification code sended to your mobile
+                  
           refreshToken:
               type : object
               required :
@@ -43,34 +81,28 @@
 
 
 
- /user/getOtp:
-      post:
-          tags : [auth]
-          summary : get otp
-          descriptoin : get one time password
-          requestBody:
-              required : true
-              content:
-                  application/x-www-form-urlencoded:
-                      schema:
-                          $ref : '#/components/schemas/getOtp'
-                  application/json:
-                      schema:
-                          $ref : '#/components/schemas/getOtp'
-          responses:
-              200:
-                  description : successfully
-                  content :
-                      application/json:
-                          schema:
-                              $ref: '#/definitions/sendOtp'
-          
-
-
-
-
-
- /user/login:
+#  /user/get-otp:
+#       post:
+#           tags : [auth]
+#           summary : get otp
+#           descriptoin : get one time password
+#           requestBody:
+#               required : true
+#               content:
+#                   application/x-www-form-urlencoded:
+#                       schema:
+#                           $ref : '#/components/schemas/getOtp'
+#                   application/json:
+#                       schema:
+#                           $ref : '#/components/schemas/getOtp'
+#           responses:
+#               200:
+#                   description : successfully
+#                   content :
+#                       application/json:
+#                           schema:
+#                               $ref: '#/definitions/sendOtp'
+ /user/signup:
       post:
           tags : [auth]
           summary : login
@@ -80,10 +112,10 @@
               content:
                   application/x-www-form-urlencoded:
                       schema:
-                          $ref : '#/components/schemas/login'
+                          $ref : '#/components/schemas/signup'
                   application/json:
                       schema:
-                          $ref : '#/components/schemas/login'
+                          $ref : '#/components/schemas/signup'
           responses : 
               200:
                   description : successfull
@@ -91,6 +123,74 @@
                       application/json:
                           schema:
                               $ref: '#/definitions/login'
+
+
+ /user/login-password:
+      post:
+          tags : [auth]
+          summary : login
+          description : login with otp
+          requestBody:
+              required : true
+              content:
+                  application/x-www-form-urlencoded:
+                      schema:
+                          $ref : '#/components/schemas/loginWithPassword'
+                  application/json:
+                      schema:
+                          $ref : '#/components/schemas/loginWithPassword'
+          responses : 
+              200:
+                  description : successfull
+                  content :
+                      application/json:
+                          schema:
+                              $ref: '#/definitions/login'
+
+
+ /user/login-otp:
+      post:
+          tags : [auth]
+          summary : login
+          description : login with otp
+          requestBody:
+              required : true
+              content:
+                  application/x-www-form-urlencoded:
+                      schema:
+                          $ref : '#/components/schemas/loginWithOtp'
+                  application/json:
+                      schema:
+                          $ref : '#/components/schemas/loginWithOtp'
+          responses : 
+              200:
+                  description : successfull
+                  content :
+                      application/json:
+                          schema:
+                              $ref: '#/definitions/login'
+ /user/check-otp:
+      post:
+          tags : [auth]
+          summary : get otp
+          descriptoin : get one time password
+          requestBody:
+              required : true
+              content:
+                  application/x-www-form-urlencoded:
+                      schema:
+                          $ref : '#/components/schemas/checkOtp'
+                  application/json:
+                      schema:
+                          $ref : '#/components/schemas/checkOtp'
+          responses:
+              200:
+                  description : successfully
+                  content :
+                      application/json:
+                          schema:
+                              $ref: '#/definitions/sendOtp'
+          
 
 
 

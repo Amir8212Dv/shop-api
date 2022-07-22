@@ -8,11 +8,12 @@ import createImageLink from "../../../utils/createImageLink.js"
 import Controller from "../../controller.js"
 import validateObjectId from "../../../validators/objectId.js"
 import {createNotFoundError } from "../../../utils/createError.js"
+import deleteFile from "../../../utils/deleteFiles.js"
 
 
 
 
-class blogsController extends Controller{
+class BlogsController extends Controller{
 
 
     constructor() {
@@ -134,10 +135,10 @@ class blogsController extends Controller{
         try {
             const {blogId} = req.params
 
-            const blog = await blogModel.deleteOne({_id : blogId})
-
+            const blog = await blogModel.findByIdAndDelete(blogId)
             createNotFoundError({blog})
-            if(!blog.deletedCount) throw createHttpError.InternalServerError()
+
+            deleteFile(blog.image)
             
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,
@@ -179,4 +180,4 @@ class blogsController extends Controller{
     
 }
 
-export default new blogsController()
+export default new BlogsController()

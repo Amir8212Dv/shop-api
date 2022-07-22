@@ -2,10 +2,10 @@ import converstationModel from "../../models/converstation.js"
 import httpStatus from 'http-status-codes'
 import createHttpError from "http-errors"
 import validateObjectId from "../../validators/objectId.js"
-import { createNotFoundError } from '../../utils.createError.js'
+import { createNotFoundError } from '../../utils/createError.js'
 import { namespaceValidationSchema } from "../../validators/support/namespace.js"
 
-class namespaceController {
+class NamespaceController {
 
     async createNamespace(req , res , next) {
         try {
@@ -84,4 +84,4 @@ class namespaceController {
 }
  
 
-export default new namespaceController()
+export default new NamespaceController()

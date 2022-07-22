@@ -21,7 +21,6 @@ const productSchema = new mongoose.Schema({
     images     : { type : [String], required : true },
     tags       : { type : [String], default : [] },
     category   : { type : mongoose.Types.ObjectId, required : true },
-    comments   : { type : [mongoose.Types.ObjectId] , default : [] },
     likes      : { type : [mongoose.Types.ObjectId], default : [] },
     bookmarks  : { type : [mongoose.Types.ObjectId], default : [] },
     price      : { type : Number, required : true },

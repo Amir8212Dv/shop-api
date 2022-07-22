@@ -1,28 +1,28 @@
 import express from 'express'
-import categoryController from '../../controllers/admin/category/category.controller.js'
+import CategoryController from '../../controllers/admin/category/category.controller.js'
 import checkRole from '../../middlewares/checkRole.js'
 import { permissions } from '../../utils/constants.js'
 
 const categoryRouter = express.Router()
 
-categoryRouter.post('/create' , checkRole(permissions.ADMIN) , categoryController.addCategory)
+categoryRouter.post('/create' , checkRole(permissions.ADMIN) , CategoryController.addCategory)
 
 
-// categoryRouter.get('/all' , categoryController.getAllCategory)
+// categoryRouter.get('/all' , CategoryController.getAllCategory)
 
-// categoryRouter.get('/headCategories' , categoryController.getHeadCategories)
-
-
-// categoryRouter.get('/subCategories/:parentId' , categoryController.getSubCategories)
+// categoryRouter.get('/headCategories' , CategoryController.getHeadCategories)
 
 
-// categoryRouter.get('/:categoryId' , categoryController.getCategoryById)
+// categoryRouter.get('/subCategories/:parentId' , CategoryController.getSubCategories)
 
 
-categoryRouter.patch('/edit/:categoryId' , checkRole(permissions.ADMIN) , categoryController.editCategory)
+// categoryRouter.get('/:categoryId' , CategoryController.getCategoryById)
 
 
-categoryRouter.delete('/remove/:categoryId' , checkRole(permissions.ADMIN) , categoryController.removCategory)
+categoryRouter.patch('/edit/:categoryId' , checkRole(permissions.ADMIN) , CategoryController.editCategory)
+
+
+categoryRouter.delete('/remove/:categoryId' , checkRole(permissions.ADMIN) , CategoryController.removCategory)
 
 
 

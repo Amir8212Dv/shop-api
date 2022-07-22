@@ -9,7 +9,7 @@ const responseType = {
     products : {type : new GraphQLList(productType)}
 }
 
-class productResolver {
+class productQuery {
     getAllProducts = {
         type : createResponseType(responseType),
         args : {
@@ -61,4 +61,4 @@ class productResolver {
     }
 }
 
-export default new productResolver()
+export default new productQuery()

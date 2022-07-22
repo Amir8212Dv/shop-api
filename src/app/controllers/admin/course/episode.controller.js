@@ -7,10 +7,11 @@ import {getVideoDurationInSeconds} from 'get-video-duration'
 import validateObjectId from '../../../validators/objectId.js'
 import episodeModel from "../../../models/course.chapter.episodes.js"
 import chapterModel from "../../../models/course.chapters.js"
+import deleteFile from "../../../utils/deleteFiles.js"
 
 
 
-class episodeController {
+class EpisodeController {
 
     async addEpisode(req , res , next) {
         try {
@@ -63,6 +64,8 @@ class episodeController {
             const updateChapter = await chapterModel.updateOne({_id : episode.chapterId} , {$pull : {episodes : episode._id}})
             const updateCourse = await courseModel.updateOne({_id : episode.courseId} , {$inc : {time : -episode.time}})
 
+            deleteFile(episode.videoAddress)
+
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,
                 message : 'episode deleted successfully',
@@ -96,4 +99,4 @@ class episodeController {
     }
 }
 
-export default new episodeController()
+export default new EpisodeController()

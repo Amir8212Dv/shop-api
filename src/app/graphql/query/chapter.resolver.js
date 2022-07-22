@@ -10,7 +10,7 @@ const responseType = {
 }
 
 
-class courseResolver {
+class ChapterQuery {
     
     getAllChapters = {
         type : createResponseType(responseType),
@@ -58,4 +58,4 @@ class courseResolver {
     }
 }
 
-export default new courseResolver()
+export default new ChapterQuery()

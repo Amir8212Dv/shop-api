@@ -1,5 +1,5 @@
 import express from 'express'
-import productController from '../../controllers/admin/product/product.controller.js'
+import ProductController from '../../controllers/admin/product/product.controller.js'
 import { checkForCategoryId, checkForProductId } from '../../middlewares/checkForObjectId.js'
 import checkRole from '../../middlewares/checkRole.js'
 import { imageUpload } from '../../middlewares/multer.js'
@@ -13,7 +13,7 @@ productRouter.post(
     checkRole(permissions.SUPLIER) ,
     checkForCategoryId,
     imageUpload.array('images' , 10) , 
-    productController.addProduct
+    ProductController.addProduct
 )
 productRouter.patch(
     '/update/:productId' , 
@@ -21,10 +21,10 @@ productRouter.patch(
     checkForProductId,
     checkForCategoryId,
     imageUpload.array('images' , 10) , 
-    productController.editProduct
+    ProductController.editProduct
 )
-productRouter.delete('/remove/:productId' , checkRole(permissions.SUPLIER) , productController.removeProduct)
-productRouter.get('/all' , productController.getAllProducts)
-productRouter.get('/:productId' , productController.getProductById)
+productRouter.delete('/remove/:productId' , checkRole(permissions.SUPLIER) , ProductController.removeProduct)
+// productRouter.get('/all' , ProductController.getAllProducts)
+// productRouter.get('/:productId' , ProductController.getProductById)
 
 export default productRouter

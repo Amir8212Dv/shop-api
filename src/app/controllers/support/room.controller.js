@@ -2,11 +2,11 @@ import converstationModel from "../../models/converstation.js"
 import httpStatus from 'http-status-codes'
 import createHttpError from "http-errors"
 import validateObjectId from "../../validators/objectId.js"
-import { createNotFoundError } from '../../utils.createError.js'
+import { createNotFoundError } from '../../utils/createError.js'
 import { roomValidationSchema } from "../../validators/support/room.js"
 
 
-class namespaceController {
+class RoomController {
 
     async createRoom(req , res , next) {
         try {
@@ -96,4 +96,4 @@ class namespaceController {
 }
 
 
-export default new namespaceController()
+export default new RoomController()

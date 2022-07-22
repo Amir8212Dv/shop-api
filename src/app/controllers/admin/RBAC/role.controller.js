@@ -7,7 +7,7 @@ import stringToArray from '../../../utils/stringToArray.js'
 import validateObjectId from '../../../validators/objectId.js'
 
 
-class roleController {
+class RoleController {
 
     async createRole(req , res , next) {
         try {
@@ -109,4 +109,4 @@ class roleController {
 
 }
 
-export default new roleController()
+export default new RoleController()

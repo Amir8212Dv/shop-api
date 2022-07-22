@@ -1,10 +1,12 @@
 import express from 'express'
-import auth from '../../controllers/user/auth.controller.js'
+import authController from '../../controllers/user/auth.controller.js'
 
 const router = express.Router()
-router.post('/getOtp' , auth.getOtp)
-router.post('/login' , auth.login)
-router.post('/refresh-token' , auth.refreshToken)
+router.post('/signup' , authController.signUp)
+router.post('/check-otp' , authController.checkOtp)
+router.post('/login-password' , authController.loginWithPassword)
+router.post('/login-otp' , authController.loginWithOtp)
+router.post('/refresh-token' , authController.refreshToken)
 
 
 export default router

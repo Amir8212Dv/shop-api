@@ -1,18 +1,7 @@
 import { GraphQLObjectType , GraphQLString , GraphQLList , GraphQLInt } from 'graphql'
-
-const episodeType = new GraphQLObjectType({
-    name : 'episodeType',
-    fields : {
-        title : {type : GraphQLString},
-        text : {type : GraphQLString},
-        time : {type : GraphQLInt },
-        videoAddress : {type : GraphQLString },
-        type : {type : GraphQLString },
-        courseId : { type : GraphQLString},
-        chapterId : { type : GraphQLString}
-    }
-})
-
+import {categoryType} from './category.type.js'
+import userType from './user.type.js'
+import episodeType from './episode.type.js'
 const chapterType = new GraphQLObjectType({
     name : 'chapterType',
     fields : {
@@ -32,14 +21,14 @@ const courseType = new GraphQLObjectType({
         short_text : {type : GraphQLString },
         image : {type : GraphQLString},
         tags : {type : new GraphQLList(GraphQLString) },
-        category : {type : new GraphQLList(GraphQLString) },
+        category : {type : categoryType },
         likes : {type : new GraphQLList(GraphQLString) },
         bookmarks : {type : new GraphQLList(GraphQLString) },
         price : {type : GraphQLInt },
         discount : {type : GraphQLInt },
         time : {type : GraphQLInt },
-        status : {type : GraphQLString , },
-        teacher : {type : GraphQLString },
+        status : {type : GraphQLString},
+        teacher : {type : userType },
         // chapters : {type : new GraphQLList(GraphQLString) },
         chapters : {type : new GraphQLList(chapterType) },
         students : {type : new GraphQLList(GraphQLString) },

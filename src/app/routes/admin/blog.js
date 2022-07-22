@@ -1,6 +1,5 @@
 import express from 'express'
-import blogController from '../../controllers/admin/blog/blog.controller.js'
-import blogsController from '../../controllers/admin/blog/blog.controller.js'
+import BlogsController from '../../controllers/admin/blog/blog.controller.js'
 import { imageUpload } from '../../middlewares/multer.js'
 import fromData from 'multer'
 import checkRole from '../../middlewares/checkRole.js'
@@ -17,21 +16,21 @@ blogRouter.post(
     checkForCategoryId,
     imageUpload.single('image') ,
     checkRole(permissions.WRITER) , 
-    blogsController.createBlog
+    BlogsController.createBlog
 )
 
 
-// blogRouter.post('/image/:id' , blogsController.addImage , multer.single('image'))
+// blogRouter.post('/image/:id' , BlogsController.addImage , multer.single('image'))
 
 
-// blogRouter.get('/all' , blogsController.getAllBlogs)
+// blogRouter.get('/all' , BlogsController.getAllBlogs)
 
-// blogRouter.get('/comments/:blogId' , blogsController.getCommentsOfBlog)
+// blogRouter.get('/comments/:blogId' , BlogsController.getCommentsOfBlog)
 
-// blogRouter.get('/:blogId' , blogsController.getBlogById)
+// blogRouter.get('/:blogId' , BlogsController.getBlogById)
 
 
-blogRouter.delete('/remvoeBlog/:blogId' , checkRole(permissions.WRITER) , blogsController.deleteBlogById)
+blogRouter.delete('/remvoeBlog/:blogId' , checkRole(permissions.WRITER) , BlogsController.deleteBlogById)
 
 
 blogRouter.patch(
@@ -40,7 +39,7 @@ blogRouter.patch(
     checkForBlogId,
     checkForCategoryId,
     imageUpload.single('image') , 
-    blogsController.updateBlogById
+    BlogsController.updateBlogById
 )
 
 

@@ -4,7 +4,7 @@ import paymentModel from "../../models/payments.js"
 import userModel from "../../models/users.js"
 import createRandomNumber from "../../utils/randomNumber.js"
 
-class paymentController {
+class PaymentController {
     async paymentGateway (req , res , next) {
         try {
             const user = req.user
@@ -93,4 +93,4 @@ class paymentController {
     }
 }
 
-export default new paymentController()
+export default new PaymentController()

@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import commentsSchema from "./comments.schema.js";
 
 
 const blogSchema = new mongoose.Schema({
@@ -9,7 +8,6 @@ const blogSchema = new mongoose.Schema({
     image    : { type : String },
     tags     : { type : [String], default : [] },
     category : { type : [mongoose.Types.ObjectId], required : true },
-    comments : { type : [mongoose.Types.ObjectId], default : [] },
     likes    : { type : [mongoose.Types.ObjectId], default : [] },
     bookmarks: { type : [mongoose.Types.ObjectId], default : [] }
 } , {

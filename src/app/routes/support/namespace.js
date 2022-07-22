@@ -1,10 +1,10 @@
 import express from 'express'
-import namespaceController from '../../controllers/support/namespace.controller.js'
+import NamespaceController from '../../controllers/support/namespace.controller.js'
 
 const namespaceRouter = express.Router()
 
-namespaceRouter.post('/create' , namespaceController.createNamespace)
+namespaceRouter.post('/create' , NamespaceController.createNamespace)
 
-namespaceRouter.get('/all' , namespaceController.getNamespaces)
+namespaceRouter.get('/all' , NamespaceController.getNamespaces)
 
 export default namespaceRouter

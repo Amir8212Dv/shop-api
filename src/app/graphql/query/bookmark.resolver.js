@@ -11,9 +11,9 @@ import httpStatus from 'http-status-codes'
 import createResponseType from '../types/responseType.js'
 
 const responseType = {
-     bookmarks : {type : new GraphQLList(bookmarkType)}
+    bookmarks : {type : new GraphQLList(bookmarkType)}
 }
-class bookmarkResolver {
+class BookmarkQuery {
 
     getUserBookmarks = {
         type : createResponseType(responseType),
@@ -43,4 +43,4 @@ class bookmarkResolver {
     }
 
 }
-export default new bookmarkResolver()
+export default new BookmarkQuery()

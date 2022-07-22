@@ -6,10 +6,13 @@ import createImageLink from "../../../utils/createImageLink.js"
 import stringToArray from "../../../utils/stringToArray.js"
 import httpStatus from 'http-status-codes'
 import validateObjectId from "../../../validators/objectId.js"
+import userModel from "../../../models/users.js"
+import deleteFile from "../../../utils/deleteFiles.js"
+import basketModel from "../../../models/basket.js"
 
 
 
-class productController {
+class ProductController {
     #aggregateScheam = []
     constructor() {
         autobind(this)
@@ -50,16 +53,49 @@ class productController {
     async editProduct(req , res , next) {
         try {
             const data = req.body
+    
             const {productId} = req.params
+    
             await validateObjectId.validateAsync(productId)
-
+    
+            
             if(typeof data.features === 'string') data.features = JSON.parse(data.features)
             stringToArray(data.tags) // swagger sends arrays in format: "item1,item2,item3"
-
+            
+    
             await updateProductValidationSchema.validateAsync(data)
+    
+            console.log(data)
+            const {price : oldPrice , discount : oldDiscount} = await productModel.findById(productId , {price : 1 , discount : 1})
+    
+            
+            const product = await productModel.findByIdAndUpdate(productId ,data , {returnDocument : 'after'})
+    
+            
+            if(data.price || data.discount) {
+        
+                const oldTotalPrice = oldPrice - oldDiscount
+                const newTotalPrice = product.price - product.discount
+                
+        
+                const baskets = await basketModel.find({'products.productId' : productId})
 
-            const product = await productModel.findByIdAndUpdate(productId , data , {returnDocument : 'after'})
+                baskets.forEach(basket => {
+                    const basketProduct = basket.products.find(item => item.productId.toString() === productId)
+                    basket.totalPrice +=  basketProduct.count * (newTotalPrice - oldTotalPrice)
+                    basket.save()
+                })
+// ____________________________________________________________________________________________________
 
+                const basket = await basketModel.updateMany({'products.productId' : productId} , 
+                    [{$set : {totalPrice : {$multiply : ['$produts.$.count' , 30000]} }}]
+            
+                    , {'products.$' : 1}
+                )
+
+            }
+                
+        
             res.status(httpStatus.CREATED).send({
                 status : httpStatus.CREATED,
                 message : 'product edited successfully',
@@ -119,9 +155,25 @@ class productController {
         try {
             const {productId} = req.params
             
+
             const product = await productModel.findByIdAndDelete(productId)
 
             createNotFoundError({product})
+
+            if(product.images.length) deleteFile(`images/${productId}`)
+
+        
+            const totalPrice = product.price - product.discount
+            const baskets = await basketModel.find({'products.productId' : productId})
+            baskets.forEach(basket => {
+                const productCount = basket.products.find(item => item.productId.toString() === productId).count
+
+                basket.products = basket.products.filter(item => item.productId.toString() !== productId)
+
+                basket.totalPrice -=  productCount * totalPrice
+                basket.save()                
+            })
+
 
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,
@@ -136,4 +188,4 @@ class productController {
 
 }
 
-export default new productController()
+export default new ProductController()

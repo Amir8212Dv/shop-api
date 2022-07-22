@@ -6,12 +6,14 @@ import mongoose from 'mongoose'
 import httpStatus from 'http-status-codes'
 import createResponseType from "../types/responseType.js";
 import { GraphQLList, GraphQLObjectType } from "graphql";
+import basketType from "../types/basket.type.js";
+import basketModel from "../../models/basket.js";
 
 const responseType = {
-    baskets : {type : new GraphQLList(anyType)}
+    baskets : {type : basketType}
 }
 
-class basketResolver {
+class BasketQuery {
     getBasket = {
         type : createResponseType(responseType),
         resolve : async (obj , args , context , info) => {
@@ -21,22 +23,22 @@ class basketResolver {
             await validateObjectId.validateAsync(courseId)
     
     
-            const userBasket = await userModel.aggregate([
+            const basket = await basketModel.aggregate([
                 {$match : {_id : userId}},
                 {
                     $lookup : {
                         from : 'products',
-                        localField : 'basket.products.productId',
+                        localField : 'products.productId',
                         foreignField : '_id',
-                        as : 'basket.productDetails'
+                        as : 'productDetails'
                     }
                 },
                 {
                     $lookup : {
                         from : 'courses',
-                        localField : 'basket.courses.courseId',
+                        localField : 'courses.courseId',
                         foreignField : '_id',
-                        as : 'basket.courseDetails'
+                        as : 'courseDetails'
                     }
                 }
             ])
@@ -44,7 +46,7 @@ class basketResolver {
                 status : httpStatus.OK,
                 message : '',
                 data : {
-                    basket : userBasket.basket
+                    basket
                 }
             }
         }
@@ -53,4 +55,4 @@ class basketResolver {
 
 }
 
-export default new basketResolver()
+export default new BasketQuery()

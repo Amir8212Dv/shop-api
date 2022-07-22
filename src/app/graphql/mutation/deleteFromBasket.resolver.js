@@ -8,11 +8,12 @@ import blogModel from "../../models/blogs.js";
 import productModel from "../../models/products.js";
 import userModel from "../../models/users.js";
 import createResponseType from "../types/responseType.js";
+import basketModel from "../../models/basket.js";
 
 
 
 
-class deleteFromBasket {
+class DeleteFromBasketMutation {
     decreaseProduct = {
         type: createResponseType(),
         args: {
@@ -22,26 +23,26 @@ class deleteFromBasket {
         resolve: async (obj, args, context, info) => {
             await verifyAccessTokenGraphQL(context.req);
             const { productId } = args;
-            const userId = context.req.user._id;
+            const basketId = context.req.user.basket;
             await validateObjectId.validateAsync(productId);
 
-            const user = await userModel.findOne(
-                { _id: userId, "basket.products.productId": productId },
-                { "basket.products.$": 1 }
+            const basket = await basketModel.findOne(
+                { _id: basketId, "products.productId": productId },
+                { "products.$": 1 }
             );
 
 
             const productPrice = user.basket.products[0].price
 
-            if (user.basket.products[0].count <= 1) {
-                await userModel.updateOne(
-                    { _id: userId, "basket.products.productId": productId },
-                    { $pull: { "basket.products": { productId: productId } } , $inc : {'basket.totalPrice' : -productPrice} }
+            if (basket.products[0].count <= 1) {
+                await basketModel.updateOne(
+                    { _id: basketId, "products.productId": productId },
+                    { $pull: { products: { productId } } , $inc : {totalPrice : -productPrice} }
                 );
             } else
-                await userModel.updateOne(
-                    { _id: userId, "basket.products.productId": productId },
-                    { $inc: { "basket.products.$.count": -1 , "basket.totalPrice": -productPrice } }
+                await basketModel.updateOne(
+                    { _id: basketId, "products.productId": productId },
+                    { $inc: { "products.$.count": -1 , totalPrice: -productPrice } }
                 );
 
             return {
@@ -60,20 +61,20 @@ class deleteFromBasket {
         resolve: async (obj, args, context, info) => {
             await verifyAccessTokenGraphQL(context.req);
             const { productId } = args;
-            const userId = context.req.user._id;
+            const basketId = context.req.user.basket;
             await validateObjectId.validateAsync(productId);
 
-            const user = await userModel.findOne(
-                { _id: userId, "basket.products.productId": productId },
-                { "basket.products.$": 1 }
+            const basket = await basketModel.findOne(
+                { _id: basketId, "products.productId": productId },
+                { "products.$": 1 }
             );
 
-            const productsTotalPrice = user.basket.products[0].price * user.basket.products[0].count
+            const productsTotalPrice = basket.products[0].price * basket.products[0].count
 
 
-            await userModel.updateOne(
-                { _id: userId, "basket.products.productId": productId },
-                { $pull: { "basket.products": { productId: productId } } , $inc : {"basket.totalPrice": -productsTotalPrice} }
+            await basketModel.updateOne(
+                { _id: basketId, "products.productId": productId },
+                { $pull: { "products": { productId } } , $inc : {totalPrice: -productsTotalPrice} }
             );
 
             return {
@@ -92,18 +93,18 @@ class deleteFromBasket {
         resolve: async (obj, args, context, info) => {
             await verifyAccessTokenGraphQL(context.req);
             const { courseId } = args;
-            const userId = context.req.user._id;
+            const basketId = context.req.user.basket;
             await validateObjectId.validateAsync(courseId);
 
-            const user = await userModel.findOne(
-                { _id: userId, "basket.courses.courseId": courseId },
-                { "basket.courses.$": 1 }
+            const basket = await basketModel.findOne(
+                { _id: basketId, "courses.courseId": courseId },
+                { "courses.$": 1 }
             );
-            const coursesTotalPrice = user.basket.courses[0].price
+            const coursesTotalPrice = basket.courses[0].price
 
-            await userModel.updateOne(
-                { _id: userId, "basket.courseId": courseId },
-                { $pull: { "basket.courses": { courseId: courseId } }, $inc : {"basket.totalPrice": -coursesTotalPrice} }
+            await basketModel.updateOne(
+                { _id: basketId,  courseId },
+                { $pull: { "courses": { courseId } }, $inc : {totalPrice: -coursesTotalPrice} }
             );
 
             return {
@@ -115,4 +116,4 @@ class deleteFromBasket {
     };
 }
 
-export default new deleteFromBasket();
+export default new DeleteFromBasketMutation();

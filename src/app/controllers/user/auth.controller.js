@@ -1,29 +1,38 @@
 import httpError from 'http-errors'
-import validator from 'validator'
 import userModel from "../../models/users.js"
 import createToken from "../../utils/createAccessToken.js"
 import createRandomNumber from '../../utils/randomNumber.js'
 import { createRefreshToken, validateRefreshToken } from "../../utils/refreshToken.js"
 import httpStatus from 'http-status-codes'
+import {checkOtpValidationSchema, loginWithOtpValidationSchema, signupUserValidationSchema} from '../../validators/user/auth.schema.js'
+import sendMessage from '../../utils/sendSMS.js'
+import createHttpError from 'http-errors'
+import { checkHashedPassword, hashPassword } from '../../utils/hashPassword.js'
+import { createNotFoundError } from '../../utils/createError.js'
+import basketModel from '../../models/basket.js'
 
 
-class Auth {
-    async getOtp(req , res , next) {
+class AuthController {
+    async signUp(req , res , next) {
         try {
             // const user = await userSchema.validateAsync(req.body)
-            const mobile = req.body.mobile
+            const userData = req.body
+            await signupUserValidationSchema.validateAsync(userData)
 
-            if(!(validator.isMobilePhone(mobile))) throw httpError.BadRequest('invalid data')
-            
+            const checkUserExist = await userModel.findOne({mobile : userData.mobile})
+            if(checkUserExist) throw createHttpError.BadRequest('user already signed in')
+
             const code = createRandomNumber()
-            const user = await userModel.findOne({mobile})
+            // sendMessage(userData.mobile , code)
             console.log(code)
+
             const expire = new Date().getTime() + 120000
-            if(!user) {
-                await userModel.create({mobile , otp : {code , expire} , roles : 'SUPLIER'})
-            } else {
-                await userModel.updateOne({mobile} , {otp : {code , expire}})
-            }
+            userData.otp = {code , expire}
+            
+            userData.password = hashPassword(userData.password)
+
+            const user = await userModel.create({...userData , role : 'USER'})
+
             res.status(201).send({
                 status : 201,
                 message : 'otp sended successfully',
@@ -34,17 +43,54 @@ class Auth {
             next(httpError.BadRequest(error.message))
         }
     }
-    async login(req , res , next) {
+
+    async loginWithOtp(req , res , next) {
         try {
-            const {code , mobile} = req.body
+            const data = req.body
+            await loginWithOtpValidationSchema.validateAsync(data)
+
+            const user = await userModel.findOne({mobile : data.mobile})
+            createNotFoundError({user})
+
+            const code = createRandomNumber()
+            console.log(code)
+
+            const expire = new Date().getTime() + 120000
+            user.otp = {code , expire}
+            await user.save()
+
+            res.status(httpStatus.LOCKED).send({
+                status : httpStatus.LOCKED,
+                message : 'verification code sended successfully',
+                data : {}
+            })
+
+        } catch (error) {
+            next(error)
+        }
+    }
+    async checkOtp(req , res , next) {
+        try {
+            const data = req.body
+            await checkOtpValidationSchema.validateAsync(data)
 
             const time = new Date().getTime()
 
-            const user = await userModel.findOne({mobile})
-            if(user.otp.code !== +code || user.otp.expire < time) throw httpError.BadRequest('otp is wrong')
+            const user = await userModel.findOne({mobile : data.mobile})
 
-            const accessToken = await createToken({mobile})
-            const refreshToken = await createRefreshToken({mobile} , user._id)
+            if(!user.basket) {
+                const basket = await basketModel.create({for : user._id})
+                user.basket = basket._id
+                await user.save()
+            }
+            console.log(data.mobile , user)
+            createNotFoundError({user})
+
+            if(user.otp.code !== +data.code) throw httpError.BadRequest('verification code is wrong')
+            else if(user.otp.expire < time) throw httpError.BadRequest('verification code is expired')
+
+            const accessToken = await createToken({mobile : data.mobile})
+            const refreshToken = await createRefreshToken({mobile : data.mobile} , user._id)
 
             res.cookie('authorization' , `Bearer ${accessToken}` , {signed : true , httpOnly : true , expires : new Date(Date.now() + + (60 * 60 * 24 * 1000))})
             
@@ -58,6 +104,70 @@ class Auth {
             })
 
         } catch (error) {
+            next(error)
+        }
+    }
+    async loginWithPassword(req , res , next) {
+        try {
+            const loginData = req.body
+            const searchUserBy = loginData.mobile ? {mobile : loginData.mobile} : {email : loginData.email}
+
+            
+            const user = await userModel.findOne(searchUserBy)
+            createNotFoundError({user})
+            
+            // if(loginData.basketId) {
+            //     const basket = await basketModel.findById(loginData.basketId)
+            //     if(basket) {
+            //         const {products , courses , totalPrice} = basket
+
+            //         const userBasket = await basketModel.findById(user.basket)
+
+            //         const userBasketProductIds = userBasket.products.map(product => product.productId)
+            //         const userBasketCourseIds = userBasket.courses.map(course => course.courseId)
+
+            //         products.forEach(product => {
+            //             if(userBasketProductIds.includes(product.productId)) {
+            //                 userBasket.products.forEach(item => {
+            //                     if(item.productId === product.productId) {
+            //                         item.count += product.count
+            //                         item.price += product.price
+            //                         userBasket.totalPrice += item.price
+            //                     }
+            //                 })
+            //             } else {
+            //                 userBasket.products.push(product)
+            //                 userBasket.totalPrice += product.price
+            //             }
+            //         })
+
+            //         courses.forEach(course => {
+            //             if(user.courses.includes(course.courseId) || userBasketCourseIds.includes(course.courseId)) return
+            //             userBasket.courses.push(course)
+            //             userBasket.totalPrice += course.price
+            //         })
+            //     }
+            // }
+            const comparePassword = checkHashedPassword(loginData.password , user.password)
+
+            if(!comparePassword) throw createHttpError.Unauthorized(`entered ${loginData.mobile ? 'mobile' : 'email'} or password is wrong`)
+
+            const accessToken = await createToken({mobile : user.mobile})
+            const refreshToken = await createRefreshToken({mobile : user.mobile} , user._id)
+
+            res.cookie('authorization' , `Bearer ${accessToken}` , {signed : true , httpOnly : true , expires : new Date(Date.now() + + (60 * 60 * 24 * 1000))})
+            
+            res.status(httpStatus.LOCKED).send({
+                status : httpStatus.LOCKED,
+                message : 'loged in successfully',
+                data : {
+                    accessToken,
+                    refreshToken
+                }
+            })
+
+        } catch (error) {
+            console.log(error)
             next(error)
         }
     }
@@ -91,4 +201,4 @@ class Auth {
 
 }
 
-export default new Auth()
+export default new AuthController()

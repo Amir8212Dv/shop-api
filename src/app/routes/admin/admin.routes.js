@@ -10,6 +10,7 @@ import userRouter from './user.js'
 import roleRouter from './role.js'
 import permissionRouter from './permission.js'
 import checkRole from '../../middlewares/checkRole.js'
+import commentRouter from './comment.js'
 import { permissions } from '../../utils/constants.js'
 
 
@@ -24,7 +25,7 @@ router.use('/episode' , episodeRouter)
 router.use('/user' , userRouter)
 router.use('/role' , checkRole(permissions.ADMIN) , roleRouter)
 router.use('/permission' , checkRole(permissions.ADMIN) , permissionRouter)
-
+router.use('/comment' , checkRole(permissions.ADMIN) , commentRouter)
 
 
 export default router

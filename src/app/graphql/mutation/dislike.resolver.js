@@ -8,7 +8,7 @@ import blogModel from '../../models/blogs.js'
 import productModel from '../../models/products.js'
 import createResponseType from '../types/responseType.js'
 
-class disLike {
+class DisLikeMutation {
 
     dislikeProduct = {
         type : createResponseType(),
@@ -80,4 +80,4 @@ class disLike {
     }
 }
 
-export default new disLike()
+export default new DisLikeMutation()

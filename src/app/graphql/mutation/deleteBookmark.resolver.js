@@ -8,7 +8,7 @@ import blogModel from '../../models/blogs.js'
 import productModel from '../../models/products.js'
 import createResponseType from '../types/responseType.js'
 
-class deleteBookmark {
+class DeleteBookmarkMutation {
 
     deleteBookmarkProduct = {
         type : createResponseType(),
@@ -80,4 +80,4 @@ class deleteBookmark {
     }
 }
 
-export default new deleteBookmark()
+export default new DeleteBookmarkMutation()

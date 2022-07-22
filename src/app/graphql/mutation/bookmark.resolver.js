@@ -8,7 +8,7 @@ import blogModel from '../../models/blogs.js'
 import productModel from '../../models/products.js'
 import createResponseType from '../types/responseType.js'
 
-class bookmark {
+class BookmarkMutation {
 
     bookmarkProduct = {
         type : createResponseType(),
@@ -80,4 +80,4 @@ class bookmark {
     }
 }
 
-export default new bookmark()
+export default new BookmarkMutation()

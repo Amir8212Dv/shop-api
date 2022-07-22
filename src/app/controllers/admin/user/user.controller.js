@@ -1,8 +1,9 @@
 import userModel from '../../../models/users.js'
 import httpStatus from 'http-status-codes'
+import { updateUserValidationSchema } from '../../../validators/user/auth.schema.js'
 
 
-class userController {
+class UserController {
     
     async getAllUsers(req , res , next) {
         try {
@@ -25,7 +26,24 @@ class userController {
     }
     async updateUser(req , res , next) {
         try {
-            ///// write codes ...
+            
+            const userId = req.user._id
+            const updateData = req.body
+
+            await updateUserValidationSchema.validateAsync(updateData)
+
+            const user = await userModel.findByIdAndUpdate(userId , updateData , {returnDocument : 'after'})
+
+            res.status(httpStatus.OK).send({
+                status : httpStatus.OK,
+                message : 'user updated successfully',
+                data : {
+                    user : [
+                        user
+                    ]
+                }
+            })
+
         } catch (error) {
             next(error)
         }
@@ -51,4 +69,4 @@ class userController {
     }
 }
 
-export default new userController()
+export default new UserController()

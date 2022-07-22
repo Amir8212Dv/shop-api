@@ -4,7 +4,7 @@ import path from 'path'
 import fs from 'fs'
 import createObjectId from '../utils/createObjectId.js'
 
-class socketController {
+class SocketController {
     #io
     #user
     constructor(io) {
@@ -89,4 +89,4 @@ class socketController {
     }
 }
 
-export default socketController
+export default SocketController

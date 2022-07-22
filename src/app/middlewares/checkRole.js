@@ -11,13 +11,13 @@ const checkRole = (...permissions) => async (req , res , next) => {
         
         if(!permissions || permissions.length === 0) return next()
         const userId = req.user._id
-
+        
         const user = await userModel.findById(userId , {role : 1})
         if(user.role === roles.ADMIN) return next()
-
-
+        
+        
         const allPermissions = permissions.flat(2)
-
+        
         
         const [role] = await roleModel.aggregate([
             { 

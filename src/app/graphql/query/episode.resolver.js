@@ -5,13 +5,14 @@ import createQueryFilter from "../../utils/createQueryFilter.js";
 import httpStatus from 'http-status-codes'
 import createResponseType from "../types/responseType.js";
 import episodeModel from "../../models/course.chapter.episodes.js";
+import episodeType from '../types/episode.type.js'
 
 const responseType = {
     episode : {type : new GraphQLList(episodeType)}
 }
 
 
-class episodeResolver {
+class EpisodeQuery {
 
     getEpisodeById = {
         type : createResponseType(responseType),
@@ -37,4 +38,4 @@ class episodeResolver {
     }
 }
 
-export default new episodeResolver()
+export default new EpisodeQuery()

@@ -10,7 +10,7 @@ import { createNotFoundError } from "../../../utils/createError.js"
 
 
 
-class chapterController {
+class ChapterController {
 
     constructor(){
         autoBind(this)
@@ -138,4 +138,4 @@ class chapterController {
 } 
 
 
-export default new chapterController()
+export default new ChapterController()

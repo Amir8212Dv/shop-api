@@ -13,7 +13,7 @@ const router = express.Router()
 
 router.use('/user' , authRouter)
 
-router.use('/admin' , verifyAccessToken , checkRole(permissions.ADMIN) , admingRouter)
+router.use('/admin' , verifyAccessToken , admingRouter)
 
 router.use('/graphql' , expressGraphql.graphqlHTTP(graphqlConfig))
 

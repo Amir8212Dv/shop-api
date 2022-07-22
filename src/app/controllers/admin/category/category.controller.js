@@ -6,7 +6,7 @@ import { createCategoryValidationSchema , updateCategoryValidationSchema } from 
 import validateObjectId from "../../../validators/objectId.js"
 
 
-class categoryController {
+class CategoryController {
     async addCategory(req , res , next) {
         try {
             createCategoryValidationSchema.validate(req.body)
@@ -154,4 +154,4 @@ class categoryController {
 
 }
 
-export default new categoryController()
+export default new CategoryController()

@@ -1,5 +1,5 @@
 
-class supportController {
+class SupportController {
 
     async renderChattRoom(req , res , next) {
         try {
@@ -12,4 +12,4 @@ class supportController {
     }
 }
 
-export default new supportController()
+export default new SupportController()

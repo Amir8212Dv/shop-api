@@ -12,7 +12,7 @@ const responseType = {
 }
 
 
-class courseResolver extends Controller {
+class CourseQuery extends Controller {
     #aggregateSchema = [
         this.userLookup('teacher'),
         this.categoryLookup('category'),
@@ -119,4 +119,4 @@ class courseResolver extends Controller {
     }
 }
 
-export default new courseResolver()
+export default new CourseQuery()

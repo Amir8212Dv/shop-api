@@ -1,13 +1,13 @@
 import express from 'express'
-import roleController from '../../controllers/admin/RBAC/role.controller.js'
+import RoleController from '../../controllers/admin/RBAC/role.controller.js'
 
 
 const roleRouter = express.Router()
 
-roleRouter.post('/add' , roleController.createRole)
-roleRouter.get('/all' , roleController.getAllRoles)
-roleRouter.patch('/update/:roleId' , roleController.updateRoleById)
-roleRouter.delete('/delete/:roleId' , roleController.deleteRoleById)
+roleRouter.post('/add' , RoleController.createRole)
+roleRouter.get('/all' , RoleController.getAllRoles)
+roleRouter.patch('/update/:roleId' , RoleController.updateRoleById)
+roleRouter.delete('/delete/:roleId' , RoleController.deleteRoleById)
 
 
 export default roleRouter

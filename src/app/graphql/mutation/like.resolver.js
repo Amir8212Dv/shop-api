@@ -8,7 +8,7 @@ import blogModel from '../../models/blogs.js'
 import productModel from '../../models/products.js'
 import createResponseType from '../types/responseType.js'
 
-class like {
+class LikeMutation {
 
     likeProduct = {
         type : createResponseType(),
@@ -81,4 +81,4 @@ class like {
     }
 }
 
-export default new like()
+export default new LikeMutation()
