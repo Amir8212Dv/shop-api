@@ -40,6 +40,11 @@ class BasketQuery {
                         foreignField : '_id',
                         as : 'courseDetails'
                     }
+                },
+                {
+                    $sort : {
+                        createdAt : 1
+                    }
                 }
             ])
             return {

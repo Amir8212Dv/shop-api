@@ -13,7 +13,7 @@ productRouter.post(
     checkRole(permissions.SUPLIER) ,
     checkForCategoryId,
     imageUpload.array('images' , 10) , 
-    ProductController.addProduct
+    ProductController.createProduct
 )
 productRouter.patch(
     '/update/:productId' , 
@@ -23,7 +23,7 @@ productRouter.patch(
     imageUpload.array('images' , 10) , 
     ProductController.editProduct
 )
-productRouter.delete('/remove/:productId' , checkRole(permissions.SUPLIER) , ProductController.removeProduct)
+productRouter.delete('/remove/:productId' , checkRole(permissions.SUPLIER) , ProductController.deleteProduct)
 // productRouter.get('/all' , ProductController.getAllProducts)
 // productRouter.get('/:productId' , ProductController.getProductById)
 

@@ -13,7 +13,7 @@ courseRouter.post(
     checkRole(permissions.TEACHER) ,
     checkForCategoryId,
     imageUpload.single('image') , 
-    CourseController.addCourse
+    CourseController.createCourse
 )
 
 
@@ -21,7 +21,7 @@ courseRouter.post(
 
 // courseRouter.get('/:courseId' , CourseController.getCourseById)
 
-courseRouter.delete('/remove/:courseId' , checkRole(permissions.TEACHER) , CourseController.removeCourse)
+courseRouter.delete('/remove/:courseId' , checkRole(permissions.TEACHER) , CourseController.deleteCourse)
 
 courseRouter.patch(
     '/edit/:courseId' , 

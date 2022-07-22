@@ -1,6 +1,6 @@
 import userModel from '../../../models/users.js'
 import httpStatus from 'http-status-codes'
-import { updateUserValidationSchema } from '../../../validators/user/auth.schema.js'
+import { updateUserValidationSchema } from '../../../validators/admin/user.js'
 
 
 class UserController {
@@ -24,7 +24,7 @@ class UserController {
             next(error)
         }
     }
-    async updateUser(req , res , next) {
+    async editUser(req , res , next) {
         try {
             
             const userId = req.user._id

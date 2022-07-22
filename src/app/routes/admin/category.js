@@ -5,7 +5,7 @@ import { permissions } from '../../utils/constants.js'
 
 const categoryRouter = express.Router()
 
-categoryRouter.post('/create' , checkRole(permissions.ADMIN) , CategoryController.addCategory)
+categoryRouter.post('/create' , checkRole(permissions.ADMIN) , CategoryController.createCategory)
 
 
 // categoryRouter.get('/all' , CategoryController.getAllCategory)
@@ -22,7 +22,7 @@ categoryRouter.post('/create' , checkRole(permissions.ADMIN) , CategoryControlle
 categoryRouter.patch('/edit/:categoryId' , checkRole(permissions.ADMIN) , CategoryController.editCategory)
 
 
-categoryRouter.delete('/remove/:categoryId' , checkRole(permissions.ADMIN) , CategoryController.removCategory)
+categoryRouter.delete('/remove/:categoryId' , checkRole(permissions.ADMIN) , CategoryController.deleteCategory)
 
 
 

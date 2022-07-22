@@ -1,0 +1,114 @@
+ components:
+    schemas :
+      addRole:
+        type : object
+        required : 
+          - title
+          - permissions
+        properties :
+          title : 
+            type : string
+            description : role title
+          permissions :
+            type : array
+            items :
+              type : string
+
+
+
+ /admin/role/add:
+      post:
+          tags : [RBAC]
+          summary : controle roles
+          description : controle roles
+          requestBody:
+              required : true
+              content:
+                  application/x-www-form-urlencoded:
+                      schema:
+                          $ref : '#/components/schemas/addRole'
+                  application/json:
+                      schema:
+                          $ref : '#/components/schemas/addRole'
+
+          security:
+              -   bearerAuth : []
+          responses:
+              201:
+                  description : successfull
+                  content:
+                      application/json:
+                          schema:
+                              $ref: '#/definitions/getRole'
+
+
+ /admin/role/update/{roleId}:
+      patch:
+          tags : [RBAC]
+          summary : controle roles
+          description : controle roles
+          requestBody:
+              required : true
+              content:
+                  application/x-www-form-urlencoded:
+                      schema:
+                          $ref : '#/components/schemas/addRole'
+                  application/json:
+                      schema:
+                          $ref : '#/components/schemas/addRole'
+
+          security:
+              -   bearerAuth : []
+          parameters :
+            - in : path
+              type : string
+              name : roleId
+              required : true
+          responses:
+              201:
+                  description : successfull
+                  content:
+                      application/json:
+                          schema:
+                              $ref: '#/definitions/getRole'
+
+ /admin/role/delete/{roleId}:
+      delete:
+          tags : [RBAC]
+          summary : controle roles
+          description : controle roles
+
+          security:
+              -   bearerAuth : []
+          parameters :
+            - in : path
+              type : string
+              name : roleId
+              required : true
+          responses:
+              201:
+                  description : successfull
+                  # content:
+                  #     application/json:
+                  #         schema:
+                  #             $ref: '#/definitions/getProduct'
+
+
+ /admin/role/all:
+      get:
+          tags : [RBAC]
+          summary : controle roles
+          description : controle roles
+
+          security:
+              -   bearerAuth : []
+
+          responses:
+              201:
+                  description : successfull
+                  content:
+                      application/json:
+                          schema:
+                              $ref: '#/definitions/getRole'
+
+

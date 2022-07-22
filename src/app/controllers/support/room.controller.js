@@ -34,7 +34,8 @@ class RoomController {
     async getAllRooms(req , res , next) {
         try {
 
-            const namespaces = await converstationModel.find({_id : req.params.spaceId} , {rooms : 1})
+            const namespaces = await converstationModel.findOne({_id : req.params.spaceId} , {'rooms.messages' : 0})
+            console.log(namespaces.rooms)
 
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,
@@ -69,7 +70,7 @@ class RoomController {
             next(error)
         }
     }
-    async updateRoom(req , res , next) {
+    async editRoom(req , res , next) {
         try {
 
             const {roomId} = req.params

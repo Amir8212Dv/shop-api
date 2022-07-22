@@ -7,7 +7,7 @@ import validateObjectId from "../../../validators/objectId.js"
 
 
 class CategoryController {
-    async addCategory(req , res , next) {
+    async createCategory(req , res , next) {
         try {
             createCategoryValidationSchema.validate(req.body)
             const {title , parent} = req.body
@@ -30,7 +30,7 @@ class CategoryController {
             next(error)
         }
     }
-    async removCategory(req , res , next) {
+    async deleteCategory(req , res , next) {
         try {
             const {categoryId} = req.params
             await validateObjectId.validateAsync(categoryId)

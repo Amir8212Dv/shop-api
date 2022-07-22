@@ -4,9 +4,10 @@ import { GraphQLList,GraphQLObjectType,GraphQLString } from 'graphql'
 import createQueryFilter from "../../utils/createQueryFilter.js";
 import httpStatus from 'http-status-codes'
 import createResponseType from "../types/responseType.js";
+import chapterType from "../types/chapter.type.js";
 
 const responseType = {
-        courses : {type : new GraphQLList(courseType)}
+        courses : {type : new GraphQLList(chapterType)}
 }
 
 
@@ -21,7 +22,7 @@ class ChapterQuery {
             const {courseId} = args
             await validateObjectId.validateAsync(courseId)
 
-            const chapters = await chapterModel.find({courseId})
+            const chapters = await chapterModel.find({courseId}).sort({createdAt : -1 , 'episodes.createdAt' : -1})
             // if(!course) throw createHttpError.NotFound('course not found')
 
             res.status(httpStatus.OK).send({
@@ -42,7 +43,7 @@ class ChapterQuery {
             const {chapterId} = args
             await validateObjectId.validateAsync(chapterId)
 
-            const chapter = await chapterModel.findById(chapterId)
+            const chapter = await chapterModel.findById(chapterId).sort({'episodes.createdAt' : -1})
             if(!chapter) throw createHttpError.NotFound('chapter not found')
 
             res.status(httpStatus.OK).send({

@@ -13,7 +13,7 @@ import deleteFile from "../../../utils/deleteFiles.js"
 
 class EpisodeController {
 
-    async addEpisode(req , res , next) {
+    async createEpisode(req , res , next) {
         try {
             const videoAddress = (req.file.path.split('public')[1]).replaceAll('\\' , '/')
             const time = await getVideoDurationInSeconds(createFileLink(req , videoAddress))

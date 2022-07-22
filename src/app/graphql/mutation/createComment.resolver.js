@@ -72,7 +72,6 @@ class CreateCommentMutation {
     //         const author = context.req.user._id
 
     //         if(parent) {
-    //             console.log('a')
     //             await validateObjectId.validateAsync(parent)
     //             const checkForComment = await commentModel.findOne({_id : parent})
     
@@ -88,7 +87,6 @@ class CreateCommentMutation {
     //                 {_id : courseId},
     //                 {$push : {comments : createComment._id}}
     //             )
-    //             console.log(updateCourse)
     //             if(+updateCourse.matchedCount === 0) throw createHttpError.NotFound('course not found')
     //             if(+updateCourse.modifiedCount === 0) throw createHttpError.InternalServerError('create comment faild')
     //         }

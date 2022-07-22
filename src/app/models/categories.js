@@ -18,7 +18,7 @@ categorySchema.virtual('children' , {
 })
 
 function populate(next) {
-    this.populate([{path : 'children' , select : {__v : 0 , id : 0}}])
+    this.populate([{path : 'children' , select : {__v : 0 , id : 0} , options : {sort : {title : -1}}}])
     next()
 }
 async function deleteCategoryChildren(next) {

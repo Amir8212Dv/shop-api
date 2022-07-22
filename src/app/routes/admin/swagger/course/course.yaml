@@ -95,50 +95,6 @@
 
 
 
- /admin/course/all:
-      get:
-          tags : [course]
-          summary : get all courses
-          description : get all courses and search in all courses in  title/text/short_text
-          security : 
-              -   bearerAuth : []
-          parameters :
-              -   in : query
-                  name : search
-                  type : string
-                  description : search text
-          responses:
-              200 : 
-                  description : successfull
-                  content :
-                      application/json:
-                          schema:
-                              $ref: '#/definitions/getCourse'
-
-
-
-
-
- /admin/course/{id}:
-      get:
-          tags : [course]
-          summary : get course with ID
-          description : get course with ID
-          security : 
-              -   bearerAuth : []
-          parameters :
-              -   in : path
-                  name : id
-                  type : string
-                  required : true
-                  description : course ID
-          responses:
-              200 : 
-                  description : successfull
-                  content :
-                      application/json:
-                          schema:
-                              $ref: '#/definitions/getCourse'
 
 
 

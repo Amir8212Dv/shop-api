@@ -53,7 +53,7 @@ class CourseController extends Controller {
     //     autoBind(this)
     // }
 
-    async addCourse(req , res , next) {
+    async createCourse(req , res , next) {
         try {
             if(req.file) req.body.image = (req.file.path.split('public')[1]).replaceAll('\\' , '/')
 
@@ -75,7 +75,6 @@ class CourseController extends Controller {
             })
             
         } catch (error) {
-            console.log(error)
             next(error)
         }
     }
@@ -91,7 +90,6 @@ class CourseController extends Controller {
     //             }, 
     //             ...this.#aggregateSchema,
     //         ])
-    //         console.log(this.#aggregateSchema)
 
     //         res.status(httpStatus.OK).send({
     //             status : httpStatus.OK,
@@ -132,7 +130,7 @@ class CourseController extends Controller {
     //         next(error)
     //     }
     // }
-    async removeCourse(req , res , next) {
+    async deleteCourse(req , res , next) {
         try {
 
             const {courseId} = req.params

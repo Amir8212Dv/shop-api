@@ -5,7 +5,7 @@ import { permissions } from '../../utils/constants.js'
 
 const chapterRouter = express.Router()
 
-chapterRouter.put('/add' , checkRole(permissions.TEACHER) , ChapterController.addChapter)
+chapterRouter.put('/add' , checkRole(permissions.TEACHER) , ChapterController.createChapter)
 // chapterRouter.get('/all/:courseId' , ChapterController.getAllChaptersOfCourse)
 // chapterRouter.get('/:chapterId' , ChapterController.getChapterById)
 chapterRouter.delete('/delete/:chapterId' , checkRole(permissions.TEACHER) , ChapterController.deleteChapter)

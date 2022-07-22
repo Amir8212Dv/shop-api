@@ -6,7 +6,6 @@ class SupportController {
             
             res.render('chat.ejs')
         } catch (error) {
-            console.log(error)
             next(error)
         }
     }

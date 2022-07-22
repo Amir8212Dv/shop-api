@@ -78,7 +78,7 @@ class RoleController {
             next(error)
         }
     }
-    async updateRoleById(req , res , next) {
+    async editRoleById(req , res , next) {
         try {
             const {roleId} = req.params
             const updateData = req.body

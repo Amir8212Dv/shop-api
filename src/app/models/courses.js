@@ -39,11 +39,14 @@ courseSchema.virtual('likesCount').get(function(){
     return this.likes.length
 })
 
+
 courseSchema.pre('find' , function(next) {
     this.populate([{path : 'chapters'}])
     next()
-})
-courseSchema.pre('findOne' , function(next) {
+}).pre('findOne' , function(next) {
+    this.populate([{path : 'chapters'}])
+    next()
+}).pre('aggregate', function(next) {
     this.populate([{path : 'chapters'}])
     next()
 })

@@ -6,7 +6,7 @@ const jwtValidation = async jwtCode => {
     if(!jwtCode) throw new httpError.Unauthorized('please login again')
     const [bearer , token] = jwtCode.split(' ')
     if(token && bearer.toLowerCase() === 'bearer') {    
-        const {mobile} = jwt.verify(token , process.env.SECRETE_KEY || 'jsonwebtoken')
+        const {mobile} = jwt.verify(token , process.env.JWT_SECRETE_KEY)
         const user = await userModel.findOne({mobile} , {otp : 0 , __v : 0})
         if(!user) throw httpError.Unauthorized('user not found')
         return user
@@ -18,7 +18,7 @@ const verifyAccessToken = async (req , res , next) => {
     try {
         // const [bearer , token] = req.headers.authorization.split(' ')
         // if(token && bearer.toLowerCase() === 'bearer') {    
-        //     const {mobile} = jwt.verify(token , process.env.SECRETE_KEY || 'jsonwebtoken')
+        //     const {mobile} = jwt.verify(token , process.env.JWT_SECRETE_KEY || 'jsonwebtoken')
         //     const user = await userModel.findOne({mobile} , {otp : 0 , __v : 0})
         //     if(!user) throw httpError.Unauthorized('user not found')
 
@@ -38,7 +38,7 @@ export const verifyAccessTokenGraphQL = async (req) => {
     // if(!req.headers.authorization) throw new httpError.Unauthorized('please login again')
     // const [bearer , token] = req.headers.authorization.split(' ')
     // if(token && bearer.toLowerCase() === 'bearer') {    
-    //     const {mobile} = jwt.verify(token , process.env.SECRETE_KEY || 'jsonwebtoken')
+    //     const {mobile} = jwt.verify(token , process.env.JWT_SECRETE_KEY || 'jsonwebtoken')
     //     const user = await userModel.findOne({mobile} , {otp : 0 , __v : 0})
     //     if(user) return req.user = user
     // }
@@ -49,13 +49,16 @@ export const verifyAccessTokenGraphQL = async (req) => {
 }
 
 export const verifyAccessTokenFromCookie = async (req , res , next) => {
-    
-    const jwtCode = req.signedCookies
-    // console.log(jwtCode.)
-    // ('authorization' , process.env.COOKIE_SECRETE_KEY || 'cookiesecretekey')
-    const user = await jwtValidation(jwtCode.authorization)
-    res.cookie('userId' , user._id.toString())
-    next()
+    try {
+        const jwtCode = req.signedCookies
+        // ('authorization' , process.env.COOKIE_JWT_SECRETE_KEY || 'cookiesecretekey')
+        const user = await jwtValidation(jwtCode.authorization)
+        res.cookie('userId' , user._id.toString())
+        next()
+        
+    } catch (error) {
+        next(error)
+    }
 }
 
 export default verifyAccessToken

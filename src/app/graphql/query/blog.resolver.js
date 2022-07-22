@@ -1,4 +1,4 @@
-import {GraphQLList , GraphQLObjectType, GraphQLString} from 'graphql'
+import {GraphQLInt, GraphQLList , GraphQLObjectType, GraphQLString} from 'graphql'
 import { verifyAccessTokenGraphQL } from '../../middlewares/verifyAccessToken.js'
 import blogModel from '../../models/blogs.js'
 import createQueryFilter from '../../utils/createQueryFilter.js'
@@ -20,20 +20,10 @@ class BlogQuery extends Controller {
         autoBind(this)
     }
     #blogAggregate = [
-        this.userLookup('author'),
+        ...this.userLookup('author'),
         this.categoryLookup('category'),
         {
             $unwind : '$author'
-        },
-        {
-            $project : {
-                'author.bills' : 0,
-                'author.otp' : 0,
-                'author.discount' : 0,
-                'author.roles' : 0,
-                'author.mobile' : 0,
-                
-            }
         },
         {
             $addFields : {
@@ -49,13 +39,31 @@ class BlogQuery extends Controller {
             author : {type : GraphQLString},
             search : {type : GraphQLString},
             tags : {type : GraphQLString},
-            category : {type : GraphQLString}
+            category : {type : GraphQLString},
+            sort : {type : GraphQLString},
+            page : {type : GraphQLInt},
+            pageLimit : {type : GraphQLInt}
         },
         resolve : async (obj , args , context , info) => {
             await verifyAccessTokenGraphQL(context.req)
             const queryFilter = createQueryFilter(args)
+            const {page , pageLimit , sort} = args
 
-            const blogs =  await blogModel.find(queryFilter , {_id : 1 , title : 1 , text : 1 , short_text : 1 , tags  :1 , image : 1})
+            const blogs =  await blogModel.aggregate([
+                {$match : queryFilter},
+                ...this.#blogAggregate,
+                {
+                    $sort : {
+                        [sort] : 1
+                    }
+                },
+                {
+                    $limit : pageLimit || 10
+                },
+                {
+                    $skip : (page || 1) * (pageLimit || 10)
+                }
+            ])
             return {
                 status : httpStatus.OK,
                 message : '',

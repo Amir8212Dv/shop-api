@@ -71,7 +71,7 @@ class PermissionController {
             next(error)
         }
     }
-    async updatePermission(req , res , next) {
+    async editPermission(req , res , next) {
         try {
             const {permissionId} = req.params
             const updateData = req.body

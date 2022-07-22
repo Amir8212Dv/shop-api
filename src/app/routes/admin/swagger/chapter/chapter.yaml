@@ -56,47 +56,7 @@
                 $ref : '#/definitions/getChapter'
 
 
- /admin/chapter/all/{chapterId}:
-    get:
-      tags: [chapter]
-      summary : get all chapters
-      description : get all chapters of a course with courseId
-      security : 
-        - bearerAuth : []
-      parameters :
-        - in : path
-          name : courseId 
-          type : string 
-          required : true
-      responses:
-        200:
-          description : successfull 
-          content:
-            application/json:
-              schema :
-                $ref : '#/definitions/getChapter'
 
-
-
- /admin/chapter/{chapterId}:
-    get:
-      tags: [chapter]
-      summary : get one chapter
-      description : get one chapte by id
-      security : 
-        - bearerAuth : []
-      parameters :
-        - in : path
-          name : chapterId 
-          type : string 
-          required : true
-      responses:
-        200:
-          description : successfull 
-          content:
-            application/json:
-              schema :
-                $ref : '#/definitions/getChapter'
 
 
 

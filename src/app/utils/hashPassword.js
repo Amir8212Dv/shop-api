@@ -5,6 +5,5 @@ export const hashPassword = password => {
 }
 
 export const checkHashedPassword = (password , hashedText) => {
-    console.log(password , hashedText)
     return bcrypt.compareSync(password , hashedText)
 }

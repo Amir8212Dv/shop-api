@@ -15,13 +15,13 @@ import BasketQuery from './query/basket.resolver.js'
 import BookmarkQuery from './query/bookmark.resolver.js'
 import ChapterQuery from './query/chapter.resolver.js'
 import EpisodeQuery from './query/episode.resolver.js'
+import CommentQuery from './query/comment.resolver.js'
 
 const rootQuery = new graphql.GraphQLObjectType({
     name : 'query',
     fields : {
         allBlogs : BlogQuery.getAllBlogs,
         getBlogById : BlogQuery.getBlogById,
-        getBlogComments : BlogQuery.getBlogComments,
         allCategories : CategoryQuery.getAllCategories,
         categoryChildren : CategoryQuery.getChildrenOfCategory,
         getCategoryById : CategoryQuery.getCategoryById,
@@ -33,16 +33,17 @@ const rootQuery = new graphql.GraphQLObjectType({
         getCourseById : CourseQuery.getCourseById,
         getEpisodeById : EpisodeQuery.getEpisodeById,
         bookmarks : BookmarkQuery.getUserBookmarks,
-        getBasket : BasketQuery.getBasket
+        getBasket : BasketQuery.getBasket,
+        getComments : CommentQuery.getComments
     }
 })
 
 const rootMutation = new graphql.GraphQLObjectType({
     name : 'Mutation',
     fields : {
-        createCommentForBlog : CommentMutation.createCommentForBlogs,
-        createCommentForCourses : CommentMutation.createCommentForCourses,
-        createCommentForProducts : CommentMutation.createCommentForProducts,
+        createComment : CommentMutation.createCommentForBlogs,
+        // createCommentForCourses : CommentMutation.createCommentForCourses,
+        // createCommentForProducts : CommentMutation.createCommentForProducts,
 
         likeProduct : LikeMutation.likeProduct,
         likeCourse : LikeMutation.likeCourse,

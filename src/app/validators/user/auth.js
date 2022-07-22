@@ -10,13 +10,6 @@ export const signupUserValidationSchema = joi.object({
     .error(new Error('please enter a valid phone number'))
 })
 
-export const updateUserValidationSchema = joi.object({
-    first_name : joi.string(),
-    last_name : joi.string(),
-    email : joi.string().lowercase().email().error(new Error('please inter a valid email')),
-    password : joi.string().min(8)
-})
-
 export const loginWithPasswordValidationSchema = joi.object({
     email : joi.string().lowercase().email().error(new Error('please inter a valid email')),
     password : joi.string().required(),

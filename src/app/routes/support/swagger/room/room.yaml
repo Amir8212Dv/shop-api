@@ -1,0 +1,109 @@
+
+  components:
+      schemas:
+          Room:
+              type: object
+              required:
+                  -   name
+                  -   description
+              properties:
+                  name:
+                      type: string
+                      description: the title of category
+                  description:
+                      type: string
+                      description: the description of text of blog
+                  image:
+                      type: file
+                      description: the index picture of blog
+
+
+  /support/room/create:
+      post:
+          tags: [support]
+          summary: add room to namespace
+          requestBody:
+              required: true
+              content:
+                  application/x-www-form-urlencoded:
+                      schema:
+                          $ref: '#/components/schemas/Room'
+          security:
+            - bearerAuth : []
+          responses:
+              201:
+                  description: success
+                  content:
+                    application/json:
+                      schema :
+                        $ref : '#/definitions/getRoom'
+
+
+  /support/room/edit/{roomId}:
+      patch:
+          tags: [support]
+          summary: edit room
+          requestBody:
+              required: true
+              content:
+                  application/x-www-form-urlencoded:
+                      schema:
+                          $ref: '#/components/schemas/Room'
+          parameters:
+            - in : path
+              name : roomId
+              required : true
+              type : string
+          security:
+            - bearerAuth : []
+          responses:
+              201:
+                  description: success
+                  content:
+                    application/json:
+                      schema :
+                        $ref : '#/definitions/getRoom'
+          
+
+
+  /support/room/delete/{roomId}:
+      delete:
+          tags: [support]
+          summary: delete room
+          requestBody:
+              required: true
+              content:
+                  application/x-www-form-urlencoded:
+                      schema:
+                          $ref: '#/components/schemas/Room'
+          parameters:
+            - in : path
+              name : roomId
+              required : true
+              type : string
+          security:
+            - bearerAuth : []
+          responses:
+              201:
+                  description: success
+ 
+
+
+  /support/room/all/{spaceId}:
+      get:
+          tags: [support]
+          summary: get all rooms
+          security:
+            - bearerAuth : []
+          parameters : 
+            - in : path
+              type : string
+              required : true
+              name : spaceId
+          responses:
+              201:
+                  description: success
+                  content:
+                    application/json:
+                      schema :
+                        $ref : '#/definitions/getRoom'

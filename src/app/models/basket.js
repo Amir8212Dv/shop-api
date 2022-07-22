@@ -8,18 +8,6 @@ const productSchema = new mongoose.Schema({
     price : {type : Number , required : true}
 })
 
-productSchema.pre('updateOne' , async function(next) {
-    console.log('count' , this.count)
-    const {price , discount} = await productModel.findById(this.productId)
-    this.price = (price - discount) * this.count
-    next()
-})
-productSchema.pre('updateMany' , async function(next) {
-    console.log('count' , this.count)
-    const {price , discount} = await productModel.findById(this.productId)
-    this.price = (price - discount) * this.count
-    next()
-})
 
 const courseSchema = new mongoose.Schema({
     courseId : {type : mongoose.Types.ObjectId , required : true},

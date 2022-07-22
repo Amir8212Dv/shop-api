@@ -8,7 +8,6 @@ import swaggerUi from 'swagger-ui-express'
 import swaggerDocs from 'swagger-jsdoc'
 import redis from './utils/initRedis.js'
 import expressEjsLayouts from 'express-ejs-layouts'
-import ejs from 'ejs'
 import initSocketIo from './utils/initSocketIo.js'
 import socketHandler from './socket.io/index.js'
 import cookieParser from 'cookie-parser'
@@ -49,7 +48,7 @@ class Application {
                 },
                 servers : [
                     {
-                        url : 'http://localhost:4000',
+                        url : process.env.BASE_URL,
                     },
                     {
                         url : 'http://192.168.1.5:4000',
@@ -67,7 +66,7 @@ class Application {
         const socket = socketHandler(io)
 
         server.listen(this.#PORT , () => {
-            console.log('server is running on : http://localhost:' + this.#PORT)
+            console.log('server is running on : ' + process.env.BASE_URL)
         })
     }
     initTemplateEngine () {
@@ -96,7 +95,7 @@ class Application {
         this.#app.use(this.#routes)
     }
     setCookieParser(){
-        this.#app.use(cookieParser('cookiesecretekey'))
+        this.#app.use(cookieParser(process.env.COOKIE_SECRETE_KEY))
     }
     errorHandling() { 
         this.#app.use((req , res , next) => {

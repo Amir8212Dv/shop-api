@@ -1,6 +1,6 @@
 import courseType from "../types/course.type.js";
 import courseModel from '../../models/courses.js'
-import { GraphQLList,GraphQLObjectType,GraphQLString } from 'graphql'
+import { GraphQLInt, GraphQLList,GraphQLObjectType,GraphQLString } from 'graphql'
 import createQueryFilter from "../../utils/createQueryFilter.js";
 import httpStatus from 'http-status-codes'
 import createResponseType from "../types/responseType.js";
@@ -13,39 +13,41 @@ const responseType = {
 
 
 class CourseQuery extends Controller {
-    #aggregateSchema = [
-        this.userLookup('teacher'),
-        this.categoryLookup('category'),
-        {
-            $lookup : {
-                from : 'chapters',
-                localField : 'chapters',
-                foreignField : '_id',
-                as : 'chapters'
+    #aggregateSchema(page =1 , pageLimit = 10) {
+        return [
+            ...this.userLookup('teacher'),
+            this.categoryLookup('category'),
+            {
+                $lookup : {
+                    from : 'chapters',
+                    localField : 'chapters',
+                    foreignField : '_id',
+                    as : 'chapters'
+                }
+            },
+            {
+                $lookup : {
+                    from : 'episodes',
+                    localField : 'chapters.episodes',
+                    foreignField : '_id',
+                    as : 'chapters.episodes'
+                }
+            },
+            // {
+            //     $unwind : '$teacher'
+            // },
+            // {
+            //     $unwind : '$category'
+            // },
+            {
+                $project : {
+                    'teacher.mobile' : 0,
+                    'teacher.bills' : 0,
+                    'teacher.otp' : 0
+                }
             }
-        },
-        {
-            $lookup : {
-                from : 'episodes',
-                localField : 'chapters.episodes',
-                foreignField : '_id',
-                as : 'chapters.episodes'
-            }
-        },
-        // {
-        //     $unwind : '$teacher'
-        // },
-        // {
-        //     $unwind : '$category'
-        // },
-        {
-            $project : {
-                'teacher.mobile' : 0,
-                'teacher.bills' : 0,
-                'teacher.otp' : 0
-            }
-        }
-    ]
+        ]
+    }
     constructor() {
         super()
         autoBind(this)
@@ -59,17 +61,32 @@ class CourseQuery extends Controller {
             category : {type : GraphQLString},
             status : {type : GraphQLString},
             discount : {type : GraphQLString},
-            price : {type : GraphQLString}
+            price : {type : GraphQLString},
+            sort : {type : GraphQLString},
+            page : {type : GraphQLInt},
+            pageLimit : {type : GraphQLInt},
         },
         resolve : async (obj , args , context , info) => {
             
             const queryFilter = createQueryFilter(args)
+            const {page , pageLimit , sort} = args
             
             const courses = await courseModel.aggregate([
                 {
                     $match : queryFilter
                 }, 
                 ...this.#aggregateSchema,
+                {
+                    $limit : pageLimit || 10
+                },
+                {
+                    $skip : (page || 1) * (pageLimit || 10)
+                },
+                {
+                    $sort : {
+                        [sort] : 1
+                    }
+                }
             ])
 
 

@@ -119,10 +119,6 @@
           responses : 
               200:
                   description : successfull
-                  content :
-                      application/json:
-                          schema:
-                              $ref: '#/definitions/login'
 
 
  /user/login-password:
@@ -165,10 +161,7 @@
           responses : 
               200:
                   description : successfull
-                  content :
-                      application/json:
-                          schema:
-                              $ref: '#/definitions/login'
+
  /user/check-otp:
       post:
           tags : [auth]

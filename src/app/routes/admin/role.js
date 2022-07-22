@@ -6,7 +6,7 @@ const roleRouter = express.Router()
 
 roleRouter.post('/add' , RoleController.createRole)
 roleRouter.get('/all' , RoleController.getAllRoles)
-roleRouter.patch('/update/:roleId' , RoleController.updateRoleById)
+roleRouter.patch('/update/:roleId' , RoleController.editRoleById)
 roleRouter.delete('/delete/:roleId' , RoleController.deleteRoleById)
 
 

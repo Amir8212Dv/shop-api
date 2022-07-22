@@ -4,7 +4,6 @@ const getLocation = socket => {
     const messagesElement = document.querySelector('.messages ul')
 
     locationButton.addEventListener('click' , () => {
-        console.log('location clicked')
         navigator.geolocation.getCurrentPosition(coords => {
             const lat = coords.coords.latitude
             const long = coords.coords.longitude

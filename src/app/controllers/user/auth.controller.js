@@ -4,7 +4,7 @@ import createToken from "../../utils/createAccessToken.js"
 import createRandomNumber from '../../utils/randomNumber.js'
 import { createRefreshToken, validateRefreshToken } from "../../utils/refreshToken.js"
 import httpStatus from 'http-status-codes'
-import {checkOtpValidationSchema, loginWithOtpValidationSchema, signupUserValidationSchema} from '../../validators/user/auth.schema.js'
+import {checkOtpValidationSchema, loginWithOtpValidationSchema, signupUserValidationSchema} from '../../validators/user/auth.js'
 import sendMessage from '../../utils/sendSMS.js'
 import createHttpError from 'http-errors'
 import { checkHashedPassword, hashPassword } from '../../utils/hashPassword.js'
@@ -23,8 +23,8 @@ class AuthController {
             if(checkUserExist) throw createHttpError.BadRequest('user already signed in')
 
             const code = createRandomNumber()
-            // sendMessage(userData.mobile , code)
             console.log(code)
+            // sendMessage(userData.mobile , code)
 
             const expire = new Date().getTime() + 120000
             userData.otp = {code , expire}
@@ -33,8 +33,8 @@ class AuthController {
 
             const user = await userModel.create({...userData , role : 'USER'})
 
-            res.status(201).send({
-                status : 201,
+            res.status(httpStatus.CREATED).send({
+                status : httpStatus.CREATED,
                 message : 'otp sended successfully',
                 data : {}
             })
@@ -59,8 +59,8 @@ class AuthController {
             user.otp = {code , expire}
             await user.save()
 
-            res.status(httpStatus.LOCKED).send({
-                status : httpStatus.LOCKED,
+            res.status(httpStatus.OK).send({
+                status : httpStatus.OK,
                 message : 'verification code sended successfully',
                 data : {}
             })
@@ -83,7 +83,6 @@ class AuthController {
                 user.basket = basket._id
                 await user.save()
             }
-            console.log(data.mobile , user)
             createNotFoundError({user})
 
             if(user.otp.code !== +data.code) throw httpError.BadRequest('verification code is wrong')
@@ -94,8 +93,8 @@ class AuthController {
 
             res.cookie('authorization' , `Bearer ${accessToken}` , {signed : true , httpOnly : true , expires : new Date(Date.now() + + (60 * 60 * 24 * 1000))})
             
-            res.status(httpStatus.LOCKED).send({
-                status : httpStatus.LOCKED,
+            res.status(httpStatus.OK).send({
+                status : httpStatus.OK,
                 message : 'loged in successfully',
                 data : {
                     accessToken,
@@ -157,8 +156,8 @@ class AuthController {
 
             res.cookie('authorization' , `Bearer ${accessToken}` , {signed : true , httpOnly : true , expires : new Date(Date.now() + + (60 * 60 * 24 * 1000))})
             
-            res.status(httpStatus.LOCKED).send({
-                status : httpStatus.LOCKED,
+            res.status(httpStatus.OK).send({
+                status : httpStatus.OK,
                 message : 'loged in successfully',
                 data : {
                     accessToken,
@@ -167,7 +166,6 @@ class AuthController {
             })
 
         } catch (error) {
-            console.log(error)
             next(error)
         }
     }

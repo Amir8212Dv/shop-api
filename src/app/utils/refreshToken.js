@@ -5,7 +5,7 @@ import httpError from 'http-errors'
 
 
 export const createRefreshToken = async (payload , id) => {
-    const refreshToken = jwt.sign(payload , process.env.SECRETE_KEY || 'jsonwebtoken' , {expiresIn : '1y'})
+    const refreshToken = jwt.sign(payload , process.env.JWT_SECRETE_KEY , {expiresIn : '1y'})
 
     await redis.SETEX(id.toString() , 365 * 24 * 60 * 60 , refreshToken)
 
@@ -13,7 +13,7 @@ export const createRefreshToken = async (payload , id) => {
 }
 
 export const validateRefreshToken = async (token) => {
-    const {mobile} = jwt.verify(token , process.env.SECRETE_KEY || 'jsonwebtoken')
+    const {mobile} = jwt.verify(token , process.env.JWT_SECRETE_KEY)
     
     const user = await userModel.findOne({mobile})
     if(!user) throw httpError.Unauthorized('user not found')

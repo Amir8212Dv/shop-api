@@ -66,7 +66,6 @@ class SocketController {
 
             const createMessage = {message , sender , type : type || 'message'}
             if(type === 'file') {
-                console.log(message)
                 const [fileType , fileExt] = message.fileType.split('/')
                 if(fileType !== 'image') return
 

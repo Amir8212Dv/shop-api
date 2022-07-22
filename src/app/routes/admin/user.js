@@ -7,6 +7,6 @@ const userRouter = express.Router()
 
 userRouter.get('/all'  , checkRole(permissions.ADMIN) , UserController.getAllUsers)
 userRouter.get('/getProfile' , UserController.getProfile)
-
+userRouter.patch('/edit' , UserController.editUser)
 
 export default userRouter

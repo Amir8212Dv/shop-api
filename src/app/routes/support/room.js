@@ -8,4 +8,10 @@ roomRouter.post('/create/:spaceId' , imageUpload.single('image') , RoomControlle
 
 roomRouter.get('/all/:spaceId' , RoomController.getAllRooms)
 
+roomRouter.patch('/edit/:roomId' , RoomController.editRoom)
+
+roomRouter.delete('/delete/:roomId' , RoomController.deleteRoom)
+
+
+
 export default roomRouter

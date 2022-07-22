@@ -5,7 +5,7 @@ const permissionRouter = express.Router()
 
 permissionRouter.post('/add' , PermissionController.createPermission)
 permissionRouter.get('/all' , PermissionController.getAllPermission)
-permissionRouter.patch('/update/:permissionId' , PermissionController.updatePermission)
+permissionRouter.patch('/update/:permissionId' , PermissionController.editPermission)
 permissionRouter.delete('/delete/:permissionId' , PermissionController.deletePermission)
 
 export default permissionRouter

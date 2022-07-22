@@ -12,7 +12,7 @@ episodeRouter.put(
     checkRole(permissions.TEACHER) ,
     checkForCourseId, 
     videoUpload.single('video') , 
-    EpisodeController.addEpisode
+    EpisodeController.createEpisode
 )
 
 episodeRouter.delete('/delete/:episodeId' , checkRole(permissions.TEACHER) , EpisodeController.deleteEpisode)

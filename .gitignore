@@ -3,3 +3,4 @@ node_modules
 DockerFile
 public/images
 public/video
+public/socket

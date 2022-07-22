@@ -39,7 +39,7 @@ blogRouter.patch(
     checkForBlogId,
     checkForCategoryId,
     imageUpload.single('image') , 
-    BlogsController.updateBlogById
+    BlogsController.editBlogById
 )
 
 

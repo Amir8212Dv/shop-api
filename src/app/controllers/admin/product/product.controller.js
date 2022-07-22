@@ -19,7 +19,7 @@ class ProductController {
     }
 
 
-    async addProduct(req , res , next) {
+    async createProduct(req , res , next) {
         try {
             const files = req.files || []
 
@@ -65,7 +65,6 @@ class ProductController {
     
             await updateProductValidationSchema.validateAsync(data)
     
-            console.log(data)
             const {price : oldPrice , discount : oldDiscount} = await productModel.findById(productId , {price : 1 , discount : 1})
     
             
@@ -151,7 +150,7 @@ class ProductController {
     //     }
     // }
 
-    async removeProduct(req , res , next) {
+    async deleteProduct(req , res , next) {
         try {
             const {productId} = req.params
             

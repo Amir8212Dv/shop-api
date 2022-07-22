@@ -7,4 +7,8 @@ namespaceRouter.post('/create' , NamespaceController.createNamespace)
 
 namespaceRouter.get('/all' , NamespaceController.getNamespaces)
 
+namespaceRouter.delete('delete/:namespaceId' , NamespaceController.deleteNamespace)
+
+namespaceRouter.patch('/edit/:namespaceId' , NamespaceController.editNamespace)
+
 export default namespaceRouter

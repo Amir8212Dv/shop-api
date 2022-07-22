@@ -20,10 +20,8 @@ class LikeMutation {
             const {productId} = args
             const userId = context.req.user._id
             await validateObjectId.validateAsync(productId)
-            console.log(args)
 
             const updateProduct = await productModel.updateOne({_id : productId} , {$addToSet : {likes : userId}})
-            console.log(updateProduct)
             if(+updateProduct.matchedCount === 0) throw createHttpError.NotFound('product not found')
 
             return {

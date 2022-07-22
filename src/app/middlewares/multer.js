@@ -83,7 +83,6 @@ const videoUploadSetting = multer.diskStorage({
 export const imageUpload = multer({storage : imageUploadSetting , limits : {fileSize : 1024 * 1024 * 2} , fileFilter : async (req , file , cb) => {
     const fileType = file.mimetype.split('/')[0]
     const fileExtension = file.mimetype.split('/')[1]
-    console.log(fileType.toLowerCase())
     if(fileType.toLowerCase() !== 'image' || !(['png' , 'jpg' , 'jpeg' , 'webp' , 'gif' , 'mp4'].includes(fileExtension.toLowerCase()))) {
         return cb(new Error('uploded file type is not supported'))
     }
@@ -93,7 +92,6 @@ export const imageUpload = multer({storage : imageUploadSetting , limits : {file
 export const videoUpload = multer({storage : videoUploadSetting , limits : {fileSize : 1024 * 1024 * 500}, fileFilter : async (req , file , cb) => {
     const fileType = file.mimetype.split('/')[0]
     const fileExtension = file.mimetype.split('/')[1]
-    console.log(fileType.toLowerCase())
     if(fileType.toLowerCase() !== 'video' || !(['mp4' , 'mov' , 'mpg' , 'avi' , 'mkv'].includes(fileExtension.toLowerCase()))) {
         return cb(new Error('uploded file type is not supported'))
     }

@@ -1,14 +1,21 @@
 
 class Controller {
     userLookup(localField) {
-        return {
-            $lookup : {
+        return [
+            {$lookup : {
                 from : 'users',
                 localField,
                 foreignField : '_id',
                 as : localField
-            }
-        }
+            }},
+            {$project : {
+                [`${localField}.bills`] : 0,
+                [`${localField}.otp`] : 0,
+                [`${localField}.discount`] : 0,
+                [`${localField}.roles`] : 0,
+                [`${localField}.mobile`] : 0,
+            }}
+        ]
     }
     categoryLookup(localField) {
         return {
@@ -29,9 +36,9 @@ class Controller {
                 foreignField : '_id',
                 as : 'comments'
             }
-        }
-        
+        }   
     }
+
 }
 
 export default Controller

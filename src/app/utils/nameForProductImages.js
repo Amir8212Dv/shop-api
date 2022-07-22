@@ -7,10 +7,8 @@ const productImagesName = (path) => {
 
     // const checkForFile = fs.existsSync(path)
     // if(!checkForFile) {
-    //     console.log(1)
     //     return 1
     // }
-    // console.log(path)
 
     const imagesName = fs.readdirSync(path)
 

@@ -1,0 +1,106 @@
+
+ 
+
+
+  components:
+      schemas:
+          Namespace:
+              type: object
+              required:
+                  -   title
+                  -   endpoint
+              properties:
+                  title:
+                      type: string
+                      description: the title of namespace
+                  endpoint:
+                      type: string
+                      description: the endpoint of namespace
+
+
+
+
+  /support/namespace/create:
+      post:
+          tags: [support]
+          summary: add namespaces for chatroom
+          requestBody:
+              required: true
+              content:
+                  application/x-www-form-urlencoded:
+                      schema:
+                          $ref: '#/components/schemas/Namespace'
+          security:
+            - bearerAuth : []
+          responses:
+              201:
+                  description: success
+                  content:
+                    application/json:
+                      schema :
+                        $ref : '#/definitions/getNamespace'
+
+
+  /support/namespace/edit/{namespaceId}:
+      patch:
+          tags: [support]
+          summary: add namespaces for chatroom
+          requestBody:
+              required: true
+              content:
+                  application/x-www-form-urlencoded:
+                      schema:
+                          $ref: '#/components/schemas/Namespace'
+          parameters:
+            - in : path
+              name : namespaceId
+              required : true
+              type : string
+          security:
+            - bearerAuth : []
+          responses:
+              201:
+                  description: success
+                  content:
+                    application/json:
+                      schema :
+                        $ref : '#/definitions/getNamespace'
+          
+
+
+  /support/namespace/delete/{namespaceId}:
+      delete:
+          tags: [support]
+          summary: add namespaces for chatroom
+          requestBody:
+              required: true
+              content:
+                  application/x-www-form-urlencoded:
+                      schema:
+                          $ref: '#/components/schemas/Namespace'
+          parameters:
+            - in : path
+              name : namespaceId
+              required : true
+              type : string
+          security:
+            - bearerAuth : []
+          responses:
+              201:
+                  description: success
+ 
+
+
+  /support/namespace/all:
+      get:
+          tags: [support]
+          summary: add room in namespaces for chatroom
+          security:
+            - bearerAuth : []
+          responses:
+              201:
+                  description: success
+                  content:
+                    application/json:
+                      schema :
+                        $ref : '#/definitions/getNamespace'

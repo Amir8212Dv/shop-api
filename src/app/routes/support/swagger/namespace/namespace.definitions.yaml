@@ -1,7 +1,7 @@
 
  
  definitions:
-      permission :
+      namespace :
           type : object
           properties :
               _id:
@@ -9,15 +9,16 @@
                   example : 62c0a341db0ebf2d03eebf91
               title : 
                   type : string
-                  example : permission Title
-              description : 
+                  example : namespace Title
+              endpoint : 
                   type : string
-                  example : permission description
+                  example : namespace Ednpoint
 
 
+
+#  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtb2JpbGUiOiIwOTE0MjMwNTI0MiIsImlhdCI6MTY1ODUxMzQyOCwiZXhwIjoxNjU4NTk5ODI4fQ.eqd1hpsh0f7Kr2qXdorHnKUteL3_Ft7yJC50dD4OnH4
  
- 
-      getPermission:
+      getNamespace:
           type : object
           properties:
               status : 
@@ -33,4 +34,4 @@
                           type: array
                           items :
                               type : object
-                              $ref : '#/definitions/role'
+                              $ref : '#/definitions/namespace'

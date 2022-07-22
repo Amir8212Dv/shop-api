@@ -23,8 +23,6 @@ class BookmarkQuery {
             await validateObjectId.validateAsync(userId)
 
             const products = await productModel.find({bookmarks : userId})
-
-            const count = await productModel.findOne({})
             const courses = await courseModel.find({bookmarks : userId})
             const blogs = await blogModel.find({bookmark : userId})
 

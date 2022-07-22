@@ -16,7 +16,7 @@ class ChapterController {
         autoBind(this)
     }
 
-    async addChapter(req , res , next) {
+    async createChapter(req , res , next) {
         try {
             await createChapterValidationSchema.validateAsync(req.body)
             const chapterData = req.body

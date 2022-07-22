@@ -3,7 +3,7 @@ import validateObjectId from "../../../validators/objectId.js"
 import {createNotFoundError} from '../../../utils/createError.js'
 
 class CommentController {
-    async showComment(req , res , next) {
+    async editToShowComment(req , res , next) {
         const {commentId} = req.params
         await validateObjectId.validateAsync(commentId)
 

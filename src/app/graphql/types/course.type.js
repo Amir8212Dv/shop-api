@@ -2,16 +2,7 @@ import { GraphQLObjectType , GraphQLString , GraphQLList , GraphQLInt } from 'gr
 import {categoryType} from './category.type.js'
 import userType from './user.type.js'
 import episodeType from './episode.type.js'
-const chapterType = new GraphQLObjectType({
-    name : 'chapterType',
-    fields : {
-        title : {type : GraphQLString},
-        text : {type : GraphQLString},
-        // episodes : {type : new GraphQLList(GraphQLString)},
-        episodes : {type : new GraphQLList(episodeType)},
-        courseId : { type : GraphQLString}
-    }
-})
+import chapterType from './chapter.type.js'
 
 const courseType = new GraphQLObjectType({
     name : 'courseType',

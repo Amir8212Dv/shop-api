@@ -149,7 +149,7 @@ class BlogsController extends Controller{
             next(error)
         }
     }
-    async updateBlogById(req , res , next) {
+    async editBlogById(req , res , next) {
         try {
 
             const {blogId} = req.params

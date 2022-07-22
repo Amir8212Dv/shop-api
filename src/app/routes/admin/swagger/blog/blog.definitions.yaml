@@ -79,21 +79,3 @@
                               type : object
                               $ref : '#/definitions/blog'
 
-
-      getComments:
-          type : object
-          properties:
-              status : 
-                  type : integer
-                  example : 200
-              message : 
-                  type : string
-                  example : successfull
-              data : 
-                  type : object
-                  properties:
-                      comments:
-                          type : array
-                          items:
-                              type : object
-                              $ref : '#/definitions/comment'
