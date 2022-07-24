@@ -6,7 +6,7 @@ const courseSchema = new mongoose.Schema({
     title : {type : String , required : true , trim : true , unique : true},
     text : {type : String , required : true , trim : true},
     short_text : {type : String , required : true , trim : true},
-    image : {type : String},
+    image : {type : String , default : '/images/defaultCourse.jpg'},
     tags : {type : [String] , default : []},
     category : {type : mongoose.Types.ObjectId , required : true},
     likes : {type : [mongoose.Types.ObjectId] , deafult : []},

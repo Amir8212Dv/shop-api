@@ -1,6 +1,9 @@
 node_modules
 .env
 DockerFile
-public/images
+public/images/*
+!public/images/defaultRoom.jpg
+!public/images/defaultBlog.jpg
+!public/images/defaultCourse.jpg
 public/video
 public/socket

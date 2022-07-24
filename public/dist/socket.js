@@ -50,8 +50,9 @@ const createMessage = ({message , sender , type}) => {
 
 
 
-const initNamespacesConnection = endpoint => {
 
+const initNamespacesConnection = endpoint => {
+    
     if(namespaceSocket) {
         namespaceSocket.disconnect(false)
         delete namespaceSocket.io.nsps[namespaceSocket.nsp]
@@ -60,6 +61,9 @@ const initNamespacesConnection = endpoint => {
     const messageContainer = document.querySelector('.messages ul')
     
     namespaceSocket.on('connect' , () => {
+        namespaceSocket.on('error' , err => {
+            window.location.assign(window.location.href.split('support')[0] + 'serverError')
+        })
         getLocation(namespaceSocket)
         window.addEventListener('keydown' , e => {
             if (e.code === 'Enter') sendMessage(namespaceSocket)
@@ -162,6 +166,9 @@ const initNamespacesConnection2 = endpoint => {
     const messagesDivElement = document.querySelector('div.messages')
     
     namespaceSocket.on('connect' , () => {
+        namespaceSocket.on('error' , err => {
+            window.location.assign(window.location.href.split('support')[0] + 'serverError')
+        })
         getLocation(namespaceSocket)
         window.addEventListener('keydown' , e => {
             if (e.code === 'Enter') sendMessage(namespaceSocket)
