@@ -14,9 +14,9 @@ class SocketController {
 
     initConnection() {
         this.#io.use(async (socket , next) => {
-            const cookies = socket.request.headers.cookie
-            if(!cookies) return
-            const userId = cookies.split('userId=')[1]
+            if(!socket.request.headers.cookie) return
+            const cookies = socket.request.headers.cookie.split(';').map(cookie => ({[cookie.split('=')[0].trim()] : cookie.split('=')[1]}))
+            const userId = cookies.find(cookie => cookie.userId).userId
             const user = await userModel.findById(userId)
             this.#user = user
             next()
