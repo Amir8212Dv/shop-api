@@ -12,26 +12,26 @@ class SocketController {
     }
 
     initConnection() {
-        try {
-            this.#io.use(async (socket , next) => {
-                if(!socket.request.headers.cookie) return
-                const cookies = socket.request.headers.cookie.split(';').map(cookie => ({[cookie.split('=')[0].trim()] : cookie.split('=')[1]}))
-                const {userId} = cookies.find(cookie => cookie.userId)
-                const user = await userModel.findById(userId)
-                this.#user = user
-                next()
+        this.#io.use(async (socket , next) => {
+                try {
+                    if(!socket.request.headers.cookie) return
+                    const cookies = socket.request.headers.cookie.split(';').map(cookie => ({[cookie.split('=')[0].trim()] : cookie.split('=')[1]}))
+                    const {userId} = cookies.find(cookie => cookie.userId) || {}
+                    const user = await userModel.findById(userId)
+                    this.#user = user
+                    next()
+                } catch (error) {
+                    
+                }
             })
     
             this.#io.on('connection' , async socket => {
                 const namespaces = await namespaceModel.find({} , {title : 1 , endpoint : 1}).sort({_id : 1})
     
                 socket.emit('namespacesList' , namespaces)
-                socket.emit('userInfo' , {senderId : this.#user?._id.toString() , senderName : `${this.#user?.first_name || ''} ${this.#user?.last_name || ''}`})
+                socket.emit('userInfo' , {senderId : (this.#user?._id || '').toString() , senderName : `${this.#user?.first_name || ''} ${this.#user?.last_name || ''}`})
             })
             
-        } catch (error) {
-            
-        }
     }
 
     
