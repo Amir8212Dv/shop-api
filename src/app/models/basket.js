@@ -21,9 +21,6 @@ const basketSchema = new mongoose.Schema({
     for : {type : mongoose.Types.ObjectId}
 })
 
-// basketSchema.pre('updateOne' , function(next) {
-
-// })
 
 
 

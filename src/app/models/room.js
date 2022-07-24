@@ -19,22 +19,16 @@ const messageSchema = new mongoose.Schema({
 })
 
 const roomSchema = new mongoose.Schema({
-    name : { type : String , required : true},
+    name : { type : String , required : true , unique : true},
     description : {type : String, default : ''},
     image : {type : String , default : '/images/defaultRoom.jpg'},
-    messages : {type : [messageSchema] , default : []}
+    messages : {type : [messageSchema] , default : []},
+    for : {type : mongoose.Types.ObjectId , required : true}
 }, {
     versionKey : false
 })
 
-const converstationSchema = new mongoose.Schema({
-    title : {type : String , required : true},
-    endpoint : {type : String , required : true},
-    rooms : {type : [roomSchema] , default : []}
-}, {
-    versionKey : false
-})
+const roomModel = mongoose.model('room' , roomSchema)
 
-const converstationModel = mongoose.model('converstation' , converstationSchema)
 
-export default converstationModel
+export default roomModel

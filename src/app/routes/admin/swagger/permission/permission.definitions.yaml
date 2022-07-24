@@ -17,7 +17,21 @@
 
  
  
-      getPermission:
+      createPermissionResponse:
+          type : object
+          properties:
+              status : 
+                  type : integer
+                  example : 201
+              message : 
+                  type : string
+                  example : permission created successfully
+              data : 
+                  type : object
+                  $ref : '#/definitions/permission'
+
+
+      getOnePermissionResponse:
           type : object
           properties:
               status : 
@@ -25,7 +39,20 @@
                   example : 200
               message : 
                   type : string
-                  example : successfull
+                  example : ''
+              data : 
+                  type : object
+                  $ref : '#/definitions/permission'
+
+      getAllPermissionsResponse:
+          type : object
+          properties:
+              status : 
+                  type : integer
+                  example : 200
+              message : 
+                  type : string
+                  example : ''
               data : 
                   type : object
                   properties:
@@ -33,4 +60,4 @@
                           type: array
                           items :
                               type : object
-                              $ref : '#/definitions/role'
+                              $ref : '#/definitions/permission'

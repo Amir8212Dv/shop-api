@@ -1,4 +1,4 @@
-import { GraphQLObjectType , GraphQLString , GraphQLList , GraphQLInt } from 'graphql'
+import { GraphQLObjectType , GraphQLString , GraphQLList , GraphQLInt, GraphQLFloat } from 'graphql'
 import {categoryType} from './category.type.js'
 import userType from './user.type.js'
 import episodeType from './episode.type.js'
@@ -15,16 +15,16 @@ const courseType = new GraphQLObjectType({
         category : {type : categoryType },
         likes : {type : new GraphQLList(GraphQLString) },
         bookmarks : {type : new GraphQLList(GraphQLString) },
-        price : {type : GraphQLInt },
-        discount : {type : GraphQLInt },
+        price : {type : GraphQLFloat },
+        discount : {type : GraphQLFloat },
         time : {type : GraphQLInt },
         status : {type : GraphQLString},
         teacher : {type : userType },
-        // chapters : {type : new GraphQLList(GraphQLString) },
         chapters : {type : new GraphQLList(chapterType) },
         students : {type : new GraphQLList(GraphQLString) },
-        bookmarksCount : { type : GraphQLInt },
-        likesCount : { type : GraphQLInt }
+        likesCount : { type : GraphQLInt },
+        _id : {type : GraphQLString},
+        imageURL : {type : GraphQLString}
     }
 })
 

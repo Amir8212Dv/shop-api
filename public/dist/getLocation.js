@@ -1,7 +1,6 @@
 
 const getLocation = socket => {
     const locationButton = document.querySelector('button.location')
-    const messagesElement = document.querySelector('.messages ul')
 
     locationButton.addEventListener('click' , () => {
         navigator.geolocation.getCurrentPosition(coords => {

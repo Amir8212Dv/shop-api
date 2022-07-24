@@ -4,6 +4,9 @@ import productModel from "../models/products.js"
 import categoryModel from '../models/categories.js'
 import { createNotFoundError } from "../utils/createError.js"
 import episodeModel from "../models/course.chapter.episodes.js"
+import stringToArray from "../utils/stringToArray.js"
+import permissionModel from "../models/permissions.js"
+import createHttpError from "http-errors"
 
 
 export const checkForProductId = async (req , res , next) => {
@@ -49,6 +52,21 @@ export const checkForCategoryId = async (req , res , next) => {
             createNotFoundError({category})
         }
         next()
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const checkForPermissions = (req, res , next) => {
+    try {
+        if(req.permissions.length) {
+            req.permissions = stringToArray(req.permissions)
+
+            req.permissions.forEach(async per => {
+                const checkPermission = await permissionModel.findOne({title : per})
+                if(!checkPermission) throw createHttpError.BadRequest(`permission with title '${per}' not found`)
+            })
+        }
     } catch (error) {
         next(error)
     }

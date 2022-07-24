@@ -4,11 +4,6 @@ let namespaceSocket
 let user
 
 
-// fix login error
-// change all hardcoded URLs to env variables
-
-
-
 const sendMessage = (socket) => {
     const messageInput = document.getElementById('messageInput')
     const messageInputValue = messageInput.value.trim()
@@ -63,7 +58,6 @@ const initNamespacesConnection = endpoint => {
     }
     namespaceSocket = io(`http://localhost:4000/${endpoint}`)
     const messageContainer = document.querySelector('.messages ul')
-    const messagesDivElement = document.querySelector('div.messages')
     
     namespaceSocket.on('connect' , () => {
         getLocation(namespaceSocket)
@@ -111,7 +105,7 @@ const initNamespacesConnection = endpoint => {
         })
     })
 
-    namespaceSocket.on('newwMessage' , messageData => {
+    namespaceSocket.on('newMessage' , messageData => {
         createMessage(messageData)
     })
 }
@@ -213,7 +207,7 @@ const initNamespacesConnection2 = endpoint => {
         })
     })
 
-    namespaceSocket.on('newwMessage' , messageData => {
+    namespaceSocket.on('newMessage' , messageData => {
         createMessage(messageData)
     })
 }

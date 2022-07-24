@@ -1,21 +1,17 @@
 import { GraphQLString, GraphQLInt } from "graphql";
-import createHttpError from "http-errors";
 import { verifyAccessTokenGraphQL } from "../../middlewares/verifyAccessToken.js";
 import validateObjectId from "../../validators/objectId.js";
 import httpStatus from "http-status-codes";
-import courseModel from "../../models/courses.js";
-import blogModel from "../../models/blogs.js";
-import productModel from "../../models/products.js";
-import userModel from "../../models/users.js";
-import createResponseType from "../types/responseType.js";
+import responseType from "../types/responseType.js";
 import basketModel from "../../models/basket.js";
+import { createInternalServerError, createNotFoundError } from "../../utils/createError.js";
 
 
 
 
 class DeleteFromBasketMutation {
     decreaseProduct = {
-        type: createResponseType(),
+        type: responseType,
         args: {
             productId: { type: GraphQLString },
             count: { type: GraphQLInt },
@@ -30,31 +26,34 @@ class DeleteFromBasketMutation {
                 { _id: basketId, "products.productId": productId },
                 { "products.$": 1 }
             );
+            createNotFoundError({basket})
 
 
-            const productPrice = user.basket.products[0].price
+            const productPrice = basket.products[0].price
 
             if (basket.products[0].count <= 1) {
-                await basketModel.updateOne(
+                const updateBasket = await basketModel.updateOne(
                     { _id: basketId, "products.productId": productId },
                     { $pull: { products: { productId } } , $inc : {totalPrice : -productPrice} }
                 );
-            } else
-                await basketModel.updateOne(
+                createInternalServerError(updateBasket.modifiedCount)
+            } else {
+                const updateBasket = await basketModel.updateOne(
                     { _id: basketId, "products.productId": productId },
                     { $inc: { "products.$.count": -1 , totalPrice: -productPrice } }
                 );
-
+                createInternalServerError(updateBasket.modifiedCount)
+            }
             return {
                 status: httpStatus.CREATED,
-                message: "product bookmarke delete successfully",
+                message: "product decreased by one in basket successfully",
                 data : {}
             };
         },
     };
 
     deleteProduct = {
-        type: createResponseType(),
+        type: responseType,
         args: {
             productId: { type: GraphQLString },
         },
@@ -68,25 +67,28 @@ class DeleteFromBasketMutation {
                 { _id: basketId, "products.productId": productId },
                 { "products.$": 1 }
             );
+            createNotFoundError({basket})
 
             const productsTotalPrice = basket.products[0].price * basket.products[0].count
 
 
-            await basketModel.updateOne(
+            const updateBasket = await basketModel.updateOne(
                 { _id: basketId, "products.productId": productId },
                 { $pull: { "products": { productId } } , $inc : {totalPrice: -productsTotalPrice} }
             );
+            createInternalServerError(updateBasket.modifiedCount)
+
 
             return {
                 status: httpStatus.CREATED,
-                message: "product bookmarke delete successfully",
+                message: "product deleted from basket successfully",
                 data : {}
             };
         },
     };
 
     deleteCourse = {
-        type: createResponseType(),
+        type: responseType,
         args: {
             courseId: { type: GraphQLString },
         },
@@ -100,16 +102,18 @@ class DeleteFromBasketMutation {
                 { _id: basketId, "courses.courseId": courseId },
                 { "courses.$": 1 }
             );
+            createNotFoundError({basket})
             const coursesTotalPrice = basket.courses[0].price
 
-            await basketModel.updateOne(
+            const updateBasket = await basketModel.updateOne(
                 { _id: basketId,  courseId },
                 { $pull: { "courses": { courseId } }, $inc : {totalPrice: -coursesTotalPrice} }
             );
+            createInternalServerError(updateBasket.modifiedCount)
 
             return {
                 status: httpStatus.CREATED,
-                message: "course bookmakre delete successfully",
+                message: "course deleted from basket successfully",
                 data : {}
             };
         },

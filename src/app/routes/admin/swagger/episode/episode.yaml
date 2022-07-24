@@ -1,6 +1,6 @@
  components:
     schemas :
-      addEpisode :
+      createEpisode :
         type : object
         required :
           - courseId
@@ -50,11 +50,11 @@
               - unlock
 
 
- /admin/episode/add:
+ /admin/episode/create:
     put:
       tags : [episode]
-      summary : add episode
-      description : add episode
+      summary : create new episode
+      description : create new episode
       security:
         - bearerAuth : []
       requestBody:
@@ -62,13 +62,16 @@
         content:
           multipart/form-data:
             schema :
-              $ref : '#/components/schemas/addEpisode'
+              $ref : '#/components/schemas/createEpisode'
       responses :
         201:
           description: successfull
-          # content:
-          #   application/json:
-          #     $ref : '#/definitions/getEpisode'
+          content:
+            application/json:
+              schema :
+                $ref : '#/definitions/createEpisodeResponse'
+
+
  /admin/episode/delete/{episodeId}:
     delete:
       tags : [episode]
@@ -84,14 +87,16 @@
       responses :
         200:
           description: successfull
-          # content:
-          #   application/json:
-          #     $ref : '#/definitions/getEpisode'
+          content:
+            application/json:
+              schema :
+                $ref : '#/definitions/response'
+
  /admin/episode/edit/{episodeId}:
     patch:
       tags : [episode]
-      summary : delete episode
-      description : delete episode with episode id 
+      summary : edit episode
+      description : edit episode with episode id 
       security:
         - bearerAuth : []
       parameters : 
@@ -108,6 +113,7 @@
       responses :
         201:
           description: successfull
-          # content:
-          #   application/json:
-          #     $ref : '#/definitions/getEpisode'
+          content:
+            application/json:
+              schema :
+                $ref : '#/definitions/response'

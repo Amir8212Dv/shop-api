@@ -1,17 +1,30 @@
-import { GraphQLList , GraphQLObjectType, GraphQLString} from 'graphql'
+import { GraphQLInt, GraphQLList , GraphQLObjectType, GraphQLString} from 'graphql'
 import { nestedCategoryType } from '../types/category.type.js'
 import categoryModel from '../../models/categories.js'
 import createQueryFilter from '../../utils/createQueryFilter.js'
 import httpStatus from 'http-status-codes'
-import createResponseType from '../types/responseType.js'
+import validateObjectId from '../../validators/objectId.js'
+import { createNotFoundError } from '../../utils/createError.js'
 
-const responseType = {
-    category : {type : new GraphQLList(nestedCategoryType)}
-}
+
+
+const responseType = new GraphQLObjectType({
+    name : 'categoryResponseType',
+    fields : {
+        status : {type : GraphQLInt},
+        message : {type : GraphQLString},
+        data : {type : new GraphQLObjectType({
+            name : 'categoryDataResponseType',
+            fields : {
+                category : {type : new GraphQLList(nestedCategoryType)}
+            }
+        })}
+    }
+})
 
 class CategoryQuery {
     getAllCategories = {
-        type : createResponseType(responseType),
+        type : responseType,
         args : {
             search : {type : GraphQLString},
         },
@@ -24,13 +37,13 @@ class CategoryQuery {
                 status : httpStatus.OK,
                 message : '',
                 data : {
-                    category
+                    category : categories
                 }
             }
         }
     }
     getChildrenOfCategory = {
-        type : createResponseType(responseType),
+        type : responseType,
         args : {
             parentId : {type : GraphQLString}
         },
@@ -39,6 +52,8 @@ class CategoryQuery {
             await validateObjectId.validateAsync(parentId)
 
             const category = await categoryModel.findById(parentId , {children : 1})
+            createNotFoundError({category})
+
             return {
                 status : httpStatus.OK,
                 message : '',
@@ -49,7 +64,7 @@ class CategoryQuery {
         }
     }
     getCategoryById = {
-        type : createResponseType(responseType),
+        type : responseType,
         args : {
             categoryId : {type : GraphQLString}
         },
@@ -58,10 +73,9 @@ class CategoryQuery {
             await validateObjectId.validateAsync(categoryId)
 
             const category = await categoryModel.findById(categoryId)
+            createNotFoundError(category)
 
-            if(!category) throw createHttpError.NotFound('category not found')
-
-            res.status(httpStatus.OK).send({
+            return {
                 status : httpStatus.OK,
                 message : '',
                 data : {
@@ -69,7 +83,7 @@ class CategoryQuery {
                         category
                     ]
                 }
-            })
+            }
         }
     }
 }

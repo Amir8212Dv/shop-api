@@ -1,8 +1,6 @@
 import multer from 'multer'
 import path from 'path'
 import fs from 'fs'
-import blogModel from '../models/blogs.js'
-import productImagesName from '../utils/nameForProductImages.js'
 import createObjectId from '../utils/createObjectId.js'
 import createHttpError from 'http-errors'
 

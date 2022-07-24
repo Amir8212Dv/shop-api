@@ -55,7 +55,7 @@ class Application {
                     }
                 ]
             },
-            apis : ['./src/app/routes/*/swagger/*.yaml' , './src/app/routes/*/swagger/*/*.yaml']
+            apis : ['./src/app/routes/swagger/*.yaml' , './src/app/routes/*/swagger/*/*.yaml']
             }) , {explorer : true})
         )
     }

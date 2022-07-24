@@ -1,6 +1,6 @@
  components:
     schemas :
-      addPermission:
+      createPermission:
         type : object
         required : 
           - title
@@ -15,20 +15,20 @@
 
 
 
- /admin/permission/add:
+ /admin/permission/create:
       post:
           tags : [RBAC]
-          summary : add permission
-          description : add permission
+          summary : create new permission
+          description : create new permission
           requestBody:
               required : true
               content:
                   application/x-www-form-urlencoded:
                       schema:
-                          $ref : '#/components/schemas/addPermission'
+                          $ref : '#/components/schemas/createPermission'
                   application/json:
                       schema:
-                          $ref : '#/components/schemas/addPermission'
+                          $ref : '#/components/schemas/createPermission'
 
           security:
               -   bearerAuth : []
@@ -38,9 +38,9 @@
                   content:
                       application/json:
                           schema:
-                              $ref: '#/definitions/getPermission'
+                              $ref: '#/definitions/createPermissionResponse'
  /admin/permission/all:
-      post:
+      get:
           tags : [RBAC]
           summary : get all permissions
           description : get all permissions
@@ -53,22 +53,42 @@
                   content:
                       application/json:
                           schema:
-                              $ref: '#/definitions/getPermission'
- /admin/permission/update/{permissionId}:
+                              $ref: '#/definitions/getAllPermissionsResponse'
+                              
+ /admin/permission/{permissionId}:
+      get:
+          tags : [RBAC]
+          summary : get permission by id
+          description : get permission by id
+          security:
+              -   bearerAuth : []
+          parameters:
+              -   in : path
+                  name : permissionId
+                  type : string
+                  required : true
+          responses:
+              201:
+                  description : successfull
+                  content:
+                      application/json:
+                          schema:
+                              $ref: '#/definitions/getOnePermissionResponse'
+
+ /admin/permission/edit/{permissionId}:
       patch:
           tags : [RBAC]
-          summary : update permission
-          description : update permission
+          summary : edit permission
+          description : edit permission
           requestBody:
               required : true
               content:
                   application/x-www-form-urlencoded:
                       schema:
-                          $ref : '#/components/schemas/addPermission'
+                          $ref : '#/components/schemas/createPermission'
                   application/json:
                       schema:
-                          $ref : '#/components/schemas/addPermission'
-
+                          $ref : '#/components/schemas/createPermission'
           security:
               -   bearerAuth : []
           parameters :
@@ -82,21 +102,12 @@
                   content:
                       application/json:
                           schema:
-                              $ref: '#/definitions/getPermission'
+                              $ref: '#/definitions/response'
  /admin/permission/delete/{permissionId}:
       delete:
           tags : [RBAC]
           summary : delete permission
           description : delete permission
-          requestBody:
-              required : true
-              content:
-                  application/x-www-form-urlencoded:
-                      schema:
-                          $ref : '#/components/schemas/addPermission'
-                  application/json:
-                      schema:
-                          $ref : '#/components/schemas/addPermission'
 
           security:
               -   bearerAuth : []
@@ -111,4 +122,4 @@
                   content:
                       application/json:
                           schema:
-                              $ref: '#/definitions/getPermission'
+                              $ref: '#/definitions/response'

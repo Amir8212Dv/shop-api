@@ -1,18 +1,17 @@
-import { GraphQLString, GraphQLInt } from "graphql";
+import { GraphQLString } from "graphql";
 import createHttpError from "http-errors";
 import { verifyAccessTokenGraphQL } from "../../middlewares/verifyAccessToken.js";
 import validateObjectId from "../../validators/objectId.js";
 import httpStatus from "http-status-codes";
 import courseModel from "../../models/courses.js";
-import blogModel from "../../models/blogs.js";
 import productModel from "../../models/products.js";
 import userModel from "../../models/users.js";
-import createResponseType from "../types/responseType.js";
+import responseType from "../types/responseType.js";
 import basketModel from "../../models/basket.js";
 
 class AddToBasketMutation {
     addProduct = {
-        type: createResponseType(),
+        type: responseType,
         args: {
             productId: { type: GraphQLString },
         },
@@ -48,8 +47,8 @@ class AddToBasketMutation {
                     }
                 );
             else
-                await userModel.updateOne(
-                    { _id: userId, "basket.products.productId": productId },
+                await basketModel.updateOne(
+                    { _id: basketId , "products.productId" : productId },
                     {
                         $inc: {
                             "products.$.count": 1,
@@ -67,47 +66,44 @@ class AddToBasketMutation {
     };
 
     addCourse = {
-        type: createResponseType(),
+        type: responseType,
         args: {
             courseId: { type: GraphQLString },
         },
         resolve: async (obj, args, context, info) => {
             await verifyAccessTokenGraphQL(context.req);
             const { courseId } = args;
-            const basketId = context.req.user.basket;
+            const user = context.req.user
+            const userId = user._id
+            const basketId = user.basket;
             await validateObjectId.validateAsync(courseId);
-
+            
             const course = await courseModel.findById(courseId, {
                 price: 1,
                 discount: 1,
             });
             const courseFinalPrice = course.price - course.discount;
-
-            const basket = await basketModel.findOne(
-                { $and : [
-                    {_id : basketId} , {
-                        $or : [
-                            {"courses.courseId": courseId} , 
-                            {courses : courseId}
-                        ]
-                    }
-                ]}
-            );
-
-            if (basket) throw createHttpError.BadRequest('course already taken')
             
-            await basketModel.updateOne(
-                { _id: basketId },
-                {
-                    $push: {
-                        courses: {
-                            courseId,
-                            price: courseFinalPrice
+            if(courseFinalPrice <= 0) await userModel.updateOne({_id : userId} , {$push : {courses : courseId}})
+            else {
+
+                const basket = await basketModel.findOne({_id : basketId , "courses.courseId": courseId})
+                
+                if (basket || user.courses.includes(course._id)) throw createHttpError.BadRequest('course already taken by users , you cant delete that')
+                await basketModel.updateOne(
+                    { _id: basketId },
+                    {
+                        $push: {
+                            courses: {
+                                courseId,
+                                price: courseFinalPrice
+                            },
                         },
-                    },
-                    $inc: { totalPrice: courseFinalPrice }
+                        $inc: { totalPrice: courseFinalPrice }
+                    }
+                    );
                 }
-            );
+                
             
             return {
                 status: httpStatus.CREATED,

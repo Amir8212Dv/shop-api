@@ -4,7 +4,6 @@ const categorySchema = new mongoose.Schema({
     title : { type : String, required : true , unique : true },
     parent : {type : mongoose.Types.ObjectId , ref : 'category' , default : undefined}
 } , {
-    id : false,
     versionKey : false,
     toJSON : {
         virtuals : true
@@ -18,7 +17,7 @@ categorySchema.virtual('children' , {
 })
 
 function populate(next) {
-    this.populate([{path : 'children' , select : {__v : 0 , id : 0} , options : {sort : {title : -1}}}])
+    this.populate([{path : 'children' , select : {__v : 0 , id : 0} , options : {sort : {title : 1}}}])
     next()
 }
 async function deleteCategoryChildren(next) {

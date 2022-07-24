@@ -13,9 +13,10 @@ const blogType = new GraphQLObjectType({
         short_text : {type : GraphQLString},
         tags : {type : new GraphQLList(GraphQLString)},
         image : {type : GraphQLString},
+        _id : {type : GraphQLString},
         category : {type : categoryType},
-        bookmarksCount : { type : GraphQLInt },
-        likesCount : { type : GraphQLInt }
+        likesCount : { type : GraphQLInt },
+        imageURL : {type : GraphQLString}
     }
 })
 

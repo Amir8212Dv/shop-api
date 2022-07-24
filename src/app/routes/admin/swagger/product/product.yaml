@@ -1,6 +1,6 @@
  components:
       schemas:
-          addProduct:
+          createProduct:
               type : object
               required : 
                   -    title
@@ -30,6 +30,9 @@
                   count:
                       type : number
                       description : total count of product
+                  category:
+                      type : string
+                      description : category of product
                   features:
                       type : object
                       description : length/width/height/weigth/model/madein  of product
@@ -55,15 +58,12 @@
                       description : tags for product
                       items:
                           type : string
-                  category:
-                      type : string
-                      description : category of product
                   images:
                       type : array
                       items:
                           type : string
                           format : binary
-          updateProduct:
+          editProduct:
               type : object
               properties:
                   title:
@@ -119,17 +119,17 @@
                           format : binary
 
 
- /admin/product/add:
+ /admin/product/create:
       post:
           tags : [product]
-          summary : create product
-          description : create product
+          summary : create new product
+          description : create new product
           requestBody:
               required : true
               content:
                   multipart/form-data:
                       schema:
-                          $ref : '#/components/schemas/addProduct'
+                          $ref : '#/components/schemas/createProduct'
 
           security:
               -   bearerAuth : []
@@ -139,29 +139,29 @@
                   content:
                       application/json:
                           schema:
-                              $ref: '#/definitions/getProduct'
+                              $ref: '#/definitions/createProductResponse'
 
 
 
 
 
 
- /admin/product/update/{id}:
+ /admin/product/edit/{productId}:
       patch:
           tags : [product]
-          summary : create product
-          description : create product
+          summary : edit product
+          description : edit product with product id
           parameters:
               -   in : path
                   type : string
-                  name : id 
+                  name : productId 
                   required : true
           requestBody:
               required : true
               content:
                   multipart/form-data:
                       schema:
-                          $ref : '#/components/schemas/updateProduct'
+                          $ref : '#/components/schemas/editProduct'
 
           security:
               -   bearerAuth : []
@@ -171,22 +171,22 @@
                   content:
                       application/json:
                           schema:
-                              $ref: '#/definitions/getProduct'
+                              $ref: '#/definitions/response'
 
 
 
 
 
- /admin/product/remove/{id}:
+ /admin/product/delete/{productId}:
       delete :
           tags : [product]
           summary : delete product
-          description : delete product by id
+          description : delete product with product id
           security :
               -   bearerAuth : []
           parameters : 
               -   in : path
-                  name : id
+                  name : productId
                   type : string
                   required : true
           responses : 
@@ -195,5 +195,5 @@
                   content:
                       application/json:
                           schema:
-                              $ref: '#/definitions/getProduct'
+                              $ref: '#/definitions/response'
 

@@ -3,7 +3,7 @@ import CommentController from '../../controllers/admin/comment/comment.controlle
 
 const commentRouter = express.Router()
 
-commentRouter.patch('/show-comment/:commentId' , CommentController.editToShowComment)
-commentRouter.delete('/:commentId' , CommentController.deleteComment)
+commentRouter.patch('/edit-show-comment/:commentId' , CommentController.editToShowComment)
+commentRouter.delete('/delete/:commentId' , CommentController.deleteComment)
 
 export default commentRouter

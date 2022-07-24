@@ -7,29 +7,22 @@ import { permissions } from '../../utils/constants.js'
 
 const courseRouter = express.Router()
 
-
 courseRouter.post(
-    '/add' , 
+    '/create' , 
     checkRole(permissions.TEACHER) ,
-    checkForCategoryId,
     imageUpload.single('image') , 
+    checkForCategoryId,
     CourseController.createCourse
 )
-
-
-// courseRouter.get('/all' , CourseController.getAllCourses)
-
-// courseRouter.get('/:courseId' , CourseController.getCourseById)
-
-courseRouter.delete('/remove/:courseId' , checkRole(permissions.TEACHER) , CourseController.deleteCourse)
-
 courseRouter.patch(
     '/edit/:courseId' , 
     checkRole(permissions.TEACHER) ,
     checkForCourseId,
-    checkForCategoryId,
     imageUpload.single('image') , 
+    checkForCategoryId,
     CourseController.editCourse
 )
+courseRouter.delete('/delete/:courseId' , checkRole(permissions.TEACHER) , CourseController.deleteCourse)
+
 
 export default courseRouter

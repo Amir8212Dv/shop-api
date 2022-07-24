@@ -31,18 +31,7 @@ const productSchema = new mongoose.Schema({
 } , {
     id : false,
     versionKey : false,
-    toObject : {
-        virtuals : true
-    }
 })
-
-productSchema.virtual('bookmarksCount').get(function(){
-    return this.bookmarks.length
-})
-productSchema.virtual('likesCount').get(function(){
-    return this.likes.length
-})
-
 
 productSchema.index({title : 'text' , text : 'text' , short_text : 'text'})
 

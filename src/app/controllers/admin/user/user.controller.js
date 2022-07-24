@@ -1,6 +1,8 @@
 import userModel from '../../../models/users.js'
 import httpStatus from 'http-status-codes'
 import { updateUserValidationSchema } from '../../../validators/admin/user.js'
+import { hashPassword } from '../../../utils/hashPassword.js'
+import { createInternalServerError } from '../../../utils/createError.js'
 
 
 class UserController {
@@ -8,7 +10,8 @@ class UserController {
     async getAllUsers(req , res , next) {
         try {
 
-            const filter = req.query.search ? {$text : {$search : req.query.search}} : {}
+            const {search , userId} = req.query
+            const filter = search ? {$text : {$search : search}} : userId ? {_id : userId} : {}
 
             const users = await userModel.find(filter)
 
@@ -32,16 +35,15 @@ class UserController {
 
             await updateUserValidationSchema.validateAsync(updateData)
 
-            const user = await userModel.findByIdAndUpdate(userId , updateData , {returnDocument : 'after'})
+            if(updateData.password) updateData.password = hashPassword(updateData.password)
+
+            const user = await userModel.updateOne({_id : userId} , updateData)
+            createInternalServerError(user.modifiedCount)
 
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,
-                message : 'user updated successfully',
-                data : {
-                    user : [
-                        user
-                    ]
-                }
+                message : 'user profile updated successfully',
+                data : {}
             })
 
         } catch (error) {
@@ -57,9 +59,7 @@ class UserController {
                 status : httpStatus.OK,
                 message : '',
                 data : {
-                    user : [
-                        user
-                    ]
+                    user
                 }
             })
 

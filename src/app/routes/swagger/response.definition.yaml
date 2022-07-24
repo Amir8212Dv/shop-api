@@ -1,0 +1,12 @@
+ definitions:
+    response:
+        type: object
+        properties:
+            status:
+                type: number
+                example: 200
+            message:
+                type: string
+                example: successfull
+            data:
+              type: object

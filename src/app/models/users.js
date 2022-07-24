@@ -4,7 +4,6 @@ import productModel from "./products.js";
 
 
 const userSchema = new mongoose.Schema({
-    // username   : { type : String , required : true , trim : true , lowerCase : true },
     first_name : { type : String , trim : true , required : true },
     last_name  : { type : String , trim : true , required : true },
     mobile     : { type : String , required : true , unique : true },
@@ -17,7 +16,9 @@ const userSchema = new mongoose.Schema({
     discount   : { type : Number , default : 0},
     role : {type : String , default : 'USER'},
     basket : {type : mongoose.Types.ObjectId},
-    password : {type : String , required : true}
+    password : {type : String , required : true},
+    courses : {type : [mongoose.Types.ObjectId] , default : []},
+    products : {type : [mongoose.Types.ObjectId] , default : []}
 } , {
     timestamps : true,
     versionKey : false,

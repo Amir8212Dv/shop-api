@@ -1,0 +1,41 @@
+
+ /admin/comment/delete/{commentId}:
+    delete:
+      tags : [comment]
+      summary : delete comment
+      description : delete comment with comment id 
+      security:
+        - bearerAuth : []
+      parameters : 
+        - in : path
+          type : string
+          name : commentId
+          required : true
+      responses :
+        200:
+          description: successfull
+          content:
+            application/json:
+              schema : 
+                $ref : '#/definitions/response'
+
+
+ /admin/comment/edit-show-comment/{commentId}:
+    patch:
+      tags : [comment]
+      summary : edit and  show comment
+      description : edit and show comment
+      security:
+        - bearerAuth : []
+      parameters : 
+        - in : path
+          type : string
+          name : commentId
+          required : true
+      responses :
+        201:
+          description: successfull
+          content:
+            application/json:
+              schema : 
+                $ref : '#/definitions/response'

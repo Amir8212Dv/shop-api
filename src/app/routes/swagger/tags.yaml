@@ -1,0 +1,23 @@
+ tags:
+      -   name : auth
+          description : authentication APIs
+      -   name : user
+          description : user APIs
+      -   name : comment
+          description : comment APIs
+      -   name : product
+          description : product APIs
+      -   name : course
+          description : course APIs
+      -   name : chapter
+          description : chapter APIs
+      -   name : episode
+          description : episode APIs
+      -   name : blog
+          description : blog APIs
+      -   name : category
+          description : category APIs
+      -   name : RBAC
+          description : Role Base Access Controll
+      -   name : support
+          description : support APIs

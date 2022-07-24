@@ -8,11 +8,8 @@
                   type : string
                   example : 62c0a341db0ebf2d03eebf91
               author :
-                  type : object
-                  properties:
-                      _id :
-                          type : string
-                          example : 62c0a341db0ebf2d03eebf91
+                  type : string
+                  example : 62c0a341db0ebf2d03eebf91
                   
               title :
                   type : string
@@ -32,22 +29,8 @@
                   example : 62c0a341db0ebf2d03eebf91
               likes :
                   type : array
-                  items :
-                      type : string
               bookmarks:
                   type : array
-                  items :
-                      type : string
-                      example : 
-                          -   62c0a341db0ebf2d03eebf91
-                          -   62c0a341db0ebf2d03eebf91
-              comments :
-                  type : array
-                  items : 
-                      type : string
-                  example : 
-                      -   62c0a341db0ebf2d03eebf91
-                      -   62c0a341db0ebf2d03eebf91
               createdAt :
                   type : string
                   example : 2022-07-02T08:04:36.039Z
@@ -61,21 +44,16 @@
 
 
 
-      getBlog:
+      createBlogResponse:
           type : object
           properties:
               status : 
                   type : integer
-                  example : 200
+                  example : 201
               message : 
                   type : string
-                  example : successfull
+                  example : blog created successfully
               data : 
                   type : object
-                  properties:
-                      product:
-                          type: array
-                          items :
-                              type : object
-                              $ref : '#/definitions/blog'
+                  $ref : '#/definitions/blog'
 

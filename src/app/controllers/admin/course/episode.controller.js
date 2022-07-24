@@ -1,5 +1,4 @@
 import courseModel from "../../../models/courses.js"
-import createHttpError from "http-errors"
 import httpStatus from 'http-status-codes'
 import { createEpisodeValidationSchema, updateEpisodeValidationSchema } from '../../../validators/admin/episode.js'
 import createFileLink from "../../../utils/createImageLink.js"
@@ -7,7 +6,7 @@ import {getVideoDurationInSeconds} from 'get-video-duration'
 import validateObjectId from '../../../validators/objectId.js'
 import episodeModel from "../../../models/course.chapter.episodes.js"
 import chapterModel from "../../../models/course.chapters.js"
-import deleteFile from "../../../utils/deleteFiles.js"
+import { createInternalServerError, createNotFoundError } from "../../../utils/createError.js"
 
 
 
@@ -20,18 +19,16 @@ class EpisodeController {
             const episodeData = req.body
             await createEpisodeValidationSchema.validateAsync(episodeData)
 
-            // await updateEpisodeValidationSchema.validateAsync(req.body)
 
             episodeData.time = time
             episodeData.videoAddress = videoAddress
-            // const course = await courseModel.findOne({_id : courseId , 'chapters._id' : chapterId})
 
             const chapter = await chapterModel.findById(episodeData.chapterId)
             createNotFoundError({chapter})   
-            if(chapter.courseId.toString() !== episodeData.courseId) throw createHttpError.NotFound('course not found')
+            createNotFoundError({course: chapter.courseId.toString() === episodeData.courseId})
 
             const episode = await episodeModel.create(episodeData)
-            if(!episode) throw createHttpError.InternalServerError('create episode faild')
+            createInternalServerError(episode)
 
             chapter.episodes.push(episode._id)
             chapter.save()
@@ -41,9 +38,7 @@ class EpisodeController {
                 status : httpStatus.CREATED,
                 message : 'new episode added successfully',
                 data : {
-                    episode : [
-                        episode
-                    ]
+                    episode
                 }
             })
             
@@ -57,14 +52,16 @@ class EpisodeController {
             const { episodeId } = req.params
             await validateObjectId.validateAsync(episodeId)
 
-            const episode = await episodeModel.findByIdAndDelete(episodeId , {chapterId : 1})
-
+            const episode = await episodeModel.findById(episodeId)
             createNotFoundError({episode})
+            const deleteEpisode = await episodeModel.deleteOne({_id : episodeId})
+            createInternalServerError(deleteEpisode.deletedCount)
+
+            deleteFile(path.join(process.argv[1] , '..' , '..' , 'public' , episode.videoAddress))
 
             const updateChapter = await chapterModel.updateOne({_id : episode.chapterId} , {$pull : {episodes : episode._id}})
             const updateCourse = await courseModel.updateOne({_id : episode.courseId} , {$inc : {time : -episode.time}})
 
-            deleteFile(episode.videoAddress)
 
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,
@@ -80,17 +77,17 @@ class EpisodeController {
         try {
             const { episodeId } = req.params
             await validateObjectId.validateAsync(episodeId)
+            const updateData = req.body
+            await updateEpisodeValidationSchema.validateAsync(updateData)
 
-            const data = await updateEpisodeValidationSchema.validateAsync(req.body)
-
-            const episode = await episodeModel.findByIdAndUpdate(episodeId , data , {returnDocument : 'after'})
+            const episode = await episodeModel.updateOne({_id : episodeId} , updateData)
+            createNotFoundError({episode})
+            createInternalServerError(episode.modifiedCount)
             
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,
                 message : 'episode updated successfully',
-                data : {
-                    episode
-                }
+                data : {}
             })
 
         } catch (error) {

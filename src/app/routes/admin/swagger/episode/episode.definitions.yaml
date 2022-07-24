@@ -12,49 +12,42 @@
                   type : string
                   example : description of course
               time:
-                  type : string
-                  example : summary of course
-              :
-                  type : array
-                  items :
-                      type : string
-                  example : 
-                      -   tag1
-                      -   tag2
+                  type : integer
+                  example : 3600
               category:
-                type : object
-                $ref : '#/definitions/category'
-              price:
                   type : string
+                  example : 62c3399cfc43ce4cc4afad2d
+              price:
+                  type : integer
                   example : 10000
               discount:
-                  type : string
+                  type : integer
                   example : 0
-              likes:
-                  type : array
-                  items :
-                      type : string
-                  example : 
-                      -   62c3399cfc43ce4cc4afad2d
-
+              courseId:
+                  type : string
+                  example : 62c3399cfc43ce4cc4afad2d
+              chapterId:
+                  type : string
+                  example : 62c3399cfc43ce4cc4afad2d
+              createdAt:
+                  type : string
+                  example : 2022-07-09T07:58:58.711+00:00
+              updatedAt:
+                  type : string
+                  example : 2022-07-09T07:58:58.711+00:00
 
 
  
  
-      getEpisode:
+      createEpisodeResponse:
           type : object
           properties:
               status : 
                   type : integer
-                  example : 200
+                  example : 201
               message : 
                   type : string
-                  example : successfull
+                  example : episode created successfully
               data : 
                   type : object
-                  properties:
-                      course :
-                          type: array
-                          items :
-                              type : object
-                              $ref : '#/definitions/episode'
+                  $ref : '#/definitions/episode'

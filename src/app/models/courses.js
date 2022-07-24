@@ -8,7 +8,7 @@ const courseSchema = new mongoose.Schema({
     short_text : {type : String , required : true , trim : true},
     image : {type : String},
     tags : {type : [String] , default : []},
-    category : {type : [mongoose.Types.ObjectId] , required : true},
+    category : {type : mongoose.Types.ObjectId , required : true},
     likes : {type : [mongoose.Types.ObjectId] , deafult : []},
     bookmarks : {type : [mongoose.Types.ObjectId] , deafult : []},
     price : {type : Number , required : true},
@@ -21,35 +21,8 @@ const courseSchema = new mongoose.Schema({
 } , {
     versionKey : false,
     timestamps : true,
-    toJSON : {
-        virtuals : true
-    }
 })
 
-courseSchema.virtual('chaptersList' , {
-    localField : 'chapters',
-    foreignField : '_id',
-    ref : 'chapter'
-})
-
-courseSchema.virtual('bookmarksCount').get(function(){
-    return this.bookmarks.length
-})
-courseSchema.virtual('likesCount').get(function(){
-    return this.likes.length
-})
-
-
-courseSchema.pre('find' , function(next) {
-    this.populate([{path : 'chapters'}])
-    next()
-}).pre('findOne' , function(next) {
-    this.populate([{path : 'chapters'}])
-    next()
-}).pre('aggregate', function(next) {
-    this.populate([{path : 'chapters'}])
-    next()
-})
 
 courseSchema.index({title : 'text' , text : 'text' , short_text : 'text'})
 

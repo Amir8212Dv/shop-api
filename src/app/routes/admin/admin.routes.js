@@ -1,5 +1,4 @@
 import express from 'express'
-
 import categoryRouter from './category.js'
 import blogRouter from './blog.js'
 import productRouter from './product.js'

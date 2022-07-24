@@ -2,28 +2,47 @@ import productType from "../types/product.type.js";
 import {GraphQLObjectType , GraphQLList , GraphQLString, GraphQLInt} from 'graphql'
 import productModel from '../../models/products.js'
 import createQueryFilter from "../../utils/createQueryFilter.js";
-import createResponseType from "../types/responseType.js";
 import httpStatus from 'http-status-codes'
-import Controller from "../../controllers/controller.js";
+import CreateAggregatePipeline from "../../controllers/createAggregatePipeline.js";
 import mongoose from "mongoose";
+import autoBind from "auto-bind";
+import validateObjectId from "../../validators/objectId.js";
+import createHttpError from "http-errors";
+import { createNotFoundError } from "../../utils/createError.js";
 
-const responseType = {
-    products : {type : new GraphQLList(productType)}
-}
 
-class productQuery extends Controller {
+const responseType = new GraphQLObjectType({
+    name : 'productResponseType',
+    fields : {
+        status : {type : GraphQLInt},
+        message : {type : GraphQLString},
+        data : {type : new GraphQLObjectType({
+            name : 'productDataResponseType',
+            fields : {
+                products : {type : new GraphQLList(productType)}
+            }
+        })}
+    }
+})
+
+class productQuery extends CreateAggregatePipeline {
+    constructor() {
+        super()
+        autoBind(this)
+    }
 
     #aggregateSchema = [
-        this.categoryLookup('category'),
+        ...this.categoryLookup(),
         ...this.userLookup('suplier'),
+        this.likesCount(),
     ]
     getAllProducts = {
-        type : createResponseType(responseType),
+        type : responseType,
         args : {
-            suplier : {type : GraphQLString},
+            suplierId : {type : GraphQLString},
             search : {type : GraphQLString},
             tags : {type : GraphQLString},
-            category : {type : GraphQLString},
+            categoryId : {type : GraphQLString},
             discount : {type : GraphQLString},
             price : {type : GraphQLString},
             sort : {type : GraphQLString},
@@ -38,16 +57,17 @@ class productQuery extends Controller {
             const products = await productModel.aggregate([
                 {$match : queryFilter},
                 ...this.#aggregateSchema,
+                this.fileUrl(process.env.BASE_URL , 'images'),
                 {
                     $sort : {
-                        [sort] : 1
+                        [sort || 'title'] : 1
                     }
                 },
                 {
-                    $limit : pageLimit || 10
+                    $skip : (page - 1 || 0) * (pageLimit || 10)
                 },
                 {
-                    $skip : (page || 1) * (pageLimit || 10)
+                    $limit : pageLimit || 10
                 }
             ])
 
@@ -55,13 +75,13 @@ class productQuery extends Controller {
                 status : httpStatus.OK,
                 message : '',
                 data : {
-                    product : products
+                    products
                 }
             }
         }
     }
     getProductById = {
-        type : createResponseType(responseType),
+        type : responseType,
         args : {
             productId : {type : GraphQLString}
         },
@@ -70,21 +90,22 @@ class productQuery extends Controller {
             const {productId} = args
             await validateObjectId.validateAsync(productId)
 
-            const product = await productModel.aggregate([
+            const [product] = await productModel.aggregate([
                 {$match : {_id : mongoose.Types.ObjectId(productId)}},
+                this.fileUrl(process.env.BASE_URL , 'images'),
                 ...this.#aggregateSchema
             ])
-            if(!product) throw createHttpError.NotFound('product not found')
-
-            res.status(httpStatus.OK).send({
+            createNotFoundError({products})
+            
+            return {
                 status : httpStatus.OK,
                 message : '',
                 data : {
-                    product : [
+                    products : [
                         product
                     ]
                 }
-            })
+            }
         }
     }
 }

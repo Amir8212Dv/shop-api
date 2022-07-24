@@ -3,9 +3,10 @@ import PermissionController from '../../controllers/admin/RBAC/permission.contro
 
 const permissionRouter = express.Router()
 
-permissionRouter.post('/add' , PermissionController.createPermission)
+permissionRouter.post('/create' , PermissionController.createPermission)
 permissionRouter.get('/all' , PermissionController.getAllPermission)
-permissionRouter.patch('/update/:permissionId' , PermissionController.editPermission)
+permissionRouter.get('/:permissinoId' , PermissionController.getPermissionById)
+permissionRouter.patch('/edit/:permissionId' , PermissionController.editPermission)
 permissionRouter.delete('/delete/:permissionId' , PermissionController.deletePermission)
 
 export default permissionRouter

@@ -11,6 +11,9 @@ const episodeType = new GraphQLObjectType({
         chapterId : {type : GraphQLString},
         createdAt : {type : GraphQLString},
         time : { type : GraphQLInt },
+        _id : {type : GraphQLString},
+        videoURL : {type : GraphQLString}
+
     }
 })
 

@@ -1,4 +1,4 @@
-import {GraphQLString , GraphQLObjectType , GraphQLList , GraphQLInt} from 'graphql'
+import {GraphQLString , GraphQLObjectType , GraphQLList , GraphQLInt, GraphQLFloat} from 'graphql'
 import { categoryType } from './category.type.js'
 import userType from './user.type.js'
 import productType from './product.type.js'
@@ -9,7 +9,7 @@ const basketProductType = new GraphQLObjectType({
     fields : {
         productId : {type : GraphQLString},
         count : {type : GraphQLInt},
-        price : {type : GraphQLInt},
+        price : {type : GraphQLFloat},
         _id : {type : GraphQLString}
     }
 })
@@ -17,7 +17,7 @@ const basketCourseType = new GraphQLObjectType({
     name : 'basketCourseType',
     fields : {
         courseId : {type : GraphQLString},
-        price : {type : GraphQLInt},
+        price : {type : GraphQLFloat},
         _id : {type : GraphQLString}
     }
 })
@@ -30,7 +30,8 @@ const basketType = new GraphQLObjectType({
         courses : {type : new GraphQLList(basketCourseType)},
         productDetails : {type : new GraphQLList(productType)},
         courseDetails : {type : new GraphQLList(courseType)},
-        totalPrice : {type : GraphQLString},
+        totalPrice : {type : GraphQLFloat},
+        _id : {type : GraphQLString}
     }
 })
 

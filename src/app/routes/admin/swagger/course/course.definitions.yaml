@@ -22,8 +22,8 @@
                       -   tag1
                       -   tag2
               category:
-                type : object
-                $ref : '#/definitions/category'
+                  type : string
+                  example : 62c3399cfc43ce4cc4afad2d
               price:
                   type : string
                   example : 10000
@@ -32,43 +32,21 @@
                   example : 0
               likes:
                   type : array
-                  items :
-                      type : string
-                  example : 
-                      -   62c3399cfc43ce4cc4afad2d
+
               bookmarks:
                   type : array
-                  items :
-                      type : string
-                  example : 
-                      -   62c3399cfc43ce4cc4afad2d
-              comments:
-                  type : array
-                  items :
-                      type : string
-                  example : 
-                      -   62c3399cfc43ce4cc4afad2d
+
               teacher:
-                  type : object
-                  $ref : '#/definitions/user'
-              students:
-                  type : array
-                  items : 
-                      type : string
-                  example :
-                      -   62c3399cfc43ce4cc4afad2d
-              time:
                   type : string
-                  example : 00:00:00
+                  example : 62c3399cfc43ce4cc4afad2d
+              time:
+                  type : integer
+                  example : 3600
               status:
                   type : string
                   example : notStarted
               chapters:
                   type : array
-                  items:
-                      type : string
-                  example :
-                      -   62c3399cfc43ce4cc4afad2d
               createdAt:
                   type : string
                   example : 2022-07-01T19:21:48.956Z
@@ -81,20 +59,15 @@
 
  
  
-      getCourse:
+      createCourseResponse:
           type : object
           properties:
               status : 
                   type : integer
-                  example : 200
+                  example : 201
               message : 
                   type : string
-                  example : successfull
+                  example : course created successfully
               data : 
                   type : object
-                  properties:
-                      course :
-                          type: array
-                          items :
-                              type : object
-                              $ref : '#/definitions/course'
+                  $ref : '#/definitions/course'

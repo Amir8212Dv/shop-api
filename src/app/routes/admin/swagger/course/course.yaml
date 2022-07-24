@@ -1,7 +1,7 @@
 
  components:
       schemas:
-          addCourse:
+          createCourse:
               type : object
               required :
                   -   title
@@ -64,16 +64,16 @@
                       description : title of course
                   image : 
                       type : string
-                      format : buffer
+                      format : binary
               
               
 
 
- /admin/course/add:
+ /admin/course/create:
       post:
           tags : [course]
-          summary : add a new course
-          description : add a new course
+          summary : create new courses
+          description : create new course
           security : 
               -   bearerAuth : []
           requestBody:
@@ -81,7 +81,7 @@
               content:
                   multipart/form-data:
                       schema:
-                          $ref : '#/components/schemas/addCourse'
+                          $ref : '#/components/schemas/createCourse'
 
           responses:
               201 : 
@@ -89,26 +89,19 @@
                   content :
                       application/json:
                           schema:
-                              $ref: '#/definitions/getCourse'
-                  
+                              $ref: '#/definitions/createCourseResponse'
 
 
-
-
-
-
-
-
- /admin/course/remove/{id}:
+ /admin/course/delete/{courseId}:
       delete:
           tags : [course]
-          summary : delete course with ID
+          summary : delete course
           description : delete course with ID
           security : 
               -   bearerAuth : []
           parameters :
               -   in : path
-                  name : id
+                  name : courseId
                   type : string
                   required : true
                   description : course ID
@@ -118,36 +111,34 @@
                   content :
                       application/json:
                           schema:
-                              $ref: '#/definitions/getCourse'
+                              $ref: '#/definitions/response'
 
 
 
 
 
- /admin/course/edit/{id}:
+ /admin/course/edit/{courseId}:
       patch:
           tags : [course]
-          summary : edit course with ID
+          summary : edit course
           description : edit course with ID
           security : 
               -   bearerAuth : []
           parameters :
               -   in : path
-                  name : id
+                  name : courseId
                   type : string
                   required : true
-                  description : course ID
           requestBody:
               required : true
               content : 
                   multipart/form-data:
                       schema:
                           $ref : '#/components/schemas/editCourse'
-
           responses:
               201 : 
                   description : successfull
                   content :
                       application/json:
                           schema:
-                              $ref: '#/definitions/getCourse'
+                              $ref: '#/definitions/response'

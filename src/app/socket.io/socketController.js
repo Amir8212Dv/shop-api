@@ -1,8 +1,9 @@
-import converstationModel from '../models/converstation.js'
+import namespaceModel from '../models/namespace.js'
 import userModel from '../models/users.js'
 import path from 'path'
 import fs from 'fs'
 import createObjectId from '../utils/createObjectId.js'
+import roomModel from '../models/room.js'
 
 class SocketController {
     #io
@@ -22,17 +23,17 @@ class SocketController {
         })
 
         this.#io.on('connection' , async socket => {
-            const namespaces = await converstationModel.find({} , {title : 1 , endpoint : 1}).sort({_id : -1})
+            const namespaces = await namespaceModel.find({} , {title : 1 , endpoint : 1}).sort({_id : 1})
 
             socket.emit('namespacesList' , namespaces)
-            socket.emit('userInfo' , {senderId : this.#user._id.toString() , senderName : `${this.#user.first_name || ''} ${this.#user.last_name || ''}`})
+            socket.emit('userInfo' , {senderId : this.#user?._id.toString() , senderName : `${this.#user?.first_name || ''} ${this.#user?.last_name || ''}`})
         })
     }
 
     
     async createNamespaces() {
         
-        const namespaces = await converstationModel.find({} , {'rooms.message' : 0})
+        const namespaces = await namespaceModel.find({} , {'rooms.message' : 0})
         
         namespaces.forEach(space => {
             this.#io.of(`/${space.endpoint}`).on('connection' , socket => {
@@ -43,8 +44,8 @@ class SocketController {
                     if(lastestRoom) await socket.leave(lastestRoom)
                     socket.join(roomName)
                     
-                    const roomInfo = await converstationModel.findOne({_id : space._id , 'rooms.name' : roomName} , {'rooms.$' : 1})
-                    const room = roomInfo.rooms[0]
+                    const room = await roomModel.findOne({for : space._id , name : roomName})
+     
                     const onlineUsers = await socket.in(room.name).allSockets()
                     
                     this.#io.of(`/${space.endpoint}`).in(roomName).emit('roomInfo' , {room , onlineUsers : Array.from(onlineUsers)})
@@ -77,12 +78,12 @@ class SocketController {
                 fs.mkdirSync('public/socket' , {recursive : true})
                 fs.writeFileSync(`public${filePath}` , message.file)
             }
-            await converstationModel.updateOne(
-                {_id : namespace._id , 'rooms.name' : roomName},
-                {$push : {'rooms.$.messages' : createMessage}}
+            await roomModel.updateOne(
+                {for : namespace._id , name : roomName},
+                {$push : {messages : createMessage}}
             )
 
-            this.#io.of(`/${namespace.endpoint}`).in(roomName).emit('newwMessage' , createMessage)
+            this.#io.of(`/${namespace.endpoint}`).in(roomName).emit('newMessage' , createMessage)
         })
         
     }

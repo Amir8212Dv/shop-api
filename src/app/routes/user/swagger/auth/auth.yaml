@@ -1,11 +1,4 @@
 
-
- tags:
-      name : auth
-
-
-
-
  components:
       schemas:
           signup:
@@ -45,7 +38,7 @@
                   password :
                       type : string
                       description : your password
-          loginWithOtp:
+          loginWithMobile:
               type : object
               required : 
                   -   mobile
@@ -77,36 +70,11 @@
 
 
 
-
-
-
-
-#  /user/get-otp:
-#       post:
-#           tags : [auth]
-#           summary : get otp
-#           descriptoin : get one time password
-#           requestBody:
-#               required : true
-#               content:
-#                   application/x-www-form-urlencoded:
-#                       schema:
-#                           $ref : '#/components/schemas/getOtp'
-#                   application/json:
-#                       schema:
-#                           $ref : '#/components/schemas/getOtp'
-#           responses:
-#               200:
-#                   description : successfully
-#                   content :
-#                       application/json:
-#                           schema:
-#                               $ref: '#/definitions/sendOtp'
  /user/signup:
       post:
           tags : [auth]
-          summary : login
-          description : login with otp
+          summary : signup
+          description : create new account
           requestBody:
               required : true
               content:
@@ -119,13 +87,18 @@
           responses : 
               200:
                   description : successfull
+                  content :
+                      application/json:
+                          schema:
+                              $ref: '#/definitions/response'
+
 
 
  /user/login-password:
       post:
           tags : [auth]
-          summary : login
-          description : login with otp
+          summary : login with password
+          description : login with password
           requestBody:
               required : true
               content:
@@ -141,32 +114,36 @@
                   content :
                       application/json:
                           schema:
-                              $ref: '#/definitions/login'
+                              $ref: '#/definitions/loginResponse'
 
 
- /user/login-otp:
+ /user/login-mobile:
       post:
           tags : [auth]
-          summary : login
-          description : login with otp
+          summary : login with mobile
+          description : login with mobile
           requestBody:
               required : true
               content:
                   application/x-www-form-urlencoded:
                       schema:
-                          $ref : '#/components/schemas/loginWithOtp'
+                          $ref : '#/components/schemas/loginWithMobile'
                   application/json:
                       schema:
-                          $ref : '#/components/schemas/loginWithOtp'
+                          $ref : '#/components/schemas/loginWithMobile'
           responses : 
               200:
                   description : successfull
+                  content :
+                      application/json:
+                          schema:
+                              $ref: '#/definitions/sendOtpResponse'
 
  /user/check-otp:
       post:
           tags : [auth]
-          summary : get otp
-          descriptoin : get one time password
+          summary : validate validation code
+          descriptoin : validate validation code
           requestBody:
               required : true
               content:
@@ -182,7 +159,7 @@
                   content :
                       application/json:
                           schema:
-                              $ref: '#/definitions/sendOtp'
+                              $ref: '#/definitions/loginResponse'
           
 
 
@@ -209,5 +186,5 @@
                   content :
                       application/json:
                           schema:
-                              $ref: '#/definitions/login'
+                              $ref: '#/definitions/loginResponse'
 

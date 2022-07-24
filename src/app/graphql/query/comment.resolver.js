@@ -1,19 +1,27 @@
-import blogModel from "../../models/blogs.js"
 import validateObjectId from "../../validators/objectId.js"
-import createResponseType from "../types/responseType.js"
 import httpStatus from 'http-status-codes'
-import createHttpError from "http-errors"
-import { GraphQLList, GraphQLString } from "graphql"
+import { GraphQLInt, GraphQLList, GraphQLObjectType, GraphQLString } from "graphql"
 import commentModel from "../../models/comments.js"
 import commentType from "../types/comment.type.js"
 
-const commentResponseType = {
-    blogs : {type : new GraphQLList(commentType)}
-}
+
+const responseType = new GraphQLObjectType({
+    name : 'commentResponseType',
+    fields : {
+        status : {type : GraphQLInt},
+        message : {type : GraphQLString},
+        data : {type : new GraphQLObjectType({
+            name : 'commentDataResponseType',
+            fields : {
+                comments : {type : new GraphQLList(commentType)}
+            }
+        })}
+    }
+})
 
 class CommentQuery {
-    getComments = {
-        type : createResponseType(commentResponseType),
+    getAllComments = {
+        type : responseType,
         args : {
             id : {type : GraphQLString}
         },
@@ -21,7 +29,7 @@ class CommentQuery {
             const {id} = args
             await validateObjectId.validateAsync(id)
 
-            const comments = await commentModel.find({for : id , show : true}).sort({createdAt : -1})
+            const comments = await commentModel.find({for : id , show : true}).sort({createdAt : 1})
 
             return {
                 status : httpStatus.OK,

@@ -7,25 +7,16 @@ const blogSchema = new mongoose.Schema({
     text     : { type : String, required : true, trim : true },
     image    : { type : String },
     tags     : { type : [String], default : [] },
-    category : { type : [mongoose.Types.ObjectId], required : true },
+    category : { type : mongoose.Types.ObjectId, required : true },
     likes    : { type : [mongoose.Types.ObjectId], default : [] },
     bookmarks: { type : [mongoose.Types.ObjectId], default : [] }
 } , {
     timestamps : true,
-    versionKey : false,
-    toJSON : {
-        virtuals : true
-    }
+    versionKey : false
 })
 
 blogSchema.index({title : 'text'})
 
-blogSchema.virtual('bookmarksCount').get(function(){
-    return this.bookmarks.length
-})
-blogSchema.virtual('likesCount').get(function(){
-    return this.likes.length
-})
 
 const blogModel = mongoose.model('blog' , blogSchema)
 

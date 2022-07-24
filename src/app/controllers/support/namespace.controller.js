@@ -1,8 +1,7 @@
-import converstationModel from "../../models/converstation.js"
+import namespaceModel from "../../models/namespace.js"
 import httpStatus from 'http-status-codes'
-import createHttpError from "http-errors"
 import validateObjectId from "../../validators/objectId.js"
-import { createNotFoundError } from '../../utils/createError.js'
+import { createInternalServerError, createNotFoundError } from '../../utils/createError.js'
 import { namespaceValidationSchema } from "../../validators/support/namespace.js"
 
 class NamespaceController {
@@ -13,23 +12,25 @@ class NamespaceController {
             const namespaceData = req.body
             await namespaceValidationSchema.validateAsync(namespaceData)
 
-            const namespace = await converstationModel.create(namespaceData)
-            if(!namespace) throw createHttpError.InternalServerError('create namespace faild')
+            const namespace = await namespaceModel.create(namespaceData)
+            createInternalServerError(namespace)
 
             res.status(httpStatus.CREATED).send({
                 status : httpStatus.CREATED,
                 message : 'namespace created successfully',
-                data : {}
+                data : {
+                    namespace
+                }
             })
 
         } catch (error) {
             next(error)
         }
     }
-    async getNamespaces(req , res , next) {
+    async getAllNamespaces(req , res , next) {
         try {
 
-            const namespaces = await converstationModel.find({} , {rooms : 0})
+            const namespaces = await namespaceModel.find({} , {rooms : 0})
 
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,
@@ -48,8 +49,9 @@ class NamespaceController {
             const {namespaceId} = req.params
             await validateObjectId.validateAsync(namespaceId)
 
-            const namespace = await converstationModel.deleteOne({_id : namespaceId})
+            const namespace = await namespaceModel.deleteOne({_id : namespaceId})
             createNotFoundError({namespace})
+            createInternalServerError(namespace.deletedCount)
 
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,
@@ -68,12 +70,13 @@ class NamespaceController {
             const updateData = req.body
             await namespaceValidationSchema.validateAsync(updateData)
 
-            const namespace = await converstationModel.findByIdAndUpdate(namespaceId , updateData , {returnDocument : 'after'})
+            const namespace = await namespaceModel.updateOne({_id : namespaceId} , updateData)
             createNotFoundError({namespace})
+            createInternalServerError(namespace.modifiedCount)
 
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,
-                message : 'namespace and rooms and messages in namespace deleted successfully',
+                message : 'namespace updated successfully',
                 data : {}
             })
             

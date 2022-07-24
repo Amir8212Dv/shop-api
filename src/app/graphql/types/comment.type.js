@@ -7,7 +7,9 @@ const commentType = new GraphQLObjectType({
         author : {type : userType},
         comment : {type : GraphQLString},
         parent : {type : GraphQLString},
-        show : {type : GraphQLBoolean}
+        show : {type : GraphQLBoolean},
+        _id : {type : GraphQLString},
+
     }
 })
 

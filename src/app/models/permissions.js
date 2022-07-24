@@ -5,9 +5,6 @@ const permissionSchema = new mongoose.Schema({
     description : {type : String , default : ''}
 } , {
     versionKey : false,
-    toJSON : {
-        virtuals : true
-    }
 })
 
 const permissionModel = mongoose.model('permission' , permissionSchema)

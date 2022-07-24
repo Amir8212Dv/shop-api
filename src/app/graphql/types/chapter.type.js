@@ -6,9 +6,10 @@ const chapterType = new GraphQLObjectType({
     fields : {
         title : {type : GraphQLString},
         text : {type : GraphQLString},
-        // episodes : {type : new GraphQLList(GraphQLString)},
         episodes : {type : new GraphQLList(episodeType)},
-        courseId : { type : GraphQLString}
+        courseId : { type : GraphQLString},
+        _id : {type : GraphQLString},
+
     }
 })
 

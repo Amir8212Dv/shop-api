@@ -7,9 +7,7 @@ import roomRouter from './room.js'
 const supportRouter = express.Router()
 
 supportRouter.get('/' , verifyAccessTokenFromCookie , supportController.renderChattRoom)
-
 supportRouter.use('/namespace' , verifyAccessToken , namespaceRouter)
-
 supportRouter.use('/room' , verifyAccessToken , roomRouter)
 
 export default supportRouter

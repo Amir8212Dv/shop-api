@@ -3,20 +3,33 @@ import courseModel from '../../models/courses.js'
 import { GraphQLInt, GraphQLList,GraphQLObjectType,GraphQLString } from 'graphql'
 import createQueryFilter from "../../utils/createQueryFilter.js";
 import httpStatus from 'http-status-codes'
-import createResponseType from "../types/responseType.js";
-import Controller from "../../controllers/controller.js";
+import CreateAggregatePipeline from "../../controllers/createAggregatePipeline.js";
 import autoBind from "auto-bind";
+import createHttpError from "http-errors";
+import validateObjectId from "../../validators/objectId.js";
+import mongoose from "mongoose";
+import { createNotFoundError } from "../../utils/createError.js";
 
-const responseType = {
-    course : {type : new GraphQLList(courseType)}
-}
+const responseType = new GraphQLObjectType({
+    name : 'courseResponseType',
+    fields : {
+        status : {type : GraphQLInt},
+        message : {type : GraphQLString},
+        data : {type : new GraphQLObjectType({
+            name : 'courseDataResponseType',
+            fields : {
+                course : {type : new GraphQLList(courseType)}
+            }
+        })}
+    }
+})
 
-
-class CourseQuery extends Controller {
-    #aggregateSchema(page =1 , pageLimit = 10) {
-        return [
+class CourseQuery extends CreateAggregatePipeline {
+    #aggregateSchema =  [
             ...this.userLookup('teacher'),
-            this.categoryLookup('category'),
+            ...this.categoryLookup(),
+            this.likesCount(),
+            
             {
                 $lookup : {
                     from : 'chapters',
@@ -33,32 +46,26 @@ class CourseQuery extends Controller {
                     as : 'chapters.episodes'
                 }
             },
-            // {
-            //     $unwind : '$teacher'
-            // },
-            // {
-            //     $unwind : '$category'
-            // },
             {
                 $project : {
                     'teacher.mobile' : 0,
                     'teacher.bills' : 0,
                     'teacher.otp' : 0
                 }
-            }
+            },
         ]
-    }
+    
     constructor() {
         super()
         autoBind(this)
     }
     getAllCourses = {
-        type : createResponseType(responseType),
+        type : responseType,
         args : {
-            teacher : {type : GraphQLString},
+            teacherId : {type : GraphQLString},
             search : {type : GraphQLString},
             tags : {type : GraphQLString},
-            category : {type : GraphQLString},
+            categoryId : {type : GraphQLString},
             status : {type : GraphQLString},
             discount : {type : GraphQLString},
             price : {type : GraphQLString},
@@ -77,26 +84,20 @@ class CourseQuery extends Controller {
                 }, 
                 ...this.#aggregateSchema,
                 {
-                    $limit : pageLimit || 10
-                },
-                {
-                    $skip : (page || 1) * (pageLimit || 10)
-                },
-                {
                     $sort : {
-                        [sort] : 1
+                        [sort || 'title'] : 1
                     }
+                },
+                this.fileUrl(process.env.BASE_URL),
+                {
+                    $skip : (page - 1 || 0) * (pageLimit || 10)
+                },
+                {
+                    $limit : pageLimit || 10
                 }
             ])
-
-
-            res.status(httpStatus.OK).send({
-                status : httpStatus.OK,
-                message : '',
-                data : {
-                    course : courses
-                }
-            })
+            
+            
             return {
                 status : httpStatus.OK,
                 message : '',
@@ -104,26 +105,28 @@ class CourseQuery extends Controller {
                     course : courses
                 }
             }
+
         }
     }
     getCourseById = {
-        type : createResponseType(responseType),
+        type : responseType,
         args : {
             courseId : {type : GraphQLString}
         },
         resolve : async (obj , args , context , info) => {
-            const courseId = mongoose.Types.ObjectId(args.id)
+            const {courseId} = args
             await validateObjectId.validateAsync(courseId)
             
-            const course = await courseModel.aggregate([
+            const [course] = await courseModel.aggregate([
                 {
-                    $match : {_id : courseId}
+                    $match : {_id : mongoose.Types.ObjectId(courseId)}
                 }, 
+                this.fileUrl(process.env.BASE_URL),
                 ...this.#aggregateSchema,
             ])
-            if(!course) throw createHttpError.NotFound('course not found')
+            createNotFoundError({course})
 
-            res.status(httpStatus.OK).send({
+            return {
                 status : httpStatus.OK,
                 message : '',
                 data : {
@@ -131,7 +134,7 @@ class CourseQuery extends Controller {
                         course
                     ]
                 }
-            })
+            }
         }
     }
 }

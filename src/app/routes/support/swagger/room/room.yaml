@@ -1,7 +1,7 @@
 
   components:
       schemas:
-          Room:
+          createRoom:
               type: object
               required:
                   -   name
@@ -16,39 +16,64 @@
                   image:
                       type: file
                       description: the index picture of blog
+          editRoom:
+              type: object
+              properties:
+                  name:
+                      type: string
+                      description: the title of category
+                  description:
+                      type: string
+                      description: the description of text of blog
+                  image:
+                      type: file
+                      description: the index picture of blog
 
 
-  /support/room/create:
+  /support/room/create/{namespaceId}:
       post:
           tags: [support]
-          summary: add room to namespace
+          summary: create new room
+          description: create new room in namespace 
           requestBody:
               required: true
               content:
                   application/x-www-form-urlencoded:
                       schema:
-                          $ref: '#/components/schemas/Room'
+                          $ref: '#/components/schemas/createRoom'
+                  application/json:
+                      schema:
+                          $ref: '#/components/schemas/createRoom'
           security:
             - bearerAuth : []
+          parameters :
+            - in : path
+              type : string
+              required : true
+              name : namespaceId
           responses:
               201:
                   description: success
                   content:
                     application/json:
                       schema :
-                        $ref : '#/definitions/getRoom'
+                        $ref : '#/definitions/createRoomResponse'
 
 
   /support/room/edit/{roomId}:
       patch:
           tags: [support]
           summary: edit room
+          description: edit room by room id
           requestBody:
               required: true
               content:
                   application/x-www-form-urlencoded:
                       schema:
-                          $ref: '#/components/schemas/Room'
+                          $ref: '#/components/schemas/editRoom'
+                  application/json:
+                      schema:
+                          $ref: '#/components/schemas/editRoom'
           parameters:
             - in : path
               name : roomId
@@ -62,7 +87,7 @@
                   content:
                     application/json:
                       schema :
-                        $ref : '#/definitions/getRoom'
+                        $ref : '#/definitions/response'
           
 
 
@@ -70,12 +95,9 @@
       delete:
           tags: [support]
           summary: delete room
+          description: delete room by room id
           requestBody:
               required: true
-              content:
-                  application/x-www-form-urlencoded:
-                      schema:
-                          $ref: '#/components/schemas/Room'
           parameters:
             - in : path
               name : roomId
@@ -86,6 +108,10 @@
           responses:
               201:
                   description: success
+                  content:
+                    application/json:
+                      schema :
+                        $ref : '#/definitions/response'
  
 
 
@@ -93,6 +119,7 @@
       get:
           tags: [support]
           summary: get all rooms
+          description: get all rooms
           security:
             - bearerAuth : []
           parameters : 
@@ -106,4 +133,4 @@
                   content:
                     application/json:
                       schema :
-                        $ref : '#/definitions/getRoom'
+                        $ref : '#/definitions/getAllRoomsResponse'

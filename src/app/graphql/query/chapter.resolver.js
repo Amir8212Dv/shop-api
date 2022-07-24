@@ -1,20 +1,30 @@
-import courseType from "../types/course.type.js";
-import courseModel from '../../models/courses.js'
-import { GraphQLList,GraphQLObjectType,GraphQLString } from 'graphql'
-import createQueryFilter from "../../utils/createQueryFilter.js";
+import { GraphQLInt, GraphQLList,GraphQLObjectType,GraphQLString } from 'graphql'
 import httpStatus from 'http-status-codes'
-import createResponseType from "../types/responseType.js";
 import chapterType from "../types/chapter.type.js";
+import validateObjectId from "../../validators/objectId.js";
+import chapterModel from "../../models/course.chapters.js";
+import courseModel from '../../models/courses.js';
+import { createNotFoundError } from '../../utils/createError.js';
 
-const responseType = {
-        courses : {type : new GraphQLList(chapterType)}
-}
 
+const responseType = new GraphQLObjectType({
+    name : 'chapterResponseType',
+    fields : {
+        status : {type : GraphQLInt},
+        message : {type : GraphQLString},
+        data : {type : new GraphQLObjectType({
+            name : 'chapterDataResponseType',
+            fields : {
+                chapters : {type : new GraphQLList(chapterType)}
+            }
+        })}
+    }
+})
 
 class ChapterQuery {
     
     getAllChapters = {
-        type : createResponseType(responseType),
+        type : responseType,
         args : {
             courseId : {type : GraphQLString}
         },
@@ -22,20 +32,21 @@ class ChapterQuery {
             const {courseId} = args
             await validateObjectId.validateAsync(courseId)
 
-            const chapters = await chapterModel.find({courseId}).sort({createdAt : -1 , 'episodes.createdAt' : -1})
-            // if(!course) throw createHttpError.NotFound('course not found')
+            const course = await courseModel.findById(courseId , {_id : 1})
+            createNotFoundError({course})
+            const chapters = await chapterModel.find({courseId}).sort({createdAt : 1 , 'episodes.createdAt' : 1})
 
-            res.status(httpStatus.OK).send({
+            return {
                 status : httpStatus.OK,
                 message : '',
                 data : {
                     chapters
                 }
-            })
+            }
         }
     }
     getChapterById = {
-        type : createResponseType(responseType),
+        type : responseType,
         args : {
             chapterId : {type : GraphQLString}
         },
@@ -43,18 +54,18 @@ class ChapterQuery {
             const {chapterId} = args
             await validateObjectId.validateAsync(chapterId)
 
-            const chapter = await chapterModel.findById(chapterId).sort({'episodes.createdAt' : -1})
-            if(!chapter) throw createHttpError.NotFound('chapter not found')
+            const chapter = await chapterModel.findById(chapterId).sort({'episodes.createdAt' : 1})
+            createNotFoundError({chapter})
 
-            res.status(httpStatus.OK).send({
+            return {
                 status : httpStatus.OK,
                 message : '',
                 data : {
-                    chapter : [
+                    chapters : [
                         chapter
                     ]
                 }
-            })
+            }
         }
     }
 }

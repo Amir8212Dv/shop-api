@@ -1,6 +1,6 @@
  components:
     schemas:
-      addChapter:
+      createChapter:
         type : object
         required:
           - courseId
@@ -15,11 +15,10 @@
           text :
             type : string 
             description : description for chapter
-      updateChapter:
+      editChapter:
         type : object
         required:
           - title
-          - text
         properties:
           title :
             type : string
@@ -31,11 +30,11 @@
 
 
 
- /admin/chapter/add:
+ /admin/chapter/create:
     put:
       tags: [chapter]
-      summary : add a new chapter in course 
-      description : add a new chapter in course 
+      summary : create a new chapter in course 
+      description : create a new chapter in course 
       security : 
         - bearerAuth : []
       requestBody :
@@ -43,22 +42,17 @@
         content:
           application/x-www-form-urlencoded:
             schema: 
-              $ref : '#/components/schemas/addChapter'
+              $ref : '#/components/schemas/createChapter'
           application/json:
             schema: 
-              $ref : '#/components/schemas/addChapter'
+              $ref : '#/components/schemas/createChapter'
       responses:
         201:
           description : successfull 
           content:
             application/json:
               schema :
-                $ref : '#/definitions/getChapter'
-
-
-
-
-
+                $ref : '#/definitions/createChapterResponse'
 
  /admin/chapter/delete/{chapterId}:
     delete:
@@ -78,13 +72,13 @@
           content:
             application/json:
               schema :
-                $ref : '#/definitions/deleteChapter'
+                $ref : '#/definitions/response'
 
  /admin/chapter/edit/{chapterId}:
     patch:
       tags: [chapter]
-      summary : delete chapter
-      description : delete chapter by id
+      summary : edit chapter
+      description : edit chapter by id
       security : 
         - bearerAuth : []
       parameters :
@@ -97,11 +91,14 @@
         content :
           application/x-www-form-urlencoded:
             schema : 
-              $ref : '#/components/schemas/updateChapter'
+              $ref : '#/components/schemas/editChapter'
+          application/json:
+            schema : 
+              $ref : '#/components/schemas/editChapter'
       responses:
         200:
           description : successfull 
           content:
             application/json:
               schema :
-                $ref : '#/definitions/getChapter'
+                $ref : '#/definitions/response'

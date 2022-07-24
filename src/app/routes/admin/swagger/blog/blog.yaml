@@ -25,7 +25,7 @@
                       type : string
                       format : binary
 
-          updateBlog:
+          editBlog:
               type : object
               properties:
                   title:
@@ -69,19 +69,10 @@
                   content :
                       application/json:
                           schema:
-                              $ref: '#/definitions/getBlog'
+                              $ref: '#/definitions/createBlogResponse'
 
 
-
-
-
-
-
-
-
-
-
- /admin/blog/removeBlog/{id}:
+ /admin/blog/delete/{blogId}:
       delete:
           tags : [blog]
           summary : delete blog
@@ -90,7 +81,7 @@
               -   bearerAuth : []
           parameters : 
               -   in : path
-                  name : id
+                  name : blogId
                   type : string
                   required : true
           responses : 
@@ -99,18 +90,18 @@
                   content :
                       application/json:
                           schema:
-                              $ref: '#/definitions/getBlog'
+                              $ref: '#/definitions/response'
 
 
 
 
 
                   
- /admin/blog/update/{id}:
+ /admin/blog/edit/{blogId}:
       patch:
           tags : [blog]
-          summary : update blog
-          description : update blog
+          summary : edit blog
+          description : edit blog
           security:
               -   bearerAuth : []
           requestBody:
@@ -118,11 +109,11 @@
               content:
                   multipart/form-data:
                       schema:
-                          $ref : '#/components/schemas/updateBlog'
+                          $ref : '#/components/schemas/editBlog'
 
           parameters:
               -   in : path
-                  name : id
+                  name : blogId
                   type : string
                   required : true
           responses : 
@@ -131,4 +122,4 @@
                   content :
                       application/json:
                           schema:
-                              $ref: '#/definitions/getBlog'
+                              $ref: '#/definitions/response'

@@ -18,29 +18,15 @@ blogRouter.post(
     checkRole(permissions.WRITER) , 
     BlogsController.createBlog
 )
-
-
-// blogRouter.post('/image/:id' , BlogsController.addImage , multer.single('image'))
-
-
-// blogRouter.get('/all' , BlogsController.getAllBlogs)
-
-// blogRouter.get('/comments/:blogId' , BlogsController.getCommentsOfBlog)
-
-// blogRouter.get('/:blogId' , BlogsController.getBlogById)
-
-
-blogRouter.delete('/remvoeBlog/:blogId' , checkRole(permissions.WRITER) , BlogsController.deleteBlogById)
-
-
 blogRouter.patch(
-    '/update/:blogId' , 
+    '/edit/:blogId' , 
     checkRole(permissions.WRITER) , 
     checkForBlogId,
-    checkForCategoryId,
     imageUpload.single('image') , 
+    checkForCategoryId,
     BlogsController.editBlogById
 )
+blogRouter.delete('/delete/:blogId' , checkRole(permissions.WRITER) , BlogsController.deleteBlogById)
 
 
 export default blogRouter 

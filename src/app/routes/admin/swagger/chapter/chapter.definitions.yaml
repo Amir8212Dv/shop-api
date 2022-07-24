@@ -5,25 +5,34 @@
         title : 
           type : string
           example : title of chapter
+        _id : 
+          type : string
+          example : 62c933bfbd939fbef610721f
         text : 
           type : string
           example : description of chapter
         episodes : 
           type : array
-          items :
-            type : object 
-            $ref : '#/definitions/episode'
+        createdAt : 
+          type : string
+          example : 2022-07-09T07:59:23.834+00:00
+        updatedAt : 
+          type : string
+          example : 2022-07-09T07:59:23.834+00:00
+        courseId : 
+          type : string
+          example : 62c933bfbd939fbef610721f
 
 
-    getChapter :
+    createChapterResponse :
       type : object 
       properties : 
         status : 
           type : integer 
-          example : 200
+          example : 201
         message :
           type : string 
-          example : successfull 
+          example : chapter created successfully 
         data :
           type : object
           properties :
@@ -32,16 +41,3 @@
               items :
                 type : object
                 $ref : '#/definitions/chapter'
-
-    deleteChapter :
-      type : object 
-      properties : 
-        status : 
-          type : integer 
-          example : 200
-        message :
-          type : string 
-          example : successfull 
-        data :
-          type : object
-          example : {}

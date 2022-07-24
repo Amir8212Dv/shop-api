@@ -4,42 +4,47 @@ import blogModel from '../../models/blogs.js'
 import createQueryFilter from '../../utils/createQueryFilter.js'
 import blogType from '../types/blog.type.js'
 import httpStatus from 'http-status-codes'
-import createResponseType from '../types/responseType.js'
-import Controller from '../../controllers/controller.js'
-import commentType from '../types/comment.type.js'
+import CreateAggregatePipeline from '../../controllers/createAggregatePipeline.js'
 import autoBind from 'auto-bind'
+import validateObjectId from '../../validators/objectId.js'
+import mongoose from 'mongoose'
+import { createNotFoundError } from '../../utils/createError.js'
 
-const responseType = {
-    blogs : {type : new GraphQLList(blogType)}
-}
+
+const responseType = new GraphQLObjectType({
+    name : 'blogResponseType',
+    fields : {
+        status : {type : GraphQLInt},
+        message : {type : GraphQLString},
+        data : {type : new GraphQLObjectType({
+            name : 'blogDataResponseType',
+            fields : {
+                blogs : {type : new GraphQLList(blogType)}
+            }
+        })}
+    }
+})
 
 
-class BlogQuery extends Controller {
+class BlogQuery extends CreateAggregatePipeline {
     constructor() {
         super()
         autoBind(this)
     }
     #blogAggregate = [
         ...this.userLookup('author'),
-        this.categoryLookup('category'),
-        {
-            $unwind : '$author'
-        },
-        {
-            $addFields : {
-                imageURL : {$concat : [process.env.BASE_URL , '$image']}
-            }
-        }
+        ...this.categoryLookup(),
+        this.likesCount(),
     ]
-
-
+    
+    
     getAllBlogs = {
-        type : createResponseType(responseType),
+        type : responseType,
         args : {
-            author : {type : GraphQLString},
+            authorId : {type : GraphQLString},
             search : {type : GraphQLString},
             tags : {type : GraphQLString},
-            category : {type : GraphQLString},
+            categoryId : {type : GraphQLString},
             sort : {type : GraphQLString},
             page : {type : GraphQLInt},
             pageLimit : {type : GraphQLInt}
@@ -48,20 +53,20 @@ class BlogQuery extends Controller {
             await verifyAccessTokenGraphQL(context.req)
             const queryFilter = createQueryFilter(args)
             const {page , pageLimit , sort} = args
-
             const blogs =  await blogModel.aggregate([
                 {$match : queryFilter},
                 ...this.#blogAggregate,
                 {
                     $sort : {
-                        [sort] : 1
+                        [sort || 'title'] : 1
                     }
+                },
+                this.fileUrl(process.env.BASE_URL),
+                {
+                    $skip : (page - 1 || 0) * (pageLimit || 10)
                 },
                 {
                     $limit : pageLimit || 10
-                },
-                {
-                    $skip : (page || 1) * (pageLimit || 10)
                 }
             ])
             return {
@@ -74,7 +79,7 @@ class BlogQuery extends Controller {
         }
     }
     getBlogById = {
-        type : createResponseType(responseType),
+        type : responseType,
         args : {
             blogId : {type : GraphQLString}
         },
@@ -86,17 +91,18 @@ class BlogQuery extends Controller {
                 {
                     $match : {_id : mongoose.Types.ObjectId(blogId)}
                 },
+                this.fileUrl(process.env.BASE_URL),
                 ...this.#blogAggregate
             ])
 
-            if(!blog) throw createHttpError.NotFound('blog not found')
+            createNotFoundError({blog})
 
             return {
                 status : httpStatus.OK,
                 message : '',
                 data : {
-                    blog : [
-                        blog
+                    blogs : [
+                        blog 
                     ]
                 }
             }

@@ -4,11 +4,8 @@ import NamespaceController from '../../controllers/support/namespace.controller.
 const namespaceRouter = express.Router()
 
 namespaceRouter.post('/create' , NamespaceController.createNamespace)
-
-namespaceRouter.get('/all' , NamespaceController.getNamespaces)
-
-namespaceRouter.delete('delete/:namespaceId' , NamespaceController.deleteNamespace)
-
+namespaceRouter.get('/all' , NamespaceController.getAllNamespaces)
 namespaceRouter.patch('/edit/:namespaceId' , NamespaceController.editNamespace)
+namespaceRouter.delete('/delete/:namespaceId' , NamespaceController.deleteNamespace)
 
 export default namespaceRouter

@@ -34,7 +34,7 @@ const rootQuery = new graphql.GraphQLObjectType({
         getEpisodeById : EpisodeQuery.getEpisodeById,
         bookmarks : BookmarkQuery.getUserBookmarks,
         getBasket : BasketQuery.getBasket,
-        getComments : CommentQuery.getComments
+        getAllComments : CommentQuery.getAllComments,
     }
 })
 
@@ -42,8 +42,6 @@ const rootMutation = new graphql.GraphQLObjectType({
     name : 'Mutation',
     fields : {
         createComment : CommentMutation.createCommentForBlogs,
-        // createCommentForCourses : CommentMutation.createCommentForCourses,
-        // createCommentForProducts : CommentMutation.createCommentForProducts,
 
         likeProduct : LikeMutation.likeProduct,
         likeCourse : LikeMutation.likeCourse,
@@ -72,7 +70,6 @@ const rootMutation = new graphql.GraphQLObjectType({
 
 const graphqlSchema = new graphql.GraphQLSchema({
     query : rootQuery,
-    
     mutation : rootMutation
 })
 

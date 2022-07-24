@@ -9,22 +9,20 @@ const productRouter = express.Router()
 
 
 productRouter.post(
-    '/add' , 
+    '/create' , 
     checkRole(permissions.SUPLIER) ,
-    checkForCategoryId,
     imageUpload.array('images' , 10) , 
+    checkForCategoryId,
     ProductController.createProduct
 )
 productRouter.patch(
-    '/update/:productId' , 
+    '/edit/:productId' , 
     checkRole(permissions.SUPLIER) ,
     checkForProductId,
-    checkForCategoryId,
     imageUpload.array('images' , 10) , 
+    checkForCategoryId,
     ProductController.editProduct
 )
-productRouter.delete('/remove/:productId' , checkRole(permissions.SUPLIER) , ProductController.deleteProduct)
-// productRouter.get('/all' , ProductController.getAllProducts)
-// productRouter.get('/:productId' , ProductController.getProductById)
+productRouter.delete('/delete/:productId' , checkRole(permissions.SUPLIER) , ProductController.deleteProduct)
 
 export default productRouter

@@ -16,14 +16,6 @@ const jwtValidation = async jwtCode => {
 
 const verifyAccessToken = async (req , res , next) => {
     try {
-        // const [bearer , token] = req.headers.authorization.split(' ')
-        // if(token && bearer.toLowerCase() === 'bearer') {    
-        //     const {mobile} = jwt.verify(token , process.env.JWT_SECRETE_KEY || 'jsonwebtoken')
-        //     const user = await userModel.findOne({mobile} , {otp : 0 , __v : 0})
-        //     if(!user) throw httpError.Unauthorized('user not found')
-
-        //     req.user = user
-        // }
         const user = await jwtValidation(req.headers.authorization)
         req.user = user
         next()
@@ -34,16 +26,7 @@ const verifyAccessToken = async (req , res , next) => {
 }
 
 
-export const verifyAccessTokenGraphQL = async (req) => {
-    // if(!req.headers.authorization) throw new httpError.Unauthorized('please login again')
-    // const [bearer , token] = req.headers.authorization.split(' ')
-    // if(token && bearer.toLowerCase() === 'bearer') {    
-    //     const {mobile} = jwt.verify(token , process.env.JWT_SECRETE_KEY || 'jsonwebtoken')
-    //     const user = await userModel.findOne({mobile} , {otp : 0 , __v : 0})
-    //     if(user) return req.user = user
-    // }
-    
-    // throw httpError.Unauthorized('please login again')
+export const verifyAccessTokenGraphQL = async req => {
     const user = await jwtValidation(req.headers.authorization)
     req.user = user
 }
@@ -51,7 +34,6 @@ export const verifyAccessTokenGraphQL = async (req) => {
 export const verifyAccessTokenFromCookie = async (req , res , next) => {
     try {
         const jwtCode = req.signedCookies
-        // ('authorization' , process.env.COOKIE_JWT_SECRETE_KEY || 'cookiesecretekey')
         const user = await jwtValidation(jwtCode.authorization)
         res.cookie('userId' , user._id.toString())
         next()

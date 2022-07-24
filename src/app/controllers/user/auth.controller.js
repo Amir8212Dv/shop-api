@@ -5,7 +5,6 @@ import createRandomNumber from '../../utils/randomNumber.js'
 import { createRefreshToken, validateRefreshToken } from "../../utils/refreshToken.js"
 import httpStatus from 'http-status-codes'
 import {checkOtpValidationSchema, loginWithOtpValidationSchema, signupUserValidationSchema} from '../../validators/user/auth.js'
-import sendMessage from '../../utils/sendSMS.js'
 import createHttpError from 'http-errors'
 import { checkHashedPassword, hashPassword } from '../../utils/hashPassword.js'
 import { createNotFoundError } from '../../utils/createError.js'
@@ -15,7 +14,6 @@ import basketModel from '../../models/basket.js'
 class AuthController {
     async signUp(req , res , next) {
         try {
-            // const user = await userSchema.validateAsync(req.body)
             const userData = req.body
             await signupUserValidationSchema.validateAsync(userData)
 
@@ -24,7 +22,6 @@ class AuthController {
 
             const code = createRandomNumber()
             console.log(code)
-            // sendMessage(userData.mobile , code)
 
             const expire = new Date().getTime() + 120000
             userData.otp = {code , expire}
@@ -35,7 +32,7 @@ class AuthController {
 
             res.status(httpStatus.CREATED).send({
                 status : httpStatus.CREATED,
-                message : 'otp sended successfully',
+                message : 'verification code sended successfully',
                 data : {}
             })
 
@@ -44,7 +41,7 @@ class AuthController {
         }
     }
 
-    async loginWithOtp(req , res , next) {
+    async loginWithMobile(req , res , next) {
         try {
             const data = req.body
             await loginWithOtpValidationSchema.validateAsync(data)
@@ -114,39 +111,7 @@ class AuthController {
             
             const user = await userModel.findOne(searchUserBy)
             createNotFoundError({user})
-            
-            // if(loginData.basketId) {
-            //     const basket = await basketModel.findById(loginData.basketId)
-            //     if(basket) {
-            //         const {products , courses , totalPrice} = basket
 
-            //         const userBasket = await basketModel.findById(user.basket)
-
-            //         const userBasketProductIds = userBasket.products.map(product => product.productId)
-            //         const userBasketCourseIds = userBasket.courses.map(course => course.courseId)
-
-            //         products.forEach(product => {
-            //             if(userBasketProductIds.includes(product.productId)) {
-            //                 userBasket.products.forEach(item => {
-            //                     if(item.productId === product.productId) {
-            //                         item.count += product.count
-            //                         item.price += product.price
-            //                         userBasket.totalPrice += item.price
-            //                     }
-            //                 })
-            //             } else {
-            //                 userBasket.products.push(product)
-            //                 userBasket.totalPrice += product.price
-            //             }
-            //         })
-
-            //         courses.forEach(course => {
-            //             if(user.courses.includes(course.courseId) || userBasketCourseIds.includes(course.courseId)) return
-            //             userBasket.courses.push(course)
-            //             userBasket.totalPrice += course.price
-            //         })
-            //     }
-            // }
             const comparePassword = checkHashedPassword(loginData.password , user.password)
 
             if(!comparePassword) throw createHttpError.Unauthorized(`entered ${loginData.mobile ? 'mobile' : 'email'} or password is wrong`)

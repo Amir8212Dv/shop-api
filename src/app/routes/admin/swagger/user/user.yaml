@@ -2,7 +2,6 @@
     schemas :
       editUser:
         type : object
-        required : 
         properties :
           first_name : 
             type : string
@@ -22,11 +21,14 @@
     get:
       tags : [user]
       summary : get all users
-      description : get all users and search in users  first_name , last_name , mobile and email
+      description : get all users and search in users  first_name , last_name , mobile and email (and get user by userId)
       parameters :
         - in : query
           type : string
           name : search
+        - in : query
+          type : string
+          name : userId
       security :
         - bearerAuth : []
       responses :
@@ -35,13 +37,13 @@
           content:
             application/json:
               schema : 
-                $ref : '#/definitions/user'
+                $ref : '#/definitions/getAllUsersResponse'
 
  /admin/user/edit:
     patch:
       tags : [user]
-      summary : edit user
-      description : edit user
+      summary : edit profile
+      description : edit profile
       requestBody:
           required : true
           content:
@@ -59,7 +61,7 @@
           content:
             application/json:
               schema : 
-                $ref : '#/definitions/user'
+                $ref : '#/definitions/response'
           
 
  /admin/user/getProfile:
@@ -73,4 +75,8 @@
       responses : 
         200 :
           description : successfull
+          content:
+            application/json:
+              schema : 
+                $ref : '#/definitions/getProfileResponse'
           

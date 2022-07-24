@@ -1,4 +1,4 @@
-import {GraphQLObjectType , GraphQLString , GraphQLInt , GraphQLList} from 'graphql'
+import {GraphQLObjectType , GraphQLString , GraphQLInt , GraphQLList, GraphQLFloat} from 'graphql'
 import {categoryType} from './category.type.js'
 import userType from './user.type.js'
 import commentType from './comment.type.js'
@@ -27,13 +27,15 @@ const productType = new GraphQLObjectType({
         comments   : { type : new GraphQLList(commentType)  },
         likes      : { type : new GraphQLList(GraphQLString) },
         bookemarks : { type : new GraphQLList(GraphQLString) },
-        price      : { type : GraphQLInt },
-        discount   : { type : GraphQLInt },
+        price      : { type : GraphQLFloat },
+        discount   : { type : GraphQLFloat },
         count      : { type : GraphQLInt },
         suplier    : { type : userType },
         features   : { type : featuresType },
-        bookmarksCount : { type : GraphQLInt },
-        likesCount : { type : GraphQLInt }
+        likesCount : { type : GraphQLInt },
+        _id : {type : GraphQLString},
+        imageURL : { type : new GraphQLList(GraphQLString) },
+
     }
 })
 

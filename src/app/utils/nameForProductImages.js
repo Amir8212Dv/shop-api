@@ -2,14 +2,7 @@ import fs from 'fs'
 import createHttpError from 'http-errors'
 import path from 'path'
 
-const productImagesName = (path) => {
-    // const dirPath = path.join(process.argv[1] , '..', '..' , 'public' , 'images' , id)
-
-    // const checkForFile = fs.existsSync(path)
-    // if(!checkForFile) {
-    //     return 1
-    // }
-
+const productImagesName = path => {
     const imagesName = fs.readdirSync(path)
 
     if(!!imagesName.length){

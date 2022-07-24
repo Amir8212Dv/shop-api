@@ -1,6 +1,6 @@
  components:
     schemas :
-      addRole:
+      createRole:
         type : object
         required : 
           - title
@@ -13,23 +13,33 @@
             type : array
             items :
               type : string
+      editRole:
+        type : object
+        properties :
+          title : 
+            type : string
+            description : role title
+          permissions :
+            type : array
+            items :
+              type : string
 
 
 
- /admin/role/add:
+ /admin/role/create:
       post:
           tags : [RBAC]
-          summary : controle roles
-          description : controle roles
+          summary : create new role
+          description : create new role
           requestBody:
               required : true
               content:
                   application/x-www-form-urlencoded:
                       schema:
-                          $ref : '#/components/schemas/addRole'
+                          $ref : '#/components/schemas/createRole'
                   application/json:
                       schema:
-                          $ref : '#/components/schemas/addRole'
+                          $ref : '#/components/schemas/createRole'
 
           security:
               -   bearerAuth : []
@@ -39,23 +49,23 @@
                   content:
                       application/json:
                           schema:
-                              $ref: '#/definitions/getRole'
+                              $ref: '#/definitions/createRoleResponse'
 
 
- /admin/role/update/{roleId}:
+ /admin/role/edit/{roleId}:
       patch:
           tags : [RBAC]
-          summary : controle roles
-          description : controle roles
+          summary : edit role
+          description : edit role with role id
           requestBody:
               required : true
               content:
                   application/x-www-form-urlencoded:
                       schema:
-                          $ref : '#/components/schemas/addRole'
+                          $ref : '#/components/schemas/editRole'
                   application/json:
                       schema:
-                          $ref : '#/components/schemas/addRole'
+                          $ref : '#/components/schemas/editRole'
 
           security:
               -   bearerAuth : []
@@ -70,13 +80,13 @@
                   content:
                       application/json:
                           schema:
-                              $ref: '#/definitions/getRole'
+                              $ref: '#/definitions/response'
 
  /admin/role/delete/{roleId}:
       delete:
           tags : [RBAC]
-          summary : controle roles
-          description : controle roles
+          summary : delete role
+          description : delete role with role id
 
           security:
               -   bearerAuth : []
@@ -88,17 +98,17 @@
           responses:
               201:
                   description : successfull
-                  # content:
-                  #     application/json:
-                  #         schema:
-                  #             $ref: '#/definitions/getProduct'
+                  content:
+                      application/json:
+                          schema:
+                              $ref: '#/definitions/response'
 
 
  /admin/role/all:
       get:
           tags : [RBAC]
-          summary : controle roles
-          description : controle roles
+          summary : get all roles
+          description : get all roles
 
           security:
               -   bearerAuth : []
@@ -109,6 +119,27 @@
                   content:
                       application/json:
                           schema:
-                              $ref: '#/definitions/getRole'
+                              $ref: '#/definitions/getAllRolesResponse'
+
+
+ /admin/role/{roleId}:
+      get:
+          tags : [RBAC]
+          summary : get role by id
+          description : get role by id
+          security:
+              -   bearerAuth : []
+          parameters : 
+              -   in : path
+                  type : string
+                  required : true
+                  name : roleId
+          responses:
+              201:
+                  description : successfull
+                  content:
+                      application/json:
+                          schema:
+                              $ref: '#/definitions/getOneRoleResponse'
 
 

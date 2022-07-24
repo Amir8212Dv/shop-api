@@ -1,8 +1,8 @@
 import permissionModel from '../../../models/permissions.js'
 import httpStatus from 'http-status-codes'
-import createHttpError from 'http-errors'
 import { createPermissionValidationSchema,updatePermissionValidationSchema } from '../../../validators/admin/permission.js'
 import validateObjectId from '../../../validators/objectId.js'
+import { createInternalServerError, createNotFoundError } from '../../../utils/createError.js'
 
 
 class PermissionController {
@@ -13,14 +13,13 @@ class PermissionController {
             await createPermissionValidationSchema.validateAsync(permissionData)
 
             const permission = await permissionModel.create(permissionData)
+            createInternalServerError(permission)
 
             res.status(httpStatus.CREATED).send({
                 status : httpStatus.CREATED,
                 message : 'permission created successfully',
                 data : {
-                    permission : [
-                        permission
-                    ]
+                    permission
                 }
             })
         } catch (error) {
@@ -45,7 +44,19 @@ class PermissionController {
     }
     async getPermissionById(req , res , next) {
         try {
-            
+            const {permissionId} = req.params
+            await validateObjectId.validateAsync(permissionId)
+
+            const permission = await permissionModel.findById(permissionId)
+            createNotFoundError({permission})
+
+            res.status(httpStatus.OK).send({
+                status : httpStatus.OK,
+                message : '',
+                data : {
+                    permission
+                }
+            })
         } catch (error) {
             next(error)
         }
@@ -57,9 +68,8 @@ class PermissionController {
             await validateObjectId.validateAsync(permissionId)
 
             const permission = await permissionModel.deleteOne({_id : permissionId})
-
-            icreateNotFoundError({permission})
-            if(!+permission.deletedCount) throw createHttpError.InternalServerError('delete permission faild')
+            createNotFoundError({permission})
+            createInternalServerError(permission.deletedCount)
 
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,
@@ -79,18 +89,14 @@ class PermissionController {
             await validateObjectId.validateAsync(permissionId)
             await updatePermissionValidationSchema.validateAsync(updateData)
 
-            const permission = await roleModel.findByIdAndUpdate(permissionId , updateData)
-
-            icreateNotFoundError({permission})
+            const permission = await permissionModel.updateOne({_id : permissionId} , updateData)
+            createNotFoundError({permission})
+            createInternalServerError(permission.modifiedCount)
 
             res.status(httpStatus.OK).send({
                 status : httpStatus.OK,
-                message : 'role updated successfully',
-                data : {
-                    permission : {
-                        updatePermission
-                    }
-                }
+                message : 'permission updated successfully',
+                data : {}
             })
 
             

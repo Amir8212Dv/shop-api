@@ -1,6 +1,6 @@
 
  definitions:
-      sendOtp:
+      sendOtpResponse:
           type : object
           properties:
               status :
@@ -9,7 +9,7 @@
               message : 
                   type : string
                   example : otp sended successfully
-      login:
+      loginResponse:
           type : object
           properties:
               status :
