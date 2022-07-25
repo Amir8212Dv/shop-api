@@ -2,7 +2,6 @@ import express from 'express'
 import mongoose from 'mongoose'
 import http from 'http'
 import path from 'path'
-import morgan from 'morgan'
 import httpError from 'http-errors'
 import swaggerUi from 'swagger-ui-express'
 import swaggerDocs from 'swagger-jsdoc'
@@ -25,15 +24,14 @@ class Application {
         this.#routes = routes
         this.serverConfig()
         this.initTemplateEngine()
-        this.createServer()
         this.setCookieParser()
         this.connectDatabase()
         this.connectRedis()
+        this.createServer()
         this.createRoutes()
         this.errorHandling()
     }
     serverConfig() {
-        this.#app.use(morgan('dev'))
         this.#app.use(express.json())
         this.#app.use(express.urlencoded({extended : true}))
         this.#app.use(express.static(path.join(process.argv[1] , '..' , '..' , 'public')))
@@ -49,9 +47,6 @@ class Application {
                 servers : [
                     {
                         url : process.env.BASE_URL,
-                    },
-                    {
-                        url : 'http://192.168.1.5:4000',
                     }
                 ]
             },
@@ -79,8 +74,8 @@ class Application {
     }
     connectDatabase() {
         mongoose.connect(this.#DB_URL , (err) => {
-            if(err) return console.log('connnecting to dabase faild')
-            console.log('connected to database successfully')
+            if(err) return console.log('connnecting to mongodb faild')
+            console.log('connected to mongodb successfully')
         })
 
         process.on('SIGINT' , () => {
@@ -90,6 +85,7 @@ class Application {
     connectRedis() {
         redis.connect()
         redis.on('connect' , () => console.log('connected to redis successfully'))
+        redis.on('error' , err => console.log('connect to redis server faild'))
     }
     createRoutes() {
         this.#app.use(this.#routes)

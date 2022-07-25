@@ -1,9 +1,7 @@
-import Redis from 'redis'
+import { createClient } from 'redis'
 
-const redis = Redis.createClient(
-{
-    host: '127.0.0.1',
-    port: 6379
+const redis = createClient({
+    url : `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`
 })
 
 export default redis
