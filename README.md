@@ -1,7 +1,7 @@
 # shop-api
 ##### `Personal project for my resume`
 
-I have used the most new technologies likes node.js , mongoDB , graphQL , express , redis , socket.io , ...  for create and programm this project.
+I have used the most new technologies likes node.js , mongoDB , graphQL , express , redis , socket.io & ...  for create and programm this application.
 
 You can run this project on your system by pulling `docker.compose.yaml` file on your system and run `docker-compose up` command at file path in command-line to start docker container (NOTE : `docker` is needed).
 
