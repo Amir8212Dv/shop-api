@@ -11,3 +11,9 @@ for example only Admin can access to all users data or only a user with AUTHOR r
 because of that if you want to test all routes you can use  login-mobile  route and use 09999999999 phone number to login(this is a default user that has ADMIN role)
 
 one last note is that verification phone number won't sended to your phone number and for access verification code you can check application logs in command-line
+
+publish port : 4000
+
+swagger : /api-doc/
+graphql : /graphql
+support : /support
