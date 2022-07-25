@@ -20,4 +20,3 @@ services:
       - JWT_SECRETE_KEY=3500ecfdbb3b02c6cabd96f5ba5cae17a07fc432
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-    # image: amir8212/shop_api
