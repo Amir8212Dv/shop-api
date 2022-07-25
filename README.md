@@ -1,5 +1,5 @@
 # shop-api
-Personal project for my resume
+##### `Personal project for my resume`
 
 I have used monst new technologies likes node.js , mongoDB , graphQL , express , redis , socket.io , ...  for create this project.
 
