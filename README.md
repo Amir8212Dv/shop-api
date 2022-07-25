@@ -14,6 +14,6 @@ one last note is that verification phone number won't sended to your phone numbe
 
 publish port : 4000
 
-####swagger : /api-doc/
-####graphql : /graphql
-####support : /support
+#### swagger : `/api-doc/`
+#### graphql : `/graphql`
+#### support : `/support`
