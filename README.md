@@ -3,7 +3,7 @@
 
 I have used most new technologies likes node.js , mongoDB , graphQL , express , redis , socket.io , ...  for create this project.
 
-If you want to run this project on your system , you can pull project or just `docker.compose.yaml` file on your system and run `docker-compose up` command in command-line to crate docker container and test that(NOTE : `docker` id needed).
+You can run this project on your system by pulling `docker.compose.yaml` file on your system and run `docker-compose up` command in command-line to crate docker container and test that(NOTE : `docker` is needed).
 
 
 This application has role restriction; that means only users with specific roles can access to some APIs .
