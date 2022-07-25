@@ -12,7 +12,7 @@ because of that if you want to test all routes you can use  `/user/login-mobile`
 
 one last note is that verification phone number won't sended to your phone number and for access verification code you can check application logs in command-line
 
-publish port : 4000
+#### publish port : `4000`
 
 #### swagger : `/api-doc/`
 #### graphql : `/graphql`
