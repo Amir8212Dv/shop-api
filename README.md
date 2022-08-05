@@ -8,7 +8,8 @@ You can run this project on your system by pulling `docker.compose.yaml` file on
 
 This application has role restriction; that means only users with specific roles can access to some APIs .
 For example only Admin can access to all users data or only a user with AUTHOR role can access blog APIs.
-Because of that, if you want to test all routes you can use  `/user/login-mobile`  route in swagger and login with `09999999999` phone number. (this is a default user with `ADMIN` role)
+<br/>
+***Note : The first phone number that you sign up with that in application , will be set as `ADMIN` role by default.***
 
 One last note is that verification code won't send to your phone number; for get verification code you can check application logs in command-line
 
