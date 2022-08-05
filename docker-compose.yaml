@@ -1,5 +1,13 @@
 version: '3.6'
 services:
+  mongodb:
+    image : mongo:4.4
+    ports : 
+      - "27017:27017"
+    expose :
+      - 27017
+    volumes:
+      - data:/data/db
   redis:
     image : redis:7.0.4-alpine
     ports:
@@ -12,11 +20,15 @@ services:
       - "4000:4000"
     depends_on:
       - redis
+      - mongodb
     environment:
       - BASE_URL=http://127.0.0.1:4000
       - COOKIE_SECRETE_KEY=c65c646940b95074ad87e3eec32255e90ed3244c
-      - MONGODB_URL=mongodb+srv://amir8212:362bffe275ccefbca81f9eb0e602f29341440813@shop.kmxywju.mongodb.net/?retryWrites=true&w=majority
+      - MONGODB_URL=mongodb://mongodb:27017/shop
       - PORT=4000
+      - NODE_ENV=production
       - JWT_SECRETE_KEY=3500ecfdbb3b02c6cabd96f5ba5cae17a07fc432
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+volumes:
+  data:

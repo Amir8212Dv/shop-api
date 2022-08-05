@@ -5,7 +5,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon -e yaml,js src/index.js"
+    "start": "nodemon -e yaml,js,env src/index.js"
   },
   "author": "",
   "license": "ISC",
