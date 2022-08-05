@@ -5,12 +5,8 @@ import fromData from 'multer'
 import checkRole from '../../middlewares/checkRole.js'
 import { permissions } from '../../utils/constants.js'
 import { checkForBlogId, checkForCategoryId } from '../../middlewares/checkForObjectId.js'
-
-
+import { checkAccessForBlogs } from '../../middlewares/checkAccessForCRUD.js'
 const blogRouter = express.Router()
-
-
-
 blogRouter.post(
     '/create' , 
     checkForCategoryId,
@@ -22,11 +18,10 @@ blogRouter.patch(
     '/edit/:blogId' , 
     checkRole(permissions.WRITER) , 
     checkForBlogId,
-    imageUpload.single('image') , 
+    checkAccessForBlogs,
+    imageUpload.single('image'),
     checkForCategoryId,
     BlogsController.editBlogById
 )
-blogRouter.delete('/delete/:blogId' , checkRole(permissions.WRITER) , BlogsController.deleteBlogById)
-
-
+blogRouter.delete('/delete/:blogId' , checkRole(permissions.WRITER) , checkAccessForBlogs , BlogsController.deleteBlogById)
 export default blogRouter 
