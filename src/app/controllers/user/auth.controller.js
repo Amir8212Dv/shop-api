@@ -27,6 +27,10 @@ class AuthController {
             userData.otp = {code , expire}
             
             userData.password = hashPassword(userData.password)
+            
+            const lookupForOtherUsers = userModel.findOne({})
+            if(lookupForOtherUsers) userData.role = 'USER'
+            else userData.role = 'ADMIN'
 
             const user = await userModel.create({...userData , role : 'USER'})
 
