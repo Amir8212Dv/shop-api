@@ -6,11 +6,11 @@ import productModel from '../models/products.js'
 import chapterModel from '../models/course.chapters.js'
 import episodeModel from '../models/course.chapter.episodes.js'
 
-const checkUserIsAdmin = userId => {
+const checkUserIsAdmin = async userId => {
     const user = await userModel.findById(userId)
     return user.role === roles.ADMIN
 }
-export const checkAccessForBlogs = (req , res , next) => {
+export const checkAccessForBlogs = async (req , res , next) => {
     try {
         const userId = req.user._id
         const {blogId} = req.params
@@ -18,7 +18,7 @@ export const checkAccessForBlogs = (req , res , next) => {
         const {author} = await blogModel.findById(blogId)
         if(author.toString() === userId) return next()
 
-        const isAdmin = checkUserIsAdmin(userId)
+        const isAdmin = await checkUserIsAdmin(userId)
         if(isAdmin) return next()
 
         throw new createHttpError.Forbidden('only blog author can edit or delete blog')
@@ -26,7 +26,7 @@ export const checkAccessForBlogs = (req , res , next) => {
         next(error)
     }
 }
-export const checkAccessForCourses = (req , res , next) => {
+export const checkAccessForCourses = async (req , res , next) => {
     try {
         const userId = req.user._id
         const {courseId} = req.params
@@ -34,7 +34,7 @@ export const checkAccessForCourses = (req , res , next) => {
         const {teacher} = await courseModel.findById(courseId)
         if(teacher.toString() === userId) return next()
     
-        const isAdmin = checkUserIsAdmin(userId)
+        const isAdmin = await checkUserIsAdmin(userId)
         if(isAdmin) return next()
     
         throw new createHttpError.Forbidden('only course teacher can edit or delete course')
@@ -42,7 +42,7 @@ export const checkAccessForCourses = (req , res , next) => {
         next(error)
     }
 }
-export const checkAccessForProducts = (req , res , next) => {
+export const checkAccessForProducts = async (req , res , next) => {
     try {
         const userId = req.user._id
         const {productId} = req.params
@@ -50,7 +50,7 @@ export const checkAccessForProducts = (req , res , next) => {
         const {suplier} = await productModel.findById(productId)
         if(suplier.toString() === userId) return next()
     
-        const isAdmin = checkUserIsAdmin(userId)
+        const isAdmin = await checkUserIsAdmin(userId)
         if(isAdmin) return next()
     
         throw new createHttpError.Forbidden('only product suplier can edit or delete product')
@@ -58,8 +58,7 @@ export const checkAccessForProducts = (req , res , next) => {
         next(error)
     }
 }
-
-export const checkAccessForChapters = (req , res , next) => {
+export const checkAccessForChapters = async (req , res , next) => {
     try {
         const userId = req.user._id
         const {chapterId} = req.params
@@ -73,7 +72,7 @@ export const checkAccessForChapters = (req , res , next) => {
         const {teacher} = await courseModel.findById(courseId)
         if(teacher.toString() === userId) return next()
     
-        const isAdmin = checkUserIsAdmin(userId)
+        const isAdmin = await checkUserIsAdmin(userId)
         if(isAdmin) return next()
     
         throw new createHttpError.Forbidden('only course teacher can access course chapters')
@@ -81,8 +80,7 @@ export const checkAccessForChapters = (req , res , next) => {
         next(error)
     }
 }
-
-export const checkAccessForEpisodes = (req , res , next) => {
+export const checkAccessForEpisodes = async (req , res , next) => {
     try {
         const userId = req.user._id
         const {episodeId} = req.params
@@ -96,7 +94,7 @@ export const checkAccessForEpisodes = (req , res , next) => {
         const {teacher} = await courseModel.findById(courseId)
         if(teacher.toString() === userId) return next()
     
-        const isAdmin = checkUserIsAdmin(userId)
+        const isAdmin = await checkUserIsAdmin(userId)
         if(isAdmin) return next()
     
         throw new createHttpError.Forbidden('only course teacher can access course episodes')
