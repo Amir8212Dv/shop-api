@@ -15,7 +15,6 @@ services:
     expose:
       - 6379
   shop_api:
-    build : .
     image : amir8212/shop_api
     ports:
       - "4000:4000"
